@@ -69,9 +69,16 @@ public class AwarenessSystem : MonoBehaviour
     [SerializeField] float AwarenessDecayRate = 0.1f;
 
     Dictionary<GameObject, TrackedTarget> Targets = new Dictionary<GameObject, TrackedTarget>();
+    Dictionary<GameObject, TrackedTarget> ResourceNodes = new Dictionary<GameObject, TrackedTarget>();
     Agent Agent;
 
     public List<TrackedTarget> ActiveTargets => Targets.Values.ToList();
+    public List<TrackedTarget> ResourceNodesInRange => ResourceNodes.Values.ToList();
+
+
+
+    [SerializeField] public int ResourceCount = 0;
+    [SerializeField] public int TargetsCount = 0;
 
     private void Start()
     {
@@ -80,35 +87,56 @@ public class AwarenessSystem : MonoBehaviour
 
     private void Update()
     {
-        List<GameObject> cleanUp = new List<GameObject>();
+        CleanUpAwareness(Targets);
+        CleanUpAwareness(ResourceNodes);
 
-        foreach(var target in Targets.Keys)
+        ResourceCount = ResourceNodesInRange.Count;
+        TargetsCount = ActiveTargets.Count;
+    }
+
+    private void CleanUpAwareness(Dictionary<GameObject,TrackedTarget> targetsToclean)
+    {
+        List<GameObject> cleanUp = new List<GameObject>();
+        foreach (var target in targetsToclean.Keys)
         {
-            if (Targets[target].DecayAwareness(AwarenessDecayRate, AwarenessDecayRate * Time.deltaTime))
+            if (targetsToclean[target].DecayAwareness(AwarenessDecayRate, AwarenessDecayRate * Time.deltaTime))
             {
-                if (Targets[target].Awareness <= 0f)
+                if (targetsToclean[target].Awareness <= 0f)
                     cleanUp.Add(target);
                 else
-                    Debug.Log("Threshold change for " + target.name + " " + Targets[target].Awareness);
+                    Debug.Log("Threshold change for " + target.name + " " + targetsToclean[target].Awareness);
             }
-
         }
 
-        foreach(var target in cleanUp)
+        foreach (var target in cleanUp)
         {
-            Targets.Remove(target);
+            targetsToclean.Remove(target);
         }
     }
 
     private void UpdateAwareness(GameObject targetGo, DetectableTarget seen, Vector3 position, float awareness, float minAwareness)
     {
-        if (!Targets.ContainsKey(targetGo))
-            Targets[targetGo] = new TrackedTarget();
+        if(seen.GetType() == typeof(ResourceTarget))
+            HandleAwareness(ResourceNodes, targetGo, seen, position, awareness, minAwareness);
+        else
+            HandleAwareness(Targets, targetGo, seen, position, awareness, minAwareness);
 
-        if(Targets[targetGo].UpdateAwareness(seen, position, awareness, minAwareness))
+
+
+    }
+
+    private void HandleAwareness(Dictionary<GameObject,TrackedTarget> typeOfTarget, GameObject targetGo, DetectableTarget seen, Vector3 position, float awareness, float minAwareness)
+    {
+        if (!typeOfTarget.ContainsKey(targetGo))
+            typeOfTarget[targetGo] = new TrackedTarget();
+
+        if (typeOfTarget[targetGo].UpdateAwareness(seen, position, awareness, minAwareness))
         {
-            Debug.Log("Threshold change for " + targetGo.name + " " + Targets[targetGo].Awareness);
+            Debug.Log("Threshold change for " + targetGo.name + " " + typeOfTarget[targetGo].Awareness);
         }
+
+        Agent.SaveValueInMemory("hasTargets", typeOfTarget.Count > 0);
+
     }
 
 

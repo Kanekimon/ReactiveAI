@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.AI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,12 +24,18 @@ public class Agent : MonoBehaviour
 
     public float CoVisionAngle { get; private set; } = 0f;
 
+    private StateMemory _memory = new StateMemory();
+
     AwarenessSystem _awareness;
+    ConditionSystem _conditionSystem;
+
+    public ConditionSystem ConditionSystem => _conditionSystem;
 
     private void Awake()
     {
         CoVisionAngle = Mathf.Cos(VisionAngle * Mathf.Deg2Rad);
         _awareness = GetComponent<AwarenessSystem>();
+        _conditionSystem = GetComponent<ConditionSystem>();
     }
 
     public void CanSee(DetectableTarget seen)
@@ -40,6 +47,16 @@ public class Agent : MonoBehaviour
     {
         _awareness.ReportCanSense(inProximity);
 
+    }
+
+    public void SaveValueInMemory<T>(string key, T value)
+    {
+        _memory.ChangeValue(key, value);
+    }
+
+    public object GetValueFromMemory(string key)
+    {
+        return _memory.GetValue(key);
     }
 }
 
