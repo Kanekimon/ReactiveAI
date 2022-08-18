@@ -1,20 +1,40 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
-public class Planner : MonoBehaviour
+public class MonolithPlanner : MonoBehaviour
 {
-    BaseGoal[] Goals;
-    ActionBase[] Actions;
 
     BaseGoal ActiveGoal;
     ActionBase ActiveAction;
 
+    GameObject ActionContainer;
+    GameObject GoalContainer;
+
+    List<ActionBase> AllActions;
+    List<BaseGoal> AllGoals;
+
+
     private void Awake()
     {
-        Goals = GetComponents<BaseGoal>();
-        Actions = GetComponents<ActionBase>();
+        ActionContainer = transform.Find("ActionContainer").gameObject;
+        GoalContainer = transform.Find("GoalContainer").gameObject;
+
+        AllActions = GetAllActions();
+        AllGoals = GetAllGoals();
     }
+
+
+    List<ActionBase> GetAllActions()
+    {
+        return ActionContainer.GetComponents<ActionBase>().ToList();
+    }
+    List<BaseGoal> GetAllGoals()
+    {
+        return GoalContainer.GetComponents<BaseGoal>().ToList();
+    }
+
 
     // Update is called once per frame
     void Update()
@@ -23,7 +43,7 @@ public class Planner : MonoBehaviour
         BaseGoal bestGoal = null;
         ActionBase bestAction = null;
 
-        foreach(var goal in Goals)
+        foreach (var goal in AllGoals)
         {
             //Tick goals
             goal.OnTickGoal();
@@ -34,28 +54,28 @@ public class Planner : MonoBehaviour
                 continue;
 
             if (!(bestGoal == null || goal.CalculatePriority() > bestGoal.CalculatePriority()))
-               continue;
+                continue;
 
             ActionBase candidateAction = null;
-            foreach(var action in Actions)
+            foreach (var action in AllActions)
             {
                 if (!action.GetSupportedGoals().Contains(goal.GetType()))
                     continue;
 
-                if(candidateAction == null || action.Cost() < candidateAction.Cost())
+                if (candidateAction == null || action.Cost() < candidateAction.Cost())
                     candidateAction = action;
             }
 
-            if(candidateAction != null)
+            if (candidateAction != null)
             {
                 bestGoal = goal;
                 bestAction = candidateAction;
-            }  
+            }
         }
 
-        if(ActiveGoal == null)
+        if (ActiveGoal == null)
         {
-          
+
             ActiveGoal = bestGoal;
             ActiveAction = bestAction;
 
@@ -63,17 +83,17 @@ public class Planner : MonoBehaviour
                 ActiveGoal.OnGoalActivated(ActiveAction);
             if (ActiveAction != null)
                 ActiveAction.OnActivated(ActiveGoal);
-        } 
-        else if(ActiveGoal == bestGoal)
+        }
+        else if (ActiveGoal == bestGoal)
         {
-            if(bestAction != ActiveAction)
+            if (bestAction != ActiveAction)
             {
                 ActiveAction.OnDeactived();
                 ActiveAction = bestAction;
                 ActiveAction.OnActivated(ActiveGoal);
             }
         }
-        else if(ActiveGoal != bestGoal)
+        else if (ActiveGoal != bestGoal)
         {
             ActiveGoal.OnGoalDeactivated();
             ActiveAction.OnDeactived();
@@ -87,7 +107,13 @@ public class Planner : MonoBehaviour
                 ActiveAction.OnActivated(ActiveGoal);
         }
 
-        if(ActiveAction != null)
+        if (ActiveAction != null)
             ActiveAction.OnTick();
+    }
+
+
+    void MonolithicPlanner()
+    {
+
     }
 }

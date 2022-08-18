@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Assets.Scripts.AI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,19 +20,26 @@ public interface IGoal
     void OnGoalDeactivated();
 }
 
-
 public class BaseGoal : MonoBehaviour, IGoal
 {
+    protected GameObject Parent;
     protected NavigationAgent NavAgent;
     protected AwarenessSystem AwarenessSystem;
     protected GOAPUI DebugUI;
     protected ActionBase LinkedAction;
+    protected Agent Agent;
 
+    protected StateMemory NeededWorldState;
+
+    [SerializeField] public HashSet<KeyValuePair<string, object>> Preconditions = new HashSet<KeyValuePair<string, object>>();
   
     void Awake()
     {
-        NavAgent = GetComponent<NavigationAgent>();
-        AwarenessSystem = GetComponent<AwarenessSystem>();
+        Parent = transform.parent.gameObject;
+        NavAgent = Parent.GetComponent<NavigationAgent>();
+        AwarenessSystem = Parent.GetComponent<AwarenessSystem>();
+        Agent = Parent.GetComponent<Agent>();
+        NeededWorldState = CreateRequiredWorldState();
     }
 
     void Start()
@@ -43,6 +51,14 @@ public class BaseGoal : MonoBehaviour, IGoal
     {
         OnTickGoal();
         DebugUI.UpdateGoal(this, GetType().Name, LinkedAction ? "Running" : "Paused", CalculatePriority());
+    }
+
+    protected StateMemory CreateRequiredWorldState()
+    {
+        StateMemory currentWorldState = Agent.WorldState;
+
+        return currentWorldState;
+
     }
 
     public virtual bool CanRun()

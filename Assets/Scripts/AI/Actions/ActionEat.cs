@@ -6,11 +6,11 @@ public class ActionEat : ActionBase
 {
     [SerializeField] float SearchRange = 10f;
     List<System.Type> SupportedGoals = new List<System.Type>() { typeof(ReduceHungerGoal) };
-    Agent Agent;
 
     private void Awake()
     {
-        Agent = GetComponent<Agent>();
+        preconditions.Add(new KeyValuePair<string, object>("hasFood", true));
+        effects.Add(new KeyValuePair<string, object>("isHungry", false));
     }
 
     public override List<System.Type> GetSupportedGoals()

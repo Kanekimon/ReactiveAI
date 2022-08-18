@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 public enum ResourceType
 {
     Stone, 
-    Wood
+    Wood,
+    Food
 }
 
 public class ResourceTarget : DetectableTarget

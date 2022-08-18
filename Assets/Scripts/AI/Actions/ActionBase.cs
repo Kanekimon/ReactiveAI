@@ -4,15 +4,21 @@ using UnityEngine;
 
 public class ActionBase : MonoBehaviour
 {
-
+    protected GameObject Parent;
     protected NavigationAgent NavAgent;
     protected AwarenessSystem AwarenessSystem;
     protected BaseGoal LinkedGoal;
+    protected Agent Agent;
+
+    protected HashSet<KeyValuePair<string, object>> preconditions = new HashSet<KeyValuePair<string, object>>();
+    protected HashSet<KeyValuePair<string, object>> effects = new HashSet<KeyValuePair<string, object>>();
 
     private void Awake()
     {
-        NavAgent = GetComponent<NavigationAgent>();
-        AwarenessSystem = GetComponent<AwarenessSystem>();
+        Parent = transform.parent.gameObject;
+        NavAgent = Parent.GetComponent<NavigationAgent>();
+        AwarenessSystem = Parent.GetComponent<AwarenessSystem>();
+        Agent = Parent.GetComponent<Agent>();
     }
 
     public virtual List<System.Type> GetSupportedGoals()
@@ -38,5 +44,15 @@ public class ActionBase : MonoBehaviour
     public virtual void OnTick()
     {
 
+    }
+
+    public HashSet<KeyValuePair<string, object>> GetEffects()
+    {
+        return effects;
+    }
+
+    public HashSet<KeyValuePair<string, object>> GetPreconditions()
+    {
+        return preconditions;
     }
 }

@@ -30,6 +30,9 @@ public class Agent : MonoBehaviour
     ConditionSystem _conditionSystem;
 
     public ConditionSystem ConditionSystem => _conditionSystem;
+    public AwarenessSystem AwarenessSystem => _awareness;
+
+    public StateMemory WorldState => _memory;
 
     private void Awake()
     {
