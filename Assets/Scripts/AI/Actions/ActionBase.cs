@@ -13,12 +13,26 @@ public class ActionBase : MonoBehaviour
     protected HashSet<KeyValuePair<string, object>> preconditions = new HashSet<KeyValuePair<string, object>>();
     protected HashSet<KeyValuePair<string, object>> effects = new HashSet<KeyValuePair<string, object>>();
 
-    private void Awake()
+    protected virtual void Awake()
     {
         Parent = transform.parent.gameObject;
         NavAgent = Parent.GetComponent<NavigationAgent>();
         AwarenessSystem = Parent.GetComponent<AwarenessSystem>();
         Agent = Parent.GetComponent<Agent>();
+    }
+
+    protected virtual void Start()
+    {
+        string name = this.name;
+
+        foreach(KeyValuePair<string, object> kvp in preconditions)
+        {
+            Agent.WorldState.AddWorldState(kvp.Key, ObjectHelper.GetDefault(kvp.Value.GetType()));
+        }    
+        foreach(KeyValuePair<string, object> kvp in effects)
+        {
+            Agent.WorldState.AddWorldState(kvp.Key, ObjectHelper.GetDefault(kvp.Value.GetType()));
+        }
     }
 
     public virtual List<System.Type> GetSupportedGoals()

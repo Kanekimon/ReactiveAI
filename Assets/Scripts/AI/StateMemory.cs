@@ -15,27 +15,27 @@ namespace Assets.Scripts.AI
 
         public StateMemory()
         {
-            WorldStates.Add(new KeyValuePair<string, object>("currentPosition", Vector3.zero));
-            WorldStates.Add(new KeyValuePair<string, object>("currentTarget", null));
-            WorldStates.Add(new KeyValuePair<string, object>("isHungry", false));
-            WorldStates.Add(new KeyValuePair<string, object>("hasTargets", false));
+            //WorldStates.Add(new KeyValuePair<string, object>("currentPosition", Vector3.zero));
+            //WorldStates.Add(new KeyValuePair<string, object>("currentTarget", null));
+            //WorldStates.Add(new KeyValuePair<string, object>("isHungry", false));
+            //WorldStates.Add(new KeyValuePair<string, object>("hasTargets", false));
         }
 
-        public void ChangeValue<T>(string key, T value)
+        public StateMemory Instantiate(StateMemory mem)
         {
-            System.Type type = WorldStates.Where(a => a.Key == key).FirstOrDefault().Value.GetType();
-            Debug.Log("Key: " + key + " Type of Value: " + type.Name);
-            if (type == typeof(T))
+            StateMemory copiedWorldState = new StateMemory();
+            foreach (KeyValuePair<string, object> state in mem.WorldStates)
             {
-                WorldStates.Remove(WorldStates.Where(a => a.Key == key).FirstOrDefault());
-                WorldStates.Add(new KeyValuePair<string, object>(key, value));
+                copiedWorldState.WorldStates.Add(state);
             }
-
+            return copiedWorldState;
         }
+
 
         public void ChangeValue(string key, object value)
         {
-            WorldStates.Remove(WorldStates.Where(a => a.Key == key).FirstOrDefault());
+            if (WorldStates.Any(a => a.Key.Equals(key)))
+                WorldStates.Remove(WorldStates.Where(a => a.Key == key).FirstOrDefault());
             WorldStates.Add(new KeyValuePair<string, object>(key, value));
         }
 
@@ -44,6 +44,22 @@ namespace Assets.Scripts.AI
             return WorldStates.Where(a => a.Key == key).FirstOrDefault().Value;
         }
 
-        
+        public StateMemory Clone()
+        {
+            return Instantiate(this);
+        }
+
+        public bool AddWorldState(string key, object value)
+        {
+            try
+            {
+                WorldStates.Add(new KeyValuePair<string, object>(key, value));
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
+        }
     }
 }

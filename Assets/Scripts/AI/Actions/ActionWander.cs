@@ -7,6 +7,15 @@ public class ActionWander : ActionBase
     [SerializeField] float SearchRange = 10f;
     List<System.Type> SupportedGoals = new List<System.Type>() { typeof(WanderGoal) };
 
+    protected override void Awake()
+    {
+        base.Awake();
+    }
+    protected override void Start()
+    {
+        base.Start();
+    }
+
     public override List<System.Type> GetSupportedGoals()
     {
         return SupportedGoals;

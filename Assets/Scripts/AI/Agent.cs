@@ -52,7 +52,7 @@ public class Agent : MonoBehaviour
 
     }
 
-    public void SaveValueInMemory<T>(string key, T value)
+    public void SaveValueInMemory(string key, object value)
     {
         _memory.ChangeValue(key, value);
     }
@@ -60,6 +60,11 @@ public class Agent : MonoBehaviour
     public object GetValueFromMemory(string key)
     {
         return _memory.GetValue(key);
+    }
+
+    public void Die()
+    {
+        Destroy(this.gameObject);
     }
 }
 

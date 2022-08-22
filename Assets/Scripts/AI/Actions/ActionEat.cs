@@ -7,10 +7,16 @@ public class ActionEat : ActionBase
     [SerializeField] float SearchRange = 10f;
     List<System.Type> SupportedGoals = new List<System.Type>() { typeof(ReduceHungerGoal) };
 
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         preconditions.Add(new KeyValuePair<string, object>("hasFood", true));
         effects.Add(new KeyValuePair<string, object>("isHungry", false));
+    }
+
+    protected override void Start()
+    {
+        base.Start();
     }
 
     public override List<System.Type> GetSupportedGoals()
@@ -25,7 +31,7 @@ public class ActionEat : ActionBase
 
     public override void OnTick()
     {
-        Agent.ConditionSystem.ChangeValue("hunger", 15);
+        Agent.ConditionSystem.ChangeValue("Hungry", 15);
     }
 
     public override void OnActivated(BaseGoal linked)

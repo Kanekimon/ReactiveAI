@@ -9,6 +9,15 @@ public class ActionChase : ActionBase
 
     ChaseGoal chaseGoal;
 
+    protected override void Awake()
+    {
+        base.Awake();
+    }
+    protected override void Start()
+    {
+        base.Start();
+    }
+
     public override List<System.Type> GetSupportedGoals()
     {
         return SupportedGoals;

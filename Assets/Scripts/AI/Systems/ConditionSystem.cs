@@ -12,10 +12,14 @@ public class Condition
     public float Value;
     public bool Ticked;
     public float DecreaseRate;
+    public float TriggerValue;
+    public float MinimumValue;
+    public float MaximumValue;
+    public bool IsFatal;
 
     public void Tick()
     {
-        Value -= DecreaseRate * Time.deltaTime;
+        Value = Mathf.Clamp(Value - DecreaseRate * Time.deltaTime, MinimumValue, MaximumValue);       
     }
 }
 
@@ -30,12 +34,34 @@ public class ConditionSystem : MonoBehaviour
         Agent = GetComponent<Agent>();
         Condition hunger = new Condition()
         {
-            Name = "hunger",
+            Name = "Hungry",
             Value = 100,
             DecreaseRate = 0.1f,
-            Ticked = true
+            Ticked = true,
+            TriggerValue = 30f,
+            MinimumValue = 0f,
+            MaximumValue = 100f
         };
         Conditions.Add(hunger);
+
+        Condition healthy = new Condition()
+        {
+            Name = "Healthy",
+            Value = 100,
+            DecreaseRate = 0.1f,
+            Ticked = true,
+            TriggerValue = 20f,
+            MinimumValue = 0f,
+            MaximumValue = 100f
+        };
+        Conditions.Add(healthy);
+
+
+        foreach (Condition c in Conditions)
+        {
+            Agent.WorldState.AddWorldState($"is{c.Name}", false);
+        }
+
     }
 
 
@@ -46,13 +72,15 @@ public class ConditionSystem : MonoBehaviour
             var cond = Conditions[i];
             if (cond.Ticked)
             {
-                bool currentlyActive = (bool)Agent.GetValueFromMemory("isHungry");
+                bool currentlyActive = (bool)Agent.GetValueFromMemory($"is{cond.Name}");
                 cond.Tick();
-                Debug.Log($"Condition {cond.Name} Value: {cond.Value}");
-                if(!currentlyActive && cond.Value <= 30)
-                    Agent.SaveValueInMemory<bool>("isHungry", true);
-                else if(currentlyActive && cond.Value > 30)
-                    Agent.SaveValueInMemory<bool>("isHungry", false);
+                if(!currentlyActive && cond.Value <= cond.TriggerValue)
+                    Agent.SaveValueInMemory($"is{cond.Name}", true);
+                else if(currentlyActive && cond.Value > cond.TriggerValue)
+                    Agent.SaveValueInMemory("is{cond.Name}", false);
+
+                if (cond.Value == cond.MinimumValue && cond.IsFatal)
+                    Agent.Die();
             }
         }
     }

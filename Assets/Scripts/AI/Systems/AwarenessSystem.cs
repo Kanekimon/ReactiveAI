@@ -23,7 +23,7 @@ public class TrackedTarget
         Detectable = target;
         RawPosition = position;
         LastSensedTime = Time.time;
-        Awareness = Mathf.Clamp(Mathf.Max(Awareness, visualMinimumAwareness) +  awareness, 0f, 2f);
+        Awareness = Mathf.Clamp(Mathf.Max(Awareness, visualMinimumAwareness) + awareness, 0f, 2f);
 
         if (oldAwareness < 2f && awareness >= 2f)
             return true;
@@ -83,6 +83,7 @@ public class AwarenessSystem : MonoBehaviour
     private void Start()
     {
         Agent = GetComponent<Agent>();
+        Agent.WorldState.AddWorldState("hasTarget", false);
     }
 
     private void Update()
@@ -92,13 +93,19 @@ public class AwarenessSystem : MonoBehaviour
 
         ResourceCount = ResourceNodesInRange.Count;
         TargetsCount = ActiveTargets.Count;
+        Agent.SaveValueInMemory("hasTargets", ResourceCount > 0 || Targets.Count > 0);
     }
 
-    private void CleanUpAwareness(Dictionary<GameObject,TrackedTarget> targetsToclean)
+    private void CleanUpAwareness(Dictionary<GameObject, TrackedTarget> targetsToclean)
     {
         List<GameObject> cleanUp = new List<GameObject>();
         foreach (var target in targetsToclean.Keys)
         {
+            if(target == null)
+            {
+                cleanUp.Add(target);
+                continue;
+            }
             if (targetsToclean[target].DecayAwareness(AwarenessDecayRate, AwarenessDecayRate * Time.deltaTime))
             {
                 if (targetsToclean[target].Awareness <= 0f)
@@ -116,7 +123,7 @@ public class AwarenessSystem : MonoBehaviour
 
     private void UpdateAwareness(GameObject targetGo, DetectableTarget seen, Vector3 position, float awareness, float minAwareness)
     {
-        if(seen.GetType() == typeof(ResourceTarget))
+        if (seen.GetType() == typeof(ResourceTarget))
             HandleAwareness(ResourceNodes, targetGo, seen, position, awareness, minAwareness);
         else
             HandleAwareness(Targets, targetGo, seen, position, awareness, minAwareness);
@@ -125,7 +132,7 @@ public class AwarenessSystem : MonoBehaviour
 
     }
 
-    private void HandleAwareness(Dictionary<GameObject,TrackedTarget> typeOfTarget, GameObject targetGo, DetectableTarget seen, Vector3 position, float awareness, float minAwareness)
+    private void HandleAwareness(Dictionary<GameObject, TrackedTarget> typeOfTarget, GameObject targetGo, DetectableTarget seen, Vector3 position, float awareness, float minAwareness)
     {
         if (!typeOfTarget.ContainsKey(targetGo))
             typeOfTarget[targetGo] = new TrackedTarget();

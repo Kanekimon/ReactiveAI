@@ -14,11 +14,21 @@ using System.Threading.Tasks;
 
 class Node
 {
-    public float GCost;
-    public float HCost;
-    public StateMemory RequiredWorldState = new StateMemory();
-    public StateMemory AppliedWorldState = new StateMemory();
+    public float GCost = 0;
+    public float HCost = 0;
+    public StateMemory PreWorldState = new StateMemory();
+    public StateMemory PostWorldState = new StateMemory();
     public float FCost => GCost + HCost;
+
+    public Node(ActionBase action, float gCost)
+    {
+        this.GCost = action.Cost() + gCost;
+    }
+    public Node()
+    {
+        
+    }
+
 }
 
 public class AStar
@@ -30,18 +40,24 @@ public class AStar
         List<Node> AllPossibleNodes = ConvertActionsToNode(allActions, currentWorldState);
 
 
-        Node currentNode = new Node() { GCost = 0, HCost = 0, AppliedWorldState = currentWorldState, RequiredWorldState = requiredWorldState };
-        List<Node> InWork = GetTransitionableActions(AllPossibleNodes, currentNode.RequiredWorldState);
-        bool reachedGoalState = false;
+        Node currentNode = new Node() { GCost = 0, HCost = 0, PostWorldState = currentWorldState.Clone(), PreWorldState = requiredWorldState };
+        List<Node> InWork = GetTransitionableActions(AllPossibleNodes, currentNode.PreWorldState);
+        bool run = true;
         List<Node> closed = new List<Node>();
 
-        while (true)
+        List<StateMemory> explored = new List<StateMemory>();
+        explored.Add(currentNode.PostWorldState);
+
+        while (run)
         {
             if (InWork.Count == 0)
                 return null;
 
-            if (WorldStateEquals(currentNode.AppliedWorldState, requiredWorldState))
-                return queue;
+            if (WorldStateEquals(currentNode.PostWorldState, requiredWorldState))
+            {
+                run = false;
+                break;
+            }
 
             closed.Add(currentNode);
             currentNode = GetLowestCost(AllPossibleNodes);
@@ -110,22 +126,21 @@ public class AStar
         List<Node> possibleActions = new List<Node>();
         foreach(var vA in actions)
         {
-            Node n = new Node();
-            n.GCost = vA.Cost();
-            n.AppliedWorldState = currentWorldState;
+            Node n = new Node(vA,0);
+            n.PostWorldState = currentWorldState;
             foreach (KeyValuePair<string, object> vB in vA.GetEffects())
             {
-                n.AppliedWorldState.ChangeValue(vB.Key, vB.Value);
+                n.PostWorldState.ChangeValue(vB.Key, vB.Value);
             }
-            n.RequiredWorldState = new StateMemory();
+            n.PreWorldState = new StateMemory();
 
             foreach(KeyValuePair<string, object> state in currentWorldState.GetWorldState)
             {
                 KeyValuePair<string, object> precon = vA.GetPreconditions().Where(a => a.Equals(state)).FirstOrDefault();
                 if (!precon.Equals(null))
-                    n.RequiredWorldState.ChangeValue(precon.Key, precon.Value);
+                    n.PreWorldState.ChangeValue(precon.Key, precon.Value);
                 else
-                    n.RequiredWorldState.ChangeValue(state.Key, "dontCare");
+                    n.PreWorldState.ChangeValue(state.Key, "dontCare");
             }
 
         }

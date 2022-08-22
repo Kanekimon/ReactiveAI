@@ -33,7 +33,7 @@ public class BaseGoal : MonoBehaviour, IGoal
 
     [SerializeField] public HashSet<KeyValuePair<string, object>> Preconditions = new HashSet<KeyValuePair<string, object>>();
   
-    void Awake()
+    protected virtual void Awake()
     {
         Parent = transform.parent.gameObject;
         NavAgent = Parent.GetComponent<NavigationAgent>();
@@ -42,9 +42,14 @@ public class BaseGoal : MonoBehaviour, IGoal
         NeededWorldState = CreateRequiredWorldState();
     }
 
-    void Start()
+    protected virtual void Start()
     {
         DebugUI = FindObjectOfType<GOAPUI>();
+
+        foreach(KeyValuePair<string, object> state in Preconditions)
+        {
+            Agent.WorldState.AddWorldState(state.Key, ObjectHelper.GetDefault(state.Value.GetType()));
+        }
     }
 
     void Update()

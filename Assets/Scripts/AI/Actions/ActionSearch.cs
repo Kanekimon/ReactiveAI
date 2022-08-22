@@ -11,10 +11,15 @@ public class ActionSearchResource : ActionBase
 
     string _resourceToSearch;
 
-    private void Start()
+    protected override void Start()
     {
         _resourceToSearch = Agent.GetValueFromMemory("resourceToSearch").ToString();
         effects.Add(new KeyValuePair<string, object>("resourceInSight", true));
+    }
+
+    protected override void Awake()
+    {
+        base.Awake();
     }
 
     public override void OnTick()
@@ -39,7 +44,7 @@ public class ActionSearchResource : ActionBase
 
             if(r != null)
             {
-                Agent.SaveValueInMemory<Vector3>("targetLocation", r.RawPosition);
+                Agent.SaveValueInMemory("targetLocation", r.RawPosition);
             }
         }
     }

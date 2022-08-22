@@ -16,57 +16,61 @@ public enum EOffMeshLinkStatus
 [RequireComponent(typeof(NavMeshAgent))]
 public class NavigationAgent : MonoBehaviour
 {
-    NavMeshAgent Agent;
+    NavMeshAgent NavMeshAgent;
+    Agent Agent;
     [SerializeField] float NearestPointSearchRange = 5f;
     bool DestinationSet = false;
     EOffMeshLinkStatus OffMeshLinkStatus = EOffMeshLinkStatus.NotStarted;
     bool ReachedDestination = false;
-    public bool IsMoving => Agent.velocity.magnitude > float.Epsilon;
+    public bool IsMoving => NavMeshAgent.velocity.magnitude > float.Epsilon;
     public bool AtDestination => ReachedDestination;
     private void Start()
     {
-        Agent = GetComponent<NavMeshAgent>();
+        NavMeshAgent = GetComponent<NavMeshAgent>();
+        Agent = GetComponent<Agent>();
     }
 
     void Update()
     {
-        if(!Agent.pathPending && !Agent.isOnOffMeshLink && DestinationSet && (Agent.remainingDistance <= Agent.stoppingDistance))
+        if(!NavMeshAgent.pathPending && !NavMeshAgent.isOnOffMeshLink && DestinationSet && (NavMeshAgent.remainingDistance <= NavMeshAgent.stoppingDistance))
         {
             DestinationSet = false;
             ReachedDestination = true;
         }
 
-        if (Agent.isOnOffMeshLink)
+        if (NavMeshAgent.isOnOffMeshLink)
         {
             if (OffMeshLinkStatus == EOffMeshLinkStatus.NotStarted)
                 StartCoroutine(FollowOffmeshLink());
         }
+        Agent.WorldState.ChangeValue("currentPosition", transform.position);
+        
     }
 
     IEnumerator FollowOffmeshLink()
     {
         OffMeshLinkStatus = EOffMeshLinkStatus.InProgress;
-        Agent.updatePosition = false;
-        Agent.updateRotation = false;
-        Agent.updateUpAxis = false;
+        NavMeshAgent.updatePosition = false;
+        NavMeshAgent.updateRotation = false;
+        NavMeshAgent.updateUpAxis = false;
 
         Vector3 newPosition = transform.position;
 
-        while(!Mathf.Approximately(Vector3.Distance(newPosition, Agent.currentOffMeshLinkData.endPos), 0f))
+        while(!Mathf.Approximately(Vector3.Distance(newPosition, NavMeshAgent.currentOffMeshLinkData.endPos), 0f))
         {
-            newPosition = Vector3.MoveTowards(transform.position, Agent.currentOffMeshLinkData.endPos, Agent.speed * Time.deltaTime);
+            newPosition = Vector3.MoveTowards(transform.position, NavMeshAgent.currentOffMeshLinkData.endPos, NavMeshAgent.speed * Time.deltaTime);
             transform.position = newPosition;
 
             yield return new WaitForEndOfFrame();
         }
 
         OffMeshLinkStatus = EOffMeshLinkStatus.NotStarted;
-        Agent.CompleteOffMeshLink();
+        NavMeshAgent.CompleteOffMeshLink();
 
 
-        Agent.updatePosition = true;
-        Agent.updateRotation = true;
-        Agent.updateUpAxis = true;
+        NavMeshAgent.updatePosition = true;
+        NavMeshAgent.updateRotation = true;
+        NavMeshAgent.updateUpAxis = true;
     }
 
     public Vector3 PickLocationInRange(float range)
@@ -84,7 +88,7 @@ public class NavigationAgent : MonoBehaviour
 
     protected void CancelCurrentCommand()
     {
-        Agent.ResetPath();
+        NavMeshAgent.ResetPath();
         DestinationSet = false;
         ReachedDestination = false;
         OffMeshLinkStatus = EOffMeshLinkStatus.NotStarted;
@@ -107,7 +111,7 @@ public class NavigationAgent : MonoBehaviour
 
         if(NavMesh.SamplePosition(destination, out hitResult, NearestPointSearchRange, NavMesh.AllAreas))
         {
-            Agent.SetDestination(hitResult.position);
+            NavMeshAgent.SetDestination(hitResult.position);
             DestinationSet = true;
             ReachedDestination = false;
         }
