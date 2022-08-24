@@ -1,9 +1,4 @@
 ﻿using Assets.Scripts.AI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 
@@ -28,9 +23,12 @@ public class Agent : MonoBehaviour
 
     AwarenessSystem _awareness;
     ConditionSystem _conditionSystem;
-
+    InventorySystem _inventorySystem;
+ 
     public ConditionSystem ConditionSystem => _conditionSystem;
     public AwarenessSystem AwarenessSystem => _awareness;
+    public InventorySystem InventorySystem => _inventorySystem;
+    
 
     public StateMemory WorldState => _memory;
 
@@ -76,7 +74,7 @@ public class EnemyAIEditor : Editor
     {
         var ai = target as Agent;
 
-        Handles.color = new Color(90,90,90,0.25f);
+        Handles.color = new Color(90, 90, 90, 0.25f);
         Handles.DrawSolidDisc(ai.transform.position, Vector3.up, ai.ProximityDetectionRange);
 
         // work out the start point of the vision cone
@@ -84,7 +82,7 @@ public class EnemyAIEditor : Editor
                              Mathf.Sin(-ai.VisionAngle * Mathf.Deg2Rad) * ai.transform.right;
 
         // draw the vision cone
-        Handles.color = new Color(0,120, 0, 0.25f);
+        Handles.color = new Color(0, 120, 0, 0.25f);
         Handles.DrawSolidArc(ai.transform.position, Vector3.up, startPoint, ai.VisionAngle * 2f, ai.VisionRange);
     }
 }

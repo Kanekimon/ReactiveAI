@@ -1,10 +1,8 @@
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class ActionIdle : ActionBase
 {
-    List<System.Type> SupportedGoals = new List<System.Type>() { typeof(IdleGoal)};
+    List<System.Type> SupportedGoals = new List<System.Type>() { typeof(IdleGoal) };
 
     protected override void Awake()
     {
@@ -20,8 +18,6 @@ public class ActionIdle : ActionBase
         StateAttribute<bool> precon = new StateAttribute<bool>();
         precon.Key = "HasTarget";
         precon.Value = false;
-
-        Debug.Log("Precon: " + precon.Key + " Type: " + precon.ValueType + " Value: " + precon.Value);
 
         return SupportedGoals;
     }

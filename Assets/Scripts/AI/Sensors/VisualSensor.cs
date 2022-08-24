@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Agent))]
@@ -20,7 +18,7 @@ public class VisualSensor : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        for(int i = 0; i < DetectableTargetManager.Instance.Targets.Count; ++i)
+        for (int i = 0; i < DetectableTargetManager.Instance.Targets.Count; ++i)
         {
             var candTarget = DetectableTargetManager.Instance.Targets[i];
 
@@ -39,7 +37,7 @@ public class VisualSensor : MonoBehaviour
 
             RaycastHit hit;
 
-            if(Physics.Raycast(Agent.transform.position, vectorToTarget, out hit, Agent.VisionRange, DetectionMask, QueryTriggerInteraction.Collide))
+            if (Physics.Raycast(Agent.transform.position, vectorToTarget, out hit, Agent.VisionRange, DetectionMask, QueryTriggerInteraction.Collide))
             {
                 Agent.CanSee(candTarget);
             }

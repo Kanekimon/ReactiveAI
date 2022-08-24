@@ -9,6 +9,7 @@
 /[Bb]uilds/
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
+/[Aa]ssets/SimpleNaturePack/
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
@@ -46,6 +47,7 @@ ExportedObj/
 *.mdb
 *.opendb
 *.VC.db
+
 
 # Unity3D generated meta files
 *.pidb.meta
@@ -130,3 +132,7 @@ Packages/System.Collections.4.3.0/lib/MonoAndroid10/_._
 Packages/System.Collections.4.3.0/dotnet_library_license.txt
 Packages/System.Collections.4.3.0/.signature.p7s
 packages.config
+*.meta
+*.mat
+*.fbx
+*.prefab

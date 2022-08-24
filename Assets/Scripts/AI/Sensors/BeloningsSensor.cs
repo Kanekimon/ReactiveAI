@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 [RequireComponent(typeof(InventorySystem))]
@@ -17,6 +13,7 @@ public class BeloningsSensor : MonoBehaviour
         InventorySystem = GetComponent<InventorySystem>();
     }
 
+
     private void Start()
     {
         Agent.WorldState.AddWorldState("hasFood", false);
@@ -25,7 +22,7 @@ public class BeloningsSensor : MonoBehaviour
     private void Update()
     {
         Agent.WorldState.ChangeValue("hasFood", InventorySystem.HasItemWithType(ItemType.Food));
-            
+
     }
 
 }

@@ -1,9 +1,5 @@
 ﻿using Assets.Scripts.AI;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 
@@ -31,8 +27,8 @@ public class BaseGoal : MonoBehaviour, IGoal
 
     protected StateMemory NeededWorldState;
 
-    [SerializeField] public HashSet<KeyValuePair<string, object>> Preconditions = new HashSet<KeyValuePair<string, object>>();
-  
+    [SerializeField] public List<KeyValuePair<string, object>> Preconditions = new List<KeyValuePair<string, object>>();
+
     protected virtual void Awake()
     {
         Parent = transform.parent.gameObject;
@@ -46,7 +42,7 @@ public class BaseGoal : MonoBehaviour, IGoal
     {
         DebugUI = FindObjectOfType<GOAPUI>();
 
-        foreach(KeyValuePair<string, object> state in Preconditions)
+        foreach (KeyValuePair<string, object> state in Preconditions)
         {
             Agent.WorldState.AddWorldState(state.Key, ObjectHelper.GetDefault(state.Value.GetType()));
         }
@@ -55,7 +51,7 @@ public class BaseGoal : MonoBehaviour, IGoal
     void Update()
     {
         OnTickGoal();
-        DebugUI.UpdateGoal(this, GetType().Name, LinkedAction ? "Running" : "Paused", CalculatePriority());
+        //DebugUI.UpdateGoal(this, GetType().Name, LinkedAction ? "Running" : "Paused", CalculatePriority());
     }
 
     protected StateMemory CreateRequiredWorldState()
@@ -88,7 +84,7 @@ public class BaseGoal : MonoBehaviour, IGoal
 
     public virtual void OnTickGoal()
     {
-       
+
     }
 }
 

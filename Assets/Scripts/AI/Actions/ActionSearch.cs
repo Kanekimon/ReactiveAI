@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 public class ActionSearchResource : ActionBase
@@ -35,14 +32,14 @@ public class ActionSearchResource : ActionBase
             foreach (var resource in Agent.AwarenessSystem.ResourceNodesInRange.Where(a => ((ResourceTarget)a.Detectable).ResourceType == ResourceType.Food))
             {
                 var distance = Vector3.Distance(resource.RawPosition, Agent.transform.position);
-                if(distance < closestDistance)
+                if (distance < closestDistance)
                 {
                     closestDistance = distance;
                     r = resource;
                 }
             }
 
-            if(r != null)
+            if (r != null)
             {
                 Agent.SaveValueInMemory("targetLocation", r.RawPosition);
             }

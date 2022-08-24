@@ -1,4 +1,4 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,8 +10,11 @@ public class ActionBase : MonoBehaviour
     protected BaseGoal LinkedGoal;
     protected Agent Agent;
 
-    protected HashSet<KeyValuePair<string, object>> preconditions = new HashSet<KeyValuePair<string, object>>();
-    protected HashSet<KeyValuePair<string, object>> effects = new HashSet<KeyValuePair<string, object>>();
+    [SerializeField]protected float _cost;
+
+    protected List<KeyValuePair<string, object>> preconditions = new List<KeyValuePair<string, object>>();
+    protected List<KeyValuePair<string, object>> effects = new List<KeyValuePair<string, object>>();
+
 
     protected virtual void Awake()
     {
@@ -25,11 +28,11 @@ public class ActionBase : MonoBehaviour
     {
         string name = this.name;
 
-        foreach(KeyValuePair<string, object> kvp in preconditions)
+        foreach (KeyValuePair<string, object> kvp in preconditions)
         {
             Agent.WorldState.AddWorldState(kvp.Key, ObjectHelper.GetDefault(kvp.Value.GetType()));
-        }    
-        foreach(KeyValuePair<string, object> kvp in effects)
+        }
+        foreach (KeyValuePair<string, object> kvp in effects)
         {
             Agent.WorldState.AddWorldState(kvp.Key, ObjectHelper.GetDefault(kvp.Value.GetType()));
         }
@@ -42,7 +45,8 @@ public class ActionBase : MonoBehaviour
 
     public virtual float Cost()
     {
-        return 0f;
+        _cost = 0f;
+        return _cost;
     }
 
     public virtual void OnActivated(BaseGoal linked)
@@ -60,13 +64,44 @@ public class ActionBase : MonoBehaviour
 
     }
 
-    public HashSet<KeyValuePair<string, object>> GetEffects()
+    public List<KeyValuePair<string, object>> GetEffects()
     {
         return effects;
     }
 
-    public HashSet<KeyValuePair<string, object>> GetPreconditions()
+    public List<KeyValuePair<string, object>> GetPreconditions()
     {
         return preconditions;
+    }
+
+    public List<KeyValuePair<string, object>> GetOpenPreconditions()
+    {
+        List<KeyValuePair<string, object>> open = new List<KeyValuePair<string, object>>();
+
+        foreach (KeyValuePair<string, object> precon in preconditions)
+        {
+            object valueInMemory = Agent.GetValueFromMemory(precon.Key);
+            if (valueInMemory != null)
+            {
+                if (!valueInMemory.Equals(precon.Value))
+                    open.Add(precon);
+            }
+        }
+        return open;
+    }
+
+    public float OpenPreconditionCount()
+    {
+        float count = 0f;
+        foreach (KeyValuePair<string, object> precon in preconditions)
+        {
+            object valueInMemory = Agent.GetValueFromMemory(precon.Key);
+            if (valueInMemory != null)
+            {
+                if (!valueInMemory.Equals(precon.Value))
+                    count++;
+            }
+        }
+        return count;
     }
 }

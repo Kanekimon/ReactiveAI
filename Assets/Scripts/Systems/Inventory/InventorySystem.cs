@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 public class InventorySystem : MonoBehaviour
@@ -34,7 +31,7 @@ public class InventorySystem : MonoBehaviour
     /// <param name="amount"></param>
     public void RemoveItem(Item item, int amount)
     {
-        if(HasEnough(item, amount))
+        if (HasEnough(item, amount))
         {
             Item i = _inventory.Where(a => a.Key.Id == item.Id).FirstOrDefault().Key;
             _inventory[i] -= amount;
@@ -74,6 +71,11 @@ public class InventorySystem : MonoBehaviour
     public bool HasItemWithType(ItemType type)
     {
         return _inventory.Any(a => a.Key.ItemTypes.Contains(type));
+    }
+
+    public Item GetFirstItemWithType(ItemType type)
+    {
+        return _inventory.Where(a => a.Key.ItemTypes.Contains(type)).FirstOrDefault().Key;
     }
 
 

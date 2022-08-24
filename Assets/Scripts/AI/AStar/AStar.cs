@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 
 /**
@@ -16,8 +14,10 @@ class Node
 {
     public float GCost = 0;
     public float HCost = 0;
-    public StateMemory PreWorldState = new StateMemory();
-    public StateMemory PostWorldState = new StateMemory();
+    public Node PreviousNode;
+    public List<KeyValuePair<string, object>> openPreconditions = new List<KeyValuePair<string, object>>();
+    public ActionBase Action;
+
     public float FCost => GCost + HCost;
 
     public Node(ActionBase action, float gCost)
@@ -26,123 +26,193 @@ class Node
     }
     public Node()
     {
-        
+
     }
 
 }
 
 public class AStar
 {
-    public static Queue<ActionBase> PlanActionSequence(StateMemory currentWorldState, StateMemory requiredWorldState, List<ActionBase> allActions)
+    public static Queue<ActionBase> PlanActionSequence(BaseGoal goal, List<ActionBase> allActions)
     {
         Queue<ActionBase> queue = new Queue<ActionBase>();
 
-        List<Node> AllPossibleNodes = ConvertActionsToNode(allActions, currentWorldState);
+        int counter = 100;
 
-
-        Node currentNode = new Node() { GCost = 0, HCost = 0, PostWorldState = currentWorldState.Clone(), PreWorldState = requiredWorldState };
-        List<Node> InWork = GetTransitionableActions(AllPossibleNodes, currentNode.PreWorldState);
-        bool run = true;
+        Node currentNode = new Node() { GCost = 0, HCost = goal.Preconditions.Count, openPreconditions = goal.Preconditions };
+        List<Node> open = new List<Node>();
         List<Node> closed = new List<Node>();
 
-        List<StateMemory> explored = new List<StateMemory>();
-        explored.Add(currentNode.PostWorldState);
+        bool run = true;
+        open.Add(currentNode);
 
-        while (run)
+        while (counter > 0 && run)
         {
-            if (InWork.Count == 0)
+            if (open.Count == 0)
                 return null;
 
-            if (WorldStateEquals(currentNode.PostWorldState, requiredWorldState))
+            currentNode = GetLowestCostNode(open);
+            open.Remove(currentNode);
+
+            if (currentNode.openPreconditions.Count == 0)
             {
+                closed.Add(currentNode);
                 run = false;
                 break;
             }
 
+            List<ActionBase> possibleActions = GetPossibleActions(allActions, currentNode);
+
+            foreach (ActionBase action in possibleActions)
+            {
+                float gCost = currentNode.GCost + action.Cost();
+                float hCost = CountUnsatisfiedPreconditions(action, currentNode.openPreconditions);
+                float fCost = gCost + hCost;
+                if (open.Any(a => a.Action == action))
+                {
+                    Node inOpen = open.Where(a => a.Action == action).FirstOrDefault();
+                    if (inOpen.FCost > fCost)
+                    {
+                        inOpen.PreviousNode = currentNode;
+                        inOpen.GCost = gCost;
+                        inOpen.HCost = hCost;
+                        inOpen.openPreconditions.Clear();
+                        inOpen.openPreconditions = GetOpenPreconditions(action, currentNode.openPreconditions);
+                    }
+                }
+                else
+                {
+                    Node n = new Node()
+                    {
+                        Action = action,
+                        GCost = gCost,
+                        HCost = hCost,
+                        PreviousNode = currentNode,
+                        openPreconditions = GetOpenPreconditions(action, currentNode.openPreconditions)
+                    };
+                    open.Add(n);
+                }
+            }
+
             closed.Add(currentNode);
-            currentNode = GetLowestCost(AllPossibleNodes);
-            
 
-
+            counter--;
         }
 
 
-
+        while (currentNode.PreviousNode != null)
+        {
+            queue.Enqueue(currentNode.Action);
+            currentNode = currentNode.PreviousNode;
+        }
 
         return queue;
     }
-    
-    static Node GetLowestCost(List<Node> nodes)
+
+    static Node GetLowestCostNode(List<Node> open)
     {
-        Node lowest = null;
-        float lowestCost = float.MaxValue;
-        foreach(var node in nodes)
+        return open.OrderBy(a => a.FCost).FirstOrDefault();
+    }
+
+    static List<KeyValuePair<string, object>> GetOpenPreconditions(ActionBase action, List<KeyValuePair<string, object>> openPreconditions)
+    {
+        List<KeyValuePair<string, object>> stillOpen = new List<KeyValuePair<string, object>>();
+        foreach (KeyValuePair<string, object> item in openPreconditions)
         {
-            if(node.GCost < lowestCost)
+            foreach (KeyValuePair<string, object> effect in action.GetEffects())
             {
-                lowest = node;
-                lowestCost = node.GCost;
+                if (effect.Key == item.Key && effect.Value.Equals(item.Value))
+                    continue;
+                stillOpen.Add(new KeyValuePair<string, object>(item.Key, item.Value));
             }
         }
 
-        return lowest;
+        stillOpen.AddRange(action.GetOpenPreconditions());
+        return stillOpen;
     }
 
-    static bool WorldStateEquals(StateMemory first, StateMemory second)
-    {
-        bool equals = true;
 
-        foreach(KeyValuePair<string, object> state in first.GetWorldState)
+    private static float CountUnsatisfiedPreconditions(ActionBase action, List<KeyValuePair<string, object>> openPreconditions)
+    {
+        float count = 0;
+
+        foreach (KeyValuePair<string, object> item in openPreconditions)
         {
-            if (state.Value is string && state.Value.ToString() == "dontCare")
-                continue;
-            equals &= second.GetWorldState.Any(a => a.Key == state.Key && a.Value == state.Value);
+            bool satisifed = false;
+            foreach (KeyValuePair<string, object> effect in action.GetEffects())
+            {
+                if (effect.Key == item.Key && effect.Value.Equals(item.Value))
+                {
+                    satisifed = true;
+                    break;
+                }
+            }
+            if (!satisifed)
+                count++;
         }
 
-        return equals;
+        return count + action.OpenPreconditionCount();
     }
 
-
-    static List<Node> GetTransitionableActions(List<Node> AllPossibleNodes, StateMemory requiredWorldState)
+    private static Node GetLowestCostAction(List<ActionBase> allActions, Node lastNode)
     {
-        List<Node> TransitionableActions = new List<Node>();
 
-        foreach(Node n in AllPossibleNodes)
-        {
+        List<ActionBase> validActions = allActions.Where(a => SatisfiesOneConditon(a.GetEffects(), lastNode.openPreconditions)).ToList();
+        List<Node> validNodes = ConvertActionsToNode(validActions, lastNode);
 
-        }
+        return validNodes.OrderBy(a => a.FCost).FirstOrDefault();
 
-
-
-        return TransitionableActions;
     }
 
-    
+    private static bool SatisfiesOneConditon(List<KeyValuePair<string, object>> a, List<KeyValuePair<string, object>> b)
+    {
+        for (int i = 0; i < a.Count; i++)
+        {
+            if (a[i].Key == b[i].Key)
+            {
+                if ((bool)a[i].Value == (bool)b[i].Value)
+                    return true;
+            }
+        }
+        return false;
+    }
 
+    static List<Node> GetPossibleTransitions(List<ActionBase> allActions, Node lastNode)
+    {
+        List<ActionBase> validActions = allActions.Where(a => SatisfiesOneConditon(a.GetEffects(), lastNode.openPreconditions)).ToList();
+        List<Node> validNodes = ConvertActionsToNode(validActions, lastNode);
 
+        return validNodes;
+    }
 
-    static List<Node> ConvertActionsToNode(List<ActionBase> actions, StateMemory currentWorldState)
+    static List<ActionBase> GetPossibleActions(List<ActionBase> allActions, Node lastNode)
+    {
+        return allActions.Where(a => SatisfiesOneConditon(a.GetEffects(), lastNode.openPreconditions)).ToList();
+    }
+    static List<Node> ConvertActionsToNode(List<ActionBase> actions, Node lastNode)
     {
         List<Node> possibleActions = new List<Node>();
-        foreach(var vA in actions)
+        foreach (var vA in actions)
         {
-            Node n = new Node(vA,0);
-            n.PostWorldState = currentWorldState;
-            foreach (KeyValuePair<string, object> vB in vA.GetEffects())
+            Node n = new Node(vA, vA.Cost() + lastNode.GCost);
+            n.PreviousNode = lastNode;
+            n.openPreconditions = lastNode.openPreconditions;
+            n.Action = vA;
+            foreach (var effect in vA.GetEffects())
             {
-                n.PostWorldState.ChangeValue(vB.Key, vB.Value);
-            }
-            n.PreWorldState = new StateMemory();
-
-            foreach(KeyValuePair<string, object> state in currentWorldState.GetWorldState)
-            {
-                KeyValuePair<string, object> precon = vA.GetPreconditions().Where(a => a.Equals(state)).FirstOrDefault();
-                if (!precon.Equals(null))
-                    n.PreWorldState.ChangeValue(precon.Key, precon.Value);
-                else
-                    n.PreWorldState.ChangeValue(state.Key, "dontCare");
+                if (n.openPreconditions.Any(a => a.Key == effect.Key))
+                {
+                    KeyValuePair<string, object> keyMatch = n.openPreconditions.Where(a => a.Key == effect.Key).FirstOrDefault();
+                    if (keyMatch.Value.Equals(effect.Value))
+                        n.openPreconditions.Remove(keyMatch);
+                }
             }
 
+            if (vA.GetPreconditions().Count > 0)
+                n.openPreconditions.AddRange(vA.GetPreconditions());
+
+            n.HCost = n.openPreconditions.Count;
+            possibleActions.Add(n);
         }
 
         return possibleActions;

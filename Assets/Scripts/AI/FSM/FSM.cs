@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class FSM
@@ -14,7 +10,7 @@ public class FSM
 
     public void Update(GameObject gameObject)
     {
-       if(_states.Peek() != null)
+        if (_states.Peek() != null)
         {
             _states.Peek().Invoke(this, gameObject);
         }

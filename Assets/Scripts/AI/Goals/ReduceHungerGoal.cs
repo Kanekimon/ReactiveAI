@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,6 +6,11 @@ public class ReduceHungerGoal : BaseGoal
 
     [SerializeField] int MinPriority = 0;
     [SerializeField] int MaxPriority = 50;
+
+    private void Start()
+    {
+        Preconditions.Add(new KeyValuePair<string, object>("isHungry", false));
+    }
 
     public override int CalculatePriority()
     {
@@ -23,6 +27,6 @@ public class ReduceHungerGoal : BaseGoal
 
     public override void OnTickGoal()
     {
- 
+
     }
 }

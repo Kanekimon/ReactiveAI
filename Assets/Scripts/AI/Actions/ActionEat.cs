@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -31,6 +30,7 @@ public class ActionEat : ActionBase
 
     public override void OnTick()
     {
+        Agent.InventorySystem.RemoveItem(Agent.InventorySystem.GetFirstItemWithType(ItemType.Food), 1);
         Agent.ConditionSystem.ChangeValue("Hungry", 15);
     }
 
@@ -41,6 +41,6 @@ public class ActionEat : ActionBase
 
     public override void OnDeactived()
     {
-   
+
     }
 }

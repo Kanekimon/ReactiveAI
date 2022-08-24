@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -32,7 +27,7 @@ public class NavigationAgent : MonoBehaviour
 
     void Update()
     {
-        if(!NavMeshAgent.pathPending && !NavMeshAgent.isOnOffMeshLink && DestinationSet && (NavMeshAgent.remainingDistance <= NavMeshAgent.stoppingDistance))
+        if (!NavMeshAgent.pathPending && !NavMeshAgent.isOnOffMeshLink && DestinationSet && (NavMeshAgent.remainingDistance <= NavMeshAgent.stoppingDistance))
         {
             DestinationSet = false;
             ReachedDestination = true;
@@ -44,7 +39,7 @@ public class NavigationAgent : MonoBehaviour
                 StartCoroutine(FollowOffmeshLink());
         }
         Agent.WorldState.ChangeValue("currentPosition", transform.position);
-        
+
     }
 
     IEnumerator FollowOffmeshLink()
@@ -56,7 +51,7 @@ public class NavigationAgent : MonoBehaviour
 
         Vector3 newPosition = transform.position;
 
-        while(!Mathf.Approximately(Vector3.Distance(newPosition, NavMeshAgent.currentOffMeshLinkData.endPos), 0f))
+        while (!Mathf.Approximately(Vector3.Distance(newPosition, NavMeshAgent.currentOffMeshLinkData.endPos), 0f))
         {
             newPosition = Vector3.MoveTowards(transform.position, NavMeshAgent.currentOffMeshLinkData.endPos, NavMeshAgent.speed * Time.deltaTime);
             transform.position = newPosition;
@@ -109,7 +104,7 @@ public class NavigationAgent : MonoBehaviour
     {
         NavMeshHit hitResult;
 
-        if(NavMesh.SamplePosition(destination, out hitResult, NearestPointSearchRange, NavMesh.AllAreas))
+        if (NavMesh.SamplePosition(destination, out hitResult, NearestPointSearchRange, NavMesh.AllAreas))
         {
             NavMeshAgent.SetDestination(hitResult.position);
             DestinationSet = true;

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ChaseGoal : BaseGoal
 {
@@ -20,14 +15,14 @@ public class ChaseGoal : BaseGoal
 
     public override bool CanRun()
     {
-        if(AwarenessSystem.ActiveTargets == null || AwarenessSystem.ActiveTargets.Count == 0)
+        if (AwarenessSystem.ActiveTargets == null || AwarenessSystem.ActiveTargets.Count == 0)
             return false;
 
 
         //If aware of something
-        foreach(var target in AwarenessSystem.ActiveTargets)
+        foreach (var target in AwarenessSystem.ActiveTargets)
         {
-            if(target.Awareness > MinAwarenessToChase)
+            if (target.Awareness > MinAwarenessToChase)
                 return true;
         }
 

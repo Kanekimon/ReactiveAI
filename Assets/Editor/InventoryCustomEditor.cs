@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 
@@ -32,7 +29,7 @@ public class InventoryCustomEditor : Editor
         flags = EditorGUILayout.MaskField("Item Types", flags, Enum.GetNames(typeof(ItemType)));
 
 
-        if(GUILayout.Button("Add Item"))
+        if (GUILayout.Button("Add Item"))
         {
             Item i = new Item()
             {

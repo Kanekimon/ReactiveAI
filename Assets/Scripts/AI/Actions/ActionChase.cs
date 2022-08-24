@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -36,7 +35,7 @@ public class ActionChase : ActionBase
     public override void OnActivated(BaseGoal linked)
     {
         base.OnActivated(linked);
-        chaseGoal = (ChaseGoal) LinkedGoal;
+        chaseGoal = (ChaseGoal)LinkedGoal;
         NavAgent.MoveTo(chaseGoal.MoveLocation);
     }
 

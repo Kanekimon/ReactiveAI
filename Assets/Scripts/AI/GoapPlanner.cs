@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 public class GoapPlanner : MonoBehaviour
@@ -28,11 +25,11 @@ public class GoapPlanner : MonoBehaviour
         AllGoals = GetAllGoals();
     }
 
-    List<ActionBase> GetAllActions()
+    public List<ActionBase> GetAllActions()
     {
         return ActionContainer.GetComponents<ActionBase>().ToList();
     }
-    List<BaseGoal> GetAllGoals()
+    public List<BaseGoal> GetAllGoals()
     {
         return GoalContainer.GetComponents<BaseGoal>().ToList();
     }
@@ -40,9 +37,9 @@ public class GoapPlanner : MonoBehaviour
 
     private void Start()
     {
-        foreach(var goal in AllGoals)
+        foreach (var goal in AllGoals)
         {
-            
+
         }
     }
 

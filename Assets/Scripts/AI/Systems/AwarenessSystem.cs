@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 
@@ -101,7 +98,7 @@ public class AwarenessSystem : MonoBehaviour
         List<GameObject> cleanUp = new List<GameObject>();
         foreach (var target in targetsToclean.Keys)
         {
-            if(target == null)
+            if (target == null)
             {
                 cleanUp.Add(target);
                 continue;

@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
@@ -29,14 +28,14 @@ public class GoalCustomEditor : Editor
         preconValue = EditorGUILayout.TextField(preconValue);
         index = EditorGUILayout.Popup(index, Types.ToArray());
         EditorGUILayout.EndHorizontal();
-        if(GUILayout.Button("Add Precon"))
+        if (GUILayout.Button("Add Precon"))
         {
             var valueToType = ValueToType(preconValue, Types[index]);
             goal.Preconditions.Add(new KeyValuePair<string, object>(preconKey, valueToType));
         }
 
 
-        foreach(KeyValuePair<string, object> state in goal.Preconditions)
+        foreach (KeyValuePair<string, object> state in goal.Preconditions)
         {
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.TextField(state.Key);
@@ -46,10 +45,10 @@ public class GoalCustomEditor : Editor
             else if (state.Value.GetType() == (typeof(bool)))
                 EditorGUILayout.Toggle(bool.Parse(state.Value.ToString()));
             else if (state.Value.GetType() == (typeof(Vector3)))
-                EditorGUILayout.Vector3Field("Position",Vector3.zero);
+                EditorGUILayout.Vector3Field("Position", Vector3.zero);
 
 
-                EditorGUILayout.EndHorizontal();
+            EditorGUILayout.EndHorizontal();
         }
 
 

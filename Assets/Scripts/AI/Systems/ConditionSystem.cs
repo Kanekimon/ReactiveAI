@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 [Serializable]
@@ -19,7 +17,7 @@ public class Condition
 
     public void Tick()
     {
-        Value = Mathf.Clamp(Value - DecreaseRate * Time.deltaTime, MinimumValue, MaximumValue);       
+        Value = Mathf.Clamp(Value - DecreaseRate * Time.deltaTime, MinimumValue, MaximumValue);
     }
 }
 
@@ -74,9 +72,9 @@ public class ConditionSystem : MonoBehaviour
             {
                 bool currentlyActive = (bool)Agent.GetValueFromMemory($"is{cond.Name}");
                 cond.Tick();
-                if(!currentlyActive && cond.Value <= cond.TriggerValue)
+                if (!currentlyActive && cond.Value <= cond.TriggerValue)
                     Agent.SaveValueInMemory($"is{cond.Name}", true);
-                else if(currentlyActive && cond.Value > cond.TriggerValue)
+                else if (currentlyActive && cond.Value > cond.TriggerValue)
                     Agent.SaveValueInMemory("is{cond.Name}", false);
 
                 if (cond.Value == cond.MinimumValue && cond.IsFatal)
