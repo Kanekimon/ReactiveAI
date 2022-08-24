@@ -90,7 +90,33 @@ public class AwarenessSystem : MonoBehaviour
 
         ResourceCount = ResourceNodesInRange.Count;
         TargetsCount = ActiveTargets.Count;
-        Agent.SaveValueInMemory("hasTargets", ResourceCount > 0 || Targets.Count > 0);
+
+        SaveToWorldState();
+    }
+
+    private void SaveToWorldState()
+    {
+        Agent.SaveValueInMemory("hasTargets", Targets.Count > 0);
+        Agent.SaveValueInMemory("hasResourceTargets", ResourceCount > 0);
+        Agent.SaveValueInMemory("target", GetClosestTarget(Targets) ?? null);
+        Agent.SaveValueInMemory("resourceTarget", GetClosestTarget(ResourceNodes) ?? null);
+    }
+
+    GameObject GetClosestTarget(Dictionary<GameObject, TrackedTarget> candidates)
+    {
+        float closest = float.MaxValue;
+        GameObject cand = null;
+
+        foreach(KeyValuePair<GameObject, TrackedTarget> target in candidates)
+        {
+            float distance = Vector3.Distance(transform.position, target.Value.RawPosition);
+            if(closest > distance)
+            {
+                closest = distance;
+                cand = target.Key;
+            }
+        }
+        return cand;
     }
 
     private void CleanUpAwareness(Dictionary<GameObject, TrackedTarget> targetsToclean)

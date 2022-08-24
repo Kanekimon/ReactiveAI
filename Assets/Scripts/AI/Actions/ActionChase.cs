@@ -4,9 +4,8 @@ using UnityEngine;
 public class ActionChase : ActionBase
 {
     [SerializeField] float SearchRange = 10f;
-    List<System.Type> SupportedGoals = new List<System.Type>() { typeof(ChaseGoal) };
+    GameObject target;
 
-    ChaseGoal chaseGoal;
 
     protected override void Awake()
     {
@@ -15,12 +14,10 @@ public class ActionChase : ActionBase
     protected override void Start()
     {
         base.Start();
+        preconditions.Add(new KeyValuePair<string, object>("hasTargets", true));
+        effects.Add(new KeyValuePair<string, object>("isChasing", true));
     }
 
-    public override List<System.Type> GetSupportedGoals()
-    {
-        return SupportedGoals;
-    }
 
     public override float Cost()
     {
@@ -29,18 +26,23 @@ public class ActionChase : ActionBase
 
     public override void OnTick()
     {
-        NavAgent.MoveTo(chaseGoal.MoveLocation);
+        if(target != null)
+            NavAgent.MoveTo(target.transform.position);
+        else
+        {
+            _hasFinished = true;
+            OnDeactived();
+        }
     }
 
     public override void OnActivated(BaseGoal linked)
     {
         base.OnActivated(linked);
-        chaseGoal = (ChaseGoal)LinkedGoal;
-        NavAgent.MoveTo(chaseGoal.MoveLocation);
+        target = Agent.GetValueFromMemory("target") as GameObject;
     }
 
     public override void OnDeactived()
     {
-        chaseGoal = null;
+        base.OnDeactived();
     }
 }

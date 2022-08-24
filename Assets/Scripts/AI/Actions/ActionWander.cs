@@ -4,7 +4,7 @@ using UnityEngine;
 public class ActionWander : ActionBase
 {
     [SerializeField] float SearchRange = 10f;
-    List<System.Type> SupportedGoals = new List<System.Type>() { typeof(WanderGoal) };
+    
 
     protected override void Awake()
     {
@@ -13,11 +13,7 @@ public class ActionWander : ActionBase
     protected override void Start()
     {
         base.Start();
-    }
-
-    public override List<System.Type> GetSupportedGoals()
-    {
-        return SupportedGoals;
+        effects.Add(new KeyValuePair<string, object>("isWandering", true));
     }
 
     public override float Cost()
@@ -40,6 +36,7 @@ public class ActionWander : ActionBase
 
     public override void OnDeactived()
     {
+        _hasFinished = false;
         NavAgent.StopMoving();
     }
 }

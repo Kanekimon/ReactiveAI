@@ -34,13 +34,4 @@ public class ActionEat : ActionBase
         Agent.ConditionSystem.ChangeValue("Hungry", 15);
     }
 
-    public override void OnActivated(BaseGoal linked)
-    {
-
-    }
-
-    public override void OnDeactived()
-    {
-
-    }
 }

@@ -13,9 +13,6 @@ public class ActionCustomEditor : Editor
     public override void OnInspectorGUI()
     {
         base.OnInspectorGUI();
-
-        
-
     }
 
 }

@@ -9,6 +9,7 @@ public class ActionBase : MonoBehaviour
     protected AwarenessSystem AwarenessSystem;
     protected BaseGoal LinkedGoal;
     protected Agent Agent;
+    protected bool _hasFinished;
 
     [SerializeField]protected float _cost;
 
@@ -52,11 +53,13 @@ public class ActionBase : MonoBehaviour
     public virtual void OnActivated(BaseGoal linked)
     {
         LinkedGoal = linked;
+        _hasFinished = false;
     }
 
     public virtual void OnDeactived()
     {
         LinkedGoal = null;
+        _hasFinished = true;
     }
 
     public virtual void OnTick()
@@ -103,5 +106,12 @@ public class ActionBase : MonoBehaviour
             }
         }
         return count;
+    }
+
+   
+
+    public bool HasFinished()
+    {
+        return _hasFinished;
     }
 }

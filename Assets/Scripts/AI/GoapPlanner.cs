@@ -5,6 +5,7 @@ using UnityEngine;
 public class GoapPlanner : MonoBehaviour
 {
     Queue<ActionBase> CurrentActionSequence { get; set; } = new Queue<ActionBase>();
+    ActionBase CurrentAction;
     BaseGoal CurrentGoal;
 
 
@@ -37,58 +38,85 @@ public class GoapPlanner : MonoBehaviour
 
     private void Start()
     {
-        foreach (var goal in AllGoals)
-        {
 
-        }
     }
 
 
     private void Update()
     {
+        BaseGoal HighestPrioGoal = TickGoals();
+
+        if (HighestPrioGoal != null && HighestPrioGoal != CurrentGoal)
+        {
+            if (CurrentGoal != null)
+                DeactiveOldGoal();
+
+            CurrentGoal = HighestPrioGoal;
+            Plan();
+        }
+
+        if (CurrentActionSequence.Count > 0 && (CurrentAction == null || CurrentAction != CurrentActionSequence.Peek()))
+        {
+            CurrentAction = CurrentActionSequence.Peek();
+            CurrentAction.OnActivated(CurrentGoal);
+        }
+
+        if (CurrentAction != null)
+        {
+            if (CurrentAction.HasFinished())
+            {
+                CurrentActionSequence.Dequeue();
+                if (CurrentActionSequence.Count > 0)
+                    CurrentActionSequence.Peek().OnActivated(CurrentGoal);
+                else
+                    CurrentAction = null;
+            }
+            else
+            {
+                CurrentAction.OnTick();
+            }
+        }
+
+        if (CurrentAction == null)
+            Plan();
+
+
     }
 
+    BaseGoal TickGoals()
+    {
+        BaseGoal bestGoal = null;
+        foreach(BaseGoal goal in AllGoals)
+        {
+            goal.OnTickGoal();
+
+            if ((CurrentGoal == null || goal.CalculatePriority() > CurrentGoal.CalculatePriority()) && (bestGoal != null && bestGoal.CalculatePriority() < goal.CalculatePriority() || bestGoal == null))
+                bestGoal = goal;
+        }
+
+        return bestGoal;
+    }
+
+    void DeactiveOldGoal()
+    {
+        CurrentGoal.OnGoalDeactivated();
+        if (CurrentActionSequence.Count > 0)
+        {
+            CurrentActionSequence.Peek().OnDeactived();
+        }
+        CurrentActionSequence.Clear();
+    }
 
     void Plan()
     {
-        BaseGoal HighestPrioGoal = GetHighestPrioGoal();
 
-        if (HighestPrioGoal == CurrentGoal)
-            return;
+        CurrentActionSequence = AStar.PlanActionSequence(CurrentGoal, AllActions);
+        GoapHelper.DebugPlan(CurrentGoal, CurrentActionSequence.ToList());
 
-        foreach (var goal in AllGoals)
-        {
-            if (CurrentGoal == goal)
-                continue;
 
-            CurrentGoal.OnGoalDeactivated();
-            CurrentActionSequence.Peek().OnDeactived();
-
-            /***
-            CurrentActionSequence = AStar(AllActions, Memory, Memory<key><currentValue>, Memory<key><desiredValue>)
-            
-            if currentActionSequence valid
-             => Peek, FirstElementFinished ? 
-                Queue.Dequeue
-            Peek().OnTick
-
-            */
-        }
     }
 
-    BaseGoal GetHighestPrioGoal()
-    {
-        float highestPrio = -1;
-        int indexHighest = -1;
 
-        for (int i = 0; i < AllGoals.Count; i++)
-        {
-            var candGoal = AllGoals[i];
-            if (candGoal.CalculatePriority() > highestPrio)
-                indexHighest = i;
-        }
-        return AllGoals[indexHighest];
-    }
 
 
 

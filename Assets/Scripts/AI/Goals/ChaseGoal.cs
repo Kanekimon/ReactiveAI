@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class ChaseGoal : BaseGoal
 {
@@ -12,6 +13,11 @@ public class ChaseGoal : BaseGoal
 
     public Vector3 MoveLocation => CurrentTarget != null ? CurrentTarget.transform.position : transform.position;
 
+
+    private void Start()
+    {
+        Preconditions.Add(new KeyValuePair<string, object>("isChasing", true));
+    }
 
     public override bool CanRun()
     {

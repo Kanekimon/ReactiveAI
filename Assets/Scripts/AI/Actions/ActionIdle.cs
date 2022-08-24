@@ -2,7 +2,6 @@ using System.Collections.Generic;
 
 public class ActionIdle : ActionBase
 {
-    List<System.Type> SupportedGoals = new List<System.Type>() { typeof(IdleGoal) };
 
     protected override void Awake()
     {
@@ -12,14 +11,8 @@ public class ActionIdle : ActionBase
     protected override void Start()
     {
         base.Start();
-    }
-    public override List<System.Type> GetSupportedGoals()
-    {
-        StateAttribute<bool> precon = new StateAttribute<bool>();
-        precon.Key = "HasTarget";
-        precon.Value = false;
 
-        return SupportedGoals;
+        effects.Add(new KeyValuePair<string, object>("isIdle", true));
     }
 
     public override float Cost()
