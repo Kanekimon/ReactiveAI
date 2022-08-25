@@ -9,9 +9,10 @@ internal class CreateFoodAction : ActionBase
 {
 
     
-    private void Start()
+    protected override void Start()
     {
         effects.Add(new KeyValuePair<string, object>("hasFood", true));
+        base.Start();
     }
 
     public override float Cost()

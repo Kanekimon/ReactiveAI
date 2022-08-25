@@ -31,11 +31,11 @@ public class ActionBase : MonoBehaviour
 
         foreach (KeyValuePair<string, object> kvp in preconditions)
         {
-            Agent.WorldState.AddWorldState(kvp.Key, ObjectHelper.GetDefault(kvp.Value.GetType()));
+            Agent.WorldState.AddWorldState(kvp.Key, ObjectHelper.GetDefault(kvp.Value.GetType() ?? null));
         }
         foreach (KeyValuePair<string, object> kvp in effects)
         {
-            Agent.WorldState.AddWorldState(kvp.Key, ObjectHelper.GetDefault(kvp.Value.GetType()));
+            Agent.WorldState.AddWorldState(kvp.Key, ObjectHelper.GetDefault(kvp.Value.GetType() ?? null));
         }
     }
 
@@ -46,7 +46,6 @@ public class ActionBase : MonoBehaviour
 
     public virtual float Cost()
     {
-        _cost = 0f;
         return _cost;
     }
 

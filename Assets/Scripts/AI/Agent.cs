@@ -37,6 +37,7 @@ public class Agent : MonoBehaviour
         CoVisionAngle = Mathf.Cos(VisionAngle * Mathf.Deg2Rad);
         _awareness = GetComponent<AwarenessSystem>();
         _conditionSystem = GetComponent<ConditionSystem>();
+        _inventorySystem = GetComponent<InventorySystem>();
     }
 
     public void CanSee(DetectableTarget seen)

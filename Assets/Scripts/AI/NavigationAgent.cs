@@ -81,6 +81,19 @@ public class NavigationAgent : MonoBehaviour
         return transform.position;
     }
 
+    public Vector3 PickLocationNearTarget(Vector3 targetPos, float range)
+    {
+        Vector3 searchLocation = targetPos;
+        searchLocation += UnityEngine.Random.Range(-range, range) * Vector3.forward;
+        searchLocation += UnityEngine.Random.Range(-range, range) * Vector3.right;
+
+        NavMeshHit hitResult;
+        if (NavMesh.SamplePosition(searchLocation, out hitResult, range, NavMesh.AllAreas))
+            return hitResult.position;
+
+        return transform.position;
+    }
+
     protected void CancelCurrentCommand()
     {
         NavMeshAgent.ResetPath();

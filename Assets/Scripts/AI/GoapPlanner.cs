@@ -53,6 +53,7 @@ public class GoapPlanner : MonoBehaviour
 
             CurrentGoal = HighestPrioGoal;
             Plan();
+            CurrentGoal.OnGoalActivated();
         }
 
         if (CurrentActionSequence.Count > 0 && (CurrentAction == null || CurrentAction != CurrentActionSequence.Peek()))
@@ -111,9 +112,8 @@ public class GoapPlanner : MonoBehaviour
     {
 
         CurrentActionSequence = AStar.PlanActionSequence(CurrentGoal, AllActions);
-        GoapHelper.DebugPlan(CurrentGoal, CurrentActionSequence.ToList());
-
-
+        if(CurrentActionSequence != null && CurrentActionSequence.Count > 0)
+            GoapHelper.DebugPlan(CurrentGoal, CurrentActionSequence.ToList());
     }
 
 

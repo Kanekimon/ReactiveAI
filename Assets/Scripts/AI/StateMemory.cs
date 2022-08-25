@@ -47,6 +47,12 @@ namespace Assets.Scripts.AI
 
         public bool AddWorldState(string key, object value)
         {
+            if (WorldStates.Any(a => a.Key.Equals(key)))
+            {
+                ChangeValue(key, value);
+                return true;
+            }
+
             try
             {
                 WorldStates.Add(new KeyValuePair<string, object>(key, value));

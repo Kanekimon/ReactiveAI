@@ -11,7 +11,7 @@ public interface IGoal
 
     void OnTickGoal();
 
-    void OnGoalActivated(ActionBase linkedAction);
+    void OnGoalActivated();
 
     void OnGoalDeactivated();
 }
@@ -72,9 +72,9 @@ public class BaseGoal : MonoBehaviour, IGoal
         return -1;
     }
 
-    public virtual void OnGoalActivated(ActionBase linkedAction)
+    public virtual void OnGoalActivated()
     {
-        LinkedAction = linkedAction;
+
     }
 
     public virtual void OnGoalDeactivated()

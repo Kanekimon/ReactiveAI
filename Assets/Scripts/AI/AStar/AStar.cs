@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using UnityEngine;
 
 /**
     G: The length of the path from the start node to this node.
@@ -116,15 +116,18 @@ public class AStar
 
     static List<KeyValuePair<string, object>> GetOpenPreconditions(ActionBase action, List<KeyValuePair<string, object>> openPreconditions)
     {
+
         List<KeyValuePair<string, object>> stillOpen = new List<KeyValuePair<string, object>>();
         foreach (KeyValuePair<string, object> item in openPreconditions)
         {
+            bool satisfied = false;
             foreach (KeyValuePair<string, object> effect in action.GetEffects())
             {
                 if (effect.Key == item.Key && effect.Value.Equals(item.Value))
-                    continue;
-                stillOpen.Add(new KeyValuePair<string, object>(item.Key, item.Value));
+                    satisfied = true;
             }
+            if (!satisfied)
+                stillOpen.Add(new KeyValuePair<string, object>(item.Key, item.Value));
         }
 
         stillOpen.AddRange(action.GetOpenPreconditions());
@@ -166,15 +169,23 @@ public class AStar
 
     private static bool SatisfiesOneConditon(List<KeyValuePair<string, object>> a, List<KeyValuePair<string, object>> b)
     {
+        int count = 0;
         for (int i = 0; i < a.Count; i++)
         {
-            if (a[i].Key == b[i].Key)
+            foreach (KeyValuePair<string, object> item in b)
             {
-                if ((bool)a[i].Value == (bool)b[i].Value)
-                    return true;
+                if (a[i].Key == item.Key)
+                {
+                    if ((bool)a[i].Value == (bool)item.Value)
+                        count++;
+                    else
+                        return false;
+
+                }
             }
+
         }
-        return false;
+        return count > 0;
     }
 
     static List<Node> GetPossibleTransitions(List<ActionBase> allActions, Node lastNode)

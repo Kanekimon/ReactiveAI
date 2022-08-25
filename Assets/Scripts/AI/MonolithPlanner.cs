@@ -79,7 +79,7 @@ public class MonolithPlanner : MonoBehaviour
             ActiveAction = bestAction;
 
             if (ActiveGoal != null)
-                ActiveGoal.OnGoalActivated(ActiveAction);
+                ActiveGoal.OnGoalActivated();
             if (ActiveAction != null)
                 ActiveAction.OnActivated(ActiveGoal);
         }
@@ -101,7 +101,7 @@ public class MonolithPlanner : MonoBehaviour
             ActiveAction = bestAction;
 
             if (ActiveGoal != null)
-                ActiveGoal.OnGoalActivated(ActiveAction);
+                ActiveGoal.OnGoalActivated();
             if (ActiveAction != null)
                 ActiveAction.OnActivated(ActiveGoal);
         }

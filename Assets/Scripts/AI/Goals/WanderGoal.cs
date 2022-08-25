@@ -35,9 +35,9 @@ public class WanderGoal : BaseGoal
             CurrentPriority += PriorityBuildRate * Time.deltaTime;
     }
 
-    public override void OnGoalActivated(ActionBase linked)
+    public override void OnGoalActivated()
     {
-        base.OnGoalActivated(linked);
+        base.OnGoalActivated();
         CurrentPriority = MaxPriority;
     }
 

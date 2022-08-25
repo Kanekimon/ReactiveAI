@@ -10,9 +10,9 @@ public class ActionIdle : ActionBase
 
     protected override void Start()
     {
-        base.Start();
 
         effects.Add(new KeyValuePair<string, object>("isIdle", true));
+        base.Start();
     }
 
     public override float Cost()

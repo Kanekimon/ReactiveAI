@@ -8,9 +8,11 @@ using System.Threading.Tasks;
 public class ActionGatherFood : ActionBase
 {
 
-    private void Start()
+    protected override void Start()
     {
+        effects.Add(new KeyValuePair<string, object>("isIdle", false));
         effects.Add(new KeyValuePair<string, object>("hasFood", true));
+        base.Start();
     }
 
     public override float Cost()

@@ -13,9 +13,9 @@ public class ActionChase : ActionBase
     }
     protected override void Start()
     {
-        base.Start();
         preconditions.Add(new KeyValuePair<string, object>("hasTargets", true));
         effects.Add(new KeyValuePair<string, object>("isChasing", true));
+        base.Start();
     }
 
 

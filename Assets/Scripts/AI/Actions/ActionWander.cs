@@ -12,8 +12,9 @@ public class ActionWander : ActionBase
     }
     protected override void Start()
     {
-        base.Start();
         effects.Add(new KeyValuePair<string, object>("isWandering", true));
+
+        base.Start();
     }
 
     public override float Cost()

@@ -5,7 +5,7 @@ using UnityEngine;
 public class InventorySystem : MonoBehaviour
 {
     Dictionary<Item, int> _inventory = new Dictionary<Item, int>();
-
+    [SerializeField] public List<Item> _items = new List<Item>();
 
     /// <summary>
     /// Add Items with amount
@@ -21,6 +21,7 @@ public class InventorySystem : MonoBehaviour
         }
         else
             _inventory.Add(item, amount);
+        _items.Add(item);
     }
 
     /// <summary>
@@ -54,6 +55,18 @@ public class InventorySystem : MonoBehaviour
     }
 
     /// <summary>
+    /// Checks if the item is in the inventory
+    /// and its amount is equal or greater than requested
+    /// </summary>
+    /// <param name="item"></param>
+    /// <param name="amount"></param>
+    /// <returns></returns>
+    public bool HasEnough(string item_name, int amount)
+    {
+        return HasItem(item_name) && (_inventory.Where(a => a.Key.Name == item_name).FirstOrDefault().Value >= amount);
+    }
+
+    /// <summary>
     /// Checks if an item is in the inventory
     /// </summary>
     /// <param name="item"></param>
@@ -61,6 +74,16 @@ public class InventorySystem : MonoBehaviour
     public bool HasItem(Item item)
     {
         return _inventory.Any(a => a.Key.Id == item.Id);
+    }
+
+    /// <summary>
+    /// Checks if an item is in the inventory
+    /// </summary>
+    /// <param name="item"></param>
+    /// <returns></returns>
+    public bool HasItem(string item_name)
+    {
+        return _inventory.Any(a => a.Key.Name.Equals(item_name));
     }
 
     /// <summary>

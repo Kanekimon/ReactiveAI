@@ -116,6 +116,14 @@ public class AwarenessSystem : MonoBehaviour
                 cand = target.Key;
             }
         }
+        if (cand != null)
+        {
+            if (Vector3.Distance(cand.transform.position, transform.position) < 10f)
+                Agent.WorldState.ChangeValue("isAtResource", true);
+            else
+                Agent.WorldState.ChangeValue("isAtResource", false);
+        }
+
         return cand;
     }
 

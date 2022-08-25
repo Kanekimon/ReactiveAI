@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 
 public enum ItemType
@@ -8,6 +9,7 @@ public enum ItemType
     Armor
 }
 
+[Serializable]
 public class Item
 {
     public int Id { get; set; }
