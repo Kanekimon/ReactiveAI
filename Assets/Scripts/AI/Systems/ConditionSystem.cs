@@ -70,12 +70,12 @@ public class ConditionSystem : MonoBehaviour
             var cond = Conditions[i];
             if (cond.Ticked)
             {
-                bool currentlyActive = (bool)Agent.GetValueFromMemory($"is{cond.Name}");
+                bool currentlyActive = (bool)Agent.WorldState.GetValue($"is{cond.Name}");
                 cond.Tick();
                 if (!currentlyActive && cond.Value <= cond.TriggerValue)
-                    Agent.SaveValueInMemory($"is{cond.Name}", true);
+                    Agent.WorldState.AddWorldState($"is{cond.Name}", true);
                 else if (currentlyActive && cond.Value > cond.TriggerValue)
-                    Agent.SaveValueInMemory("is{cond.Name}", false);
+                    Agent.WorldState.AddWorldState($"is{cond.Name}", false);
 
                 if (cond.Value == cond.MinimumValue && cond.IsFatal)
                     Agent.Die();

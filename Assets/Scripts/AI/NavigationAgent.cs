@@ -81,6 +81,20 @@ public class NavigationAgent : MonoBehaviour
         return transform.position;
     }
 
+    public Vector3 PickClosestPositionInRange(GameObject targetObject, float range)
+    {
+        Vector3 target = targetObject.transform.position;
+        Vector3 dist = (target - transform.position).normalized;
+        Vector3 targetPoint = targetObject.transform.position - (dist * range);
+        NavMeshHit hitResult;
+        if(NavMesh.SamplePosition(targetPoint, out hitResult, 1, NavMesh.AllAreas))
+        {
+            return hitResult.position;
+        }
+
+        return transform.position;
+    }
+
     public Vector3 PickLocationNearTarget(Vector3 targetPos, float range)
     {
         Vector3 searchLocation = targetPos;

@@ -22,7 +22,17 @@ public class BeloningsSensor : MonoBehaviour
     private void Update()
     {
         Agent.WorldState.ChangeValue("hasFood", InventorySystem.HasItemWithType(ItemType.Food));
-
+        if (Agent.WorldState.GetValue("resourceToGather") != null && !string.IsNullOrEmpty(Agent.WorldState.GetValue("resourceToGather").ToString()))
+        {
+            int amount = int.Parse(Agent.WorldState.GetValue("gatherAmount").ToString());
+            Item item = ItemManager.Instance.GetItemByName(Agent.WorldState.GetValue("resourceToGather").ToString().ToLower());
+            if(item != null)
+            {
+                Agent.WorldState.AddWorldState("hasResource", (InventorySystem.HasEnough(item, amount)));
+            }
+        }
+        else
+            Agent.WorldState.AddWorldState("hasResource", false);
     }
 
 }

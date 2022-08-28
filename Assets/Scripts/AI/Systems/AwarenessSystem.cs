@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -72,7 +73,7 @@ public class AwarenessSystem : MonoBehaviour
     public List<TrackedTarget> ActiveTargets => Targets.Values.ToList();
     public List<TrackedTarget> ResourceNodesInRange => ResourceNodes.Values.ToList();
 
-
+    GameObject currentResourceTarget;
 
     [SerializeField] public int ResourceCount = 0;
     [SerializeField] public int TargetsCount = 0;
@@ -91,15 +92,37 @@ public class AwarenessSystem : MonoBehaviour
         ResourceCount = ResourceNodesInRange.Count;
         TargetsCount = ActiveTargets.Count;
 
+        if (Agent.WorldState.GetValue("target") != null)
+        {
+            GameObject currentTarget = Agent.WorldState.GetValue("target") as GameObject;
+            Agent.WorldState.AddWorldState("isAtTarget", (Vector3.Distance(currentTarget.transform.position, this.transform.position) <= Agent.InteractionRange));
+        }
+
+
         SaveToWorldState();
     }
 
     private void SaveToWorldState()
     {
-        Agent.SaveValueInMemory("hasTargets", Targets.Count > 0);
-        Agent.SaveValueInMemory("hasResourceTargets", ResourceCount > 0);
-        Agent.SaveValueInMemory("target", GetClosestTarget(Targets) ?? null);
-        Agent.SaveValueInMemory("resourceTarget", GetClosestTarget(ResourceNodes) ?? null);
+        Agent.WorldState.AddWorldState("hasTargets", Targets.Count > 0);
+        Agent.WorldState.AddWorldState("hasResourceTargets", ResourceCount > 0);
+
+
+        if (currentResourceTarget != null)
+        {
+            if (Agent.WorldState.GetValue("wantedResource") as GameObject != currentResourceTarget)
+                Agent.WorldState.AddWorldState("wantedResource", currentResourceTarget);
+
+            if (Vector3.Distance(currentResourceTarget.transform.position, this.transform.position) < Agent.InteractionRange)
+                Agent.WorldState.ChangeValue("isAtResource", true);
+            else
+                Agent.WorldState.ChangeValue("isAtResource", false);
+        }
+        else
+        {
+            Agent.WorldState.ChangeValue("isAtResource", false);
+        }
+
     }
 
     GameObject GetClosestTarget(Dictionary<GameObject, TrackedTarget> candidates)
@@ -107,10 +130,10 @@ public class AwarenessSystem : MonoBehaviour
         float closest = float.MaxValue;
         GameObject cand = null;
 
-        foreach(KeyValuePair<GameObject, TrackedTarget> target in candidates)
+        foreach (KeyValuePair<GameObject, TrackedTarget> target in candidates)
         {
             float distance = Vector3.Distance(transform.position, target.Value.RawPosition);
-            if(closest > distance)
+            if (closest > distance)
             {
                 closest = distance;
                 cand = target.Key;
@@ -141,8 +164,6 @@ public class AwarenessSystem : MonoBehaviour
             {
                 if (targetsToclean[target].Awareness <= 0f)
                     cleanUp.Add(target);
-                else
-                    Debug.Log("Threshold change for " + target.name + " " + targetsToclean[target].Awareness);
             }
         }
 
@@ -170,10 +191,10 @@ public class AwarenessSystem : MonoBehaviour
 
         if (typeOfTarget[targetGo].UpdateAwareness(seen, position, awareness, minAwareness))
         {
-            Debug.Log("Threshold change for " + targetGo.name + " " + typeOfTarget[targetGo].Awareness);
+            //Debug.Log("Threshold change for " + targetGo.name + " " + typeOfTarget[targetGo].Awareness);
         }
 
-        Agent.SaveValueInMemory("hasTargets", typeOfTarget.Count > 0);
+        Agent.WorldState.AddWorldState("hasTargets", typeOfTarget.Count > 0);
 
     }
 
@@ -194,6 +215,44 @@ public class AwarenessSystem : MonoBehaviour
     {
         var awareness = ProximityBuildRate * Time.deltaTime;
         UpdateAwareness(inProximity.gameObject, inProximity, inProximity.transform.position, awareness, ProximityMinimumAwareness);
+    }
+
+    internal bool KnowsResourceOfType(ResourceType resourceToSearch)
+    {
+        TrackedTarget candidate = null;
+        float closest = float.MaxValue;
+        foreach (TrackedTarget res in ResourceNodes.Values)
+        {
+            if (((ResourceTarget)res.Detectable).ResourceType == resourceToSearch)
+            {
+                float distance = Vector3.Distance(res.RawPosition, this.transform.position);
+                if (candidate == null)
+                {
+                    candidate = res;
+                    closest = distance;
+                }
+                else
+                {
+                    if (distance < closest)
+                    {
+                        candidate = res;
+                        closest = distance;
+                    }
+                }
+            }
+
+        }
+        if (candidate != null)
+        {
+            currentResourceTarget = candidate.Detectable.gameObject;
+            Agent.WorldState.AddWorldState("wantedResource", currentResourceTarget);
+        }
+        else
+            currentResourceTarget = null;
+
+
+
+        return candidate != null;
     }
 }
 

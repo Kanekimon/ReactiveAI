@@ -42,6 +42,15 @@ public class InventoryCustomEditor : Editor
 
         }
 
+
+        foreach(KeyValuePair<Item, int> item in inventorySystem._inventory)
+        {
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.TextField("Item-Name", item.Key.Name);
+            EditorGUILayout.TextField("Item-Amount", item.Value.ToString());
+            EditorGUILayout.EndHorizontal();
+        }
+
     }
 
 }

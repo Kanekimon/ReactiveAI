@@ -6,6 +6,7 @@ public class ReduceHungerGoal : BaseGoal
 
     [SerializeField] int MinPriority = 0;
     [SerializeField] int MaxPriority = 50;
+    
 
     private void Start()
     {
@@ -14,10 +15,18 @@ public class ReduceHungerGoal : BaseGoal
 
     public override int CalculatePriority()
     {
-        if ((bool)Agent.GetValueFromMemory("isHungry"))
+        if ((bool)Agent.WorldState.GetValue("isHungry"))
             return MaxPriority;
         else
             return MinPriority;
+    }
+
+    public override void OnGoalActivated()
+    {
+        base.OnGoalActivated();
+
+        Agent.WorldState.AddWorldState("resourceToGather", ResourceType.Food);
+
     }
 
     public override bool CanRun()
@@ -29,4 +38,5 @@ public class ReduceHungerGoal : BaseGoal
     {
 
     }
+
 }

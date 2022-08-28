@@ -24,7 +24,6 @@ public class ProximitySensor : MonoBehaviour
             if (Vector3.Distance(Agent.transform.position, candTarget.transform.position) <= Agent.ProximityDetectionRange)
             {
                 Agent.ReportProximity(candTarget);
-                Debug.Log("I can sense you");
             }
 
         }

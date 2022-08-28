@@ -18,6 +18,8 @@ public interface IGoal
 
 public class BaseGoal : MonoBehaviour, IGoal
 {
+
+    protected int _id;
     protected GameObject Parent;
     protected NavigationAgent NavAgent;
     protected AwarenessSystem AwarenessSystem;
@@ -26,6 +28,8 @@ public class BaseGoal : MonoBehaviour, IGoal
     protected Agent Agent;
 
     protected StateMemory NeededWorldState;
+
+    public int Id { get { return _id; } }
 
     [SerializeField] public List<KeyValuePair<string, object>> Preconditions = new List<KeyValuePair<string, object>>();
 
@@ -40,6 +44,7 @@ public class BaseGoal : MonoBehaviour, IGoal
 
     protected virtual void Start()
     {
+        _id = this.gameObject.GetHashCode();
         DebugUI = FindObjectOfType<GOAPUI>();
 
         foreach (KeyValuePair<string, object> state in Preconditions)
@@ -64,7 +69,7 @@ public class BaseGoal : MonoBehaviour, IGoal
 
     public virtual bool CanRun()
     {
-        return false;
+        return true;
     }
 
     public virtual int CalculatePriority()

@@ -7,7 +7,7 @@ using UnityEngine;
 
 public static class GoapHelper
 {
-    public static void DebugPlan(BaseGoal goal, List<ActionBase> actions)
+    public static void DebugPlan(Agent agent, BaseGoal goal, List<ActionBase> actions)
     {
         string plan_sequence = $"Goal {goal.GetType().ToString()} -> ";
 
@@ -21,7 +21,7 @@ public static class GoapHelper
         }
 
 
-        Debug.Log(plan_sequence);
+        Debug.Log($"{agent.name}: {plan_sequence}");
     }
 
 }

@@ -13,32 +13,48 @@ public class Agent : MonoBehaviour
     [SerializeField]
     private float _proximityDetectionRange = 3f;
 
+    [SerializeField] private float _interactionRange = 5;
+
     public float VisionAngle => _visionAngle;
     public float VisionRange => _visionRange;
     public float ProximityDetectionRange => _proximityDetectionRange;
+    public float InteractionRange => _interactionRange;
 
     public float CoVisionAngle { get; private set; } = 0f;
 
     private StateMemory _memory = new StateMemory();
+    [SerializeField]private JobType _jobType;
 
     AwarenessSystem _awareness;
     ConditionSystem _conditionSystem;
     InventorySystem _inventorySystem;
+    GoapPlanner _goapPlanner;
  
     public ConditionSystem ConditionSystem => _conditionSystem;
     public AwarenessSystem AwarenessSystem => _awareness;
     public InventorySystem InventorySystem => _inventorySystem;
-    
+    public JobType JobType => _jobType;
 
     public StateMemory WorldState => _memory;
+    public TownSystem HomeTown;
+    
+
 
     private void Awake()
     {
         CoVisionAngle = Mathf.Cos(VisionAngle * Mathf.Deg2Rad);
+        _goapPlanner = GetComponent<GoapPlanner>();
         _awareness = GetComponent<AwarenessSystem>();
         _conditionSystem = GetComponent<ConditionSystem>();
         _inventorySystem = GetComponent<InventorySystem>();
     }
+
+    private void Start()
+    {
+        if (HomeTown != null)
+            HomeTown.RegisterAgent(this);
+    }
+
 
     public void CanSee(DetectableTarget seen)
     {
@@ -51,20 +67,22 @@ public class Agent : MonoBehaviour
 
     }
 
-    public void SaveValueInMemory(string key, object value)
-    {
-        _memory.ChangeValue(key, value);
-    }
-
-    public object GetValueFromMemory(string key)
-    {
-        return _memory.GetValue(key);
-    }
-
     public void Die()
     {
         Destroy(this.gameObject);
     }
+
+    public void GetRequest(ResourceType resource, int amount)
+    {
+        _goapPlanner.RequestResource(resource, amount);
+    }
+
+    public void GetJob(JobType job)
+    {
+        this._jobType = job;
+    }
+
+
 }
 
 #if UNITY_EDITOR

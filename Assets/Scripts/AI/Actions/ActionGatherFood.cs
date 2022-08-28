@@ -12,6 +12,7 @@ public class ActionGatherFood : ActionBase
     {
         effects.Add(new KeyValuePair<string, object>("isIdle", false));
         effects.Add(new KeyValuePair<string, object>("hasFood", true));
+        preconditions.Add(new KeyValuePair<string, object>("interactWithResource", true));
         base.Start();
     }
 

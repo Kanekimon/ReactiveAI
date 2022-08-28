@@ -39,6 +39,11 @@ public class ActionBase : MonoBehaviour
         }
     }
 
+    public virtual bool CanRun()
+    {
+        return true;
+    }
+
     public virtual List<System.Type> GetSupportedGoals()
     {
         return null;
@@ -82,7 +87,7 @@ public class ActionBase : MonoBehaviour
 
         foreach (KeyValuePair<string, object> precon in preconditions)
         {
-            object valueInMemory = Agent.GetValueFromMemory(precon.Key);
+            object valueInMemory = Agent.WorldState.GetValue(precon.Key);
             if (valueInMemory != null)
             {
                 if (!valueInMemory.Equals(precon.Value))
@@ -97,7 +102,7 @@ public class ActionBase : MonoBehaviour
         float count = 0f;
         foreach (KeyValuePair<string, object> precon in preconditions)
         {
-            object valueInMemory = Agent.GetValueFromMemory(precon.Key);
+            object valueInMemory = Agent.WorldState.GetValue(precon.Key);
             if (valueInMemory != null)
             {
                 if (!valueInMemory.Equals(precon.Value))

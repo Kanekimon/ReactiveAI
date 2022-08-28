@@ -6,7 +6,8 @@ public enum ItemType
 {
     Food,
     Weapon,
-    Armor
+    Armor,
+    Resource
 }
 
 [Serializable]
@@ -16,7 +17,7 @@ public class Item
     public string Name { get; set; }
     public List<ItemType> ItemTypes { get; set; }
 
-
+    public bool IsResource { get; set; }
 
 
 }

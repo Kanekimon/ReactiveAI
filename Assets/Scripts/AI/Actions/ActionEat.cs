@@ -15,8 +15,10 @@ public class ActionEat : ActionBase
 
     public override void OnTick()
     {
+        if(Agent)
         Agent.InventorySystem.RemoveItem(Agent.InventorySystem.GetFirstItemWithType(ItemType.Food), 1);
         Agent.ConditionSystem.ChangeValue("Hungry", 15);
+        OnDeactived();
     }
 
 }

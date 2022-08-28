@@ -38,7 +38,7 @@ public class ActionChase : ActionBase
     public override void OnActivated(BaseGoal linked)
     {
         base.OnActivated(linked);
-        target = Agent.GetValueFromMemory("target") as GameObject;
+        target = Agent.WorldState.GetValue("target") as GameObject;
     }
 
     public override void OnDeactived()

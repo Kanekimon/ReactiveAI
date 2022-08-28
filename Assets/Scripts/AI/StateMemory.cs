@@ -5,9 +5,9 @@ namespace Assets.Scripts.AI
 {
     public class StateMemory
     {
-        HashSet<KeyValuePair<string, object>> WorldStates = new HashSet<KeyValuePair<string, object>>();
+        List<KeyValuePair<string, object>> WorldStates = new List<KeyValuePair<string, object>>();
 
-        public HashSet<KeyValuePair<string, object>> GetWorldState => WorldStates;
+        public List<KeyValuePair<string, object>> GetWorldState => WorldStates;
 
         public StateMemory()
         {
@@ -37,6 +37,8 @@ namespace Assets.Scripts.AI
 
         public object GetValue(string key)
         {
+            if (!WorldStates.Any(a => a.Key.Equals(key)))
+                return null;
             return WorldStates.Where(a => a.Key == key).FirstOrDefault().Value;
         }
 
@@ -63,5 +65,18 @@ namespace Assets.Scripts.AI
             }
             return true;
         }
+
+        public void RemoveWorldState(string key)
+        {
+            KeyValuePair<string, object> toDelete = new KeyValuePair<string, object>();
+            if (WorldStates.Any(a => a.Key.Equals(key)))
+            {
+                toDelete = WorldStates.Where(a => a.Key.Equals(key)).FirstOrDefault();
+            }
+            WorldStates.Remove(toDelete);
+
+        }
     }
+
+
 }

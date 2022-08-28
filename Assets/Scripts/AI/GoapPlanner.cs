@@ -5,8 +5,8 @@ using UnityEngine;
 public class GoapPlanner : MonoBehaviour
 {
     Queue<ActionBase> CurrentActionSequence { get; set; } = new Queue<ActionBase>();
-    ActionBase CurrentAction;
-    BaseGoal CurrentGoal;
+    [SerializeField]ActionBase CurrentAction;
+    [SerializeField] BaseGoal CurrentGoal;
 
 
     GameObject ActionContainer;
@@ -62,6 +62,7 @@ public class GoapPlanner : MonoBehaviour
             CurrentAction.OnActivated(CurrentGoal);
         }
 
+
         if (CurrentAction != null)
         {
             if (CurrentAction.HasFinished())
@@ -79,7 +80,11 @@ public class GoapPlanner : MonoBehaviour
         }
 
         if (CurrentAction == null)
+        {
+            DeactiveOldGoal();
             Plan();
+        }
+
 
 
     }
@@ -90,6 +95,9 @@ public class GoapPlanner : MonoBehaviour
         foreach(BaseGoal goal in AllGoals)
         {
             goal.OnTickGoal();
+
+            if (!goal.CanRun())
+                continue;
 
             if ((CurrentGoal == null || goal.CalculatePriority() > CurrentGoal.CalculatePriority()) && (bestGoal != null && bestGoal.CalculatePriority() < goal.CalculatePriority() || bestGoal == null))
                 bestGoal = goal;
@@ -113,7 +121,21 @@ public class GoapPlanner : MonoBehaviour
 
         CurrentActionSequence = AStar.PlanActionSequence(CurrentGoal, AllActions);
         if(CurrentActionSequence != null && CurrentActionSequence.Count > 0)
-            GoapHelper.DebugPlan(CurrentGoal, CurrentActionSequence.ToList());
+            GoapHelper.DebugPlan(this.Agent, CurrentGoal, CurrentActionSequence.ToList());
+    }
+
+    public void RequestResource(ResourceType resource, int amount)
+    {
+        foreach(BaseGoal goal in AllGoals)
+        {
+            if(goal is GatherResourceGoal)
+            {
+                GatherResourceGoal gG = ((GatherResourceGoal)goal);
+                if (gG.ResourceToGather == resource)
+                    gG.GatherAmount += amount;
+                
+            }
+        }
     }
 
 

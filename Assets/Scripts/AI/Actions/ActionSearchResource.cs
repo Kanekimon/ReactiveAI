@@ -1,15 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
 public class ActionSearchResource : ActionBase
 {
-    string _resourceToSearch;
+    ResourceType _resourceToSearch;
 
     protected override void Start()
     {
-        effects.Add(new KeyValuePair<string, object>("hasResourceTargets", true));
-        base.Start();
+        effects.Add(new KeyValuePair<string, object>("hasWantedResourceTarget", true));        base.Start();
     }
 
     protected override void Awake()
@@ -22,8 +22,10 @@ public class ActionSearchResource : ActionBase
         if (NavAgent.AtDestination)
             OnActivated(LinkedGoal);
 
-        if (Agent.AwarenessSystem.ResourceNodesInRange.Count > 0)
+        if (Agent.AwarenessSystem.KnowsResourceOfType(_resourceToSearch))
+        {
             OnDeactived();
+        }
 
         //if (Agent.AwarenessSystem.ResourceNodesInRange.Any(a => ((ResourceTarget)a.Detectable).ResourceType == ResourceType.Food))
         //{
@@ -50,6 +52,9 @@ public class ActionSearchResource : ActionBase
     public override void OnActivated(BaseGoal linked)
     {
         base.OnActivated(linked);
+
+        _resourceToSearch = (ResourceType)Enum.Parse(typeof(ResourceType), Agent.WorldState.GetValue("resourceToGather").ToString());
+
         Vector3 location = NavAgent.PickLocationInRange(10f);
         NavAgent.MoveTo(location);
     }

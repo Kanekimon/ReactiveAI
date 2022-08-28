@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class InventorySystem : MonoBehaviour
 {
-    Dictionary<Item, int> _inventory = new Dictionary<Item, int>();
-    [SerializeField] public List<Item> _items = new List<Item>();
+    public Dictionary<Item, int> _inventory = new Dictionary<Item, int>();
 
     /// <summary>
     /// Add Items with amount
@@ -21,7 +20,6 @@ public class InventorySystem : MonoBehaviour
         }
         else
             _inventory.Add(item, amount);
-        _items.Add(item);
     }
 
     /// <summary>
@@ -40,6 +38,21 @@ public class InventorySystem : MonoBehaviour
             if (_inventory[i] == 0)
                 _inventory.Remove(i);
         }
+    }
+
+    internal void TransferToOther(InventorySystem inventorySystem, Item toDeliver, int amount)
+    {
+        if(HasEnough(toDeliver, amount))
+        {
+            inventorySystem.AddItem(toDeliver, amount);
+            this.RemoveItem(toDeliver, amount);
+        }
+    }
+
+    internal bool HasEnoughOfResource(ResourceType resourceToGather, int gatherAmount)
+    {
+        string item = ItemManager.Instance.GetItemFromResourceType(resourceToGather);
+        return HasEnough(item, gatherAmount);
     }
 
     /// <summary>

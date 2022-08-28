@@ -61,6 +61,7 @@ public class AStar
                 break;
             }
 
+
             List<ActionBase> possibleActions = GetPossibleActions(allActions, currentNode);
 
             foreach (ActionBase action in possibleActions)
@@ -176,7 +177,7 @@ public class AStar
             {
                 if (a[i].Key == item.Key)
                 {
-                    if ((bool)a[i].Value == (bool)item.Value)
+                    if (a[i].Value.Equals(item.Value))
                         count++;
                     else
                         return false;
@@ -198,13 +199,14 @@ public class AStar
 
     static List<ActionBase> GetPossibleActions(List<ActionBase> allActions, Node lastNode)
     {
-        return allActions.Where(a => SatisfiesOneConditon(a.GetEffects(), lastNode.openPreconditions)).ToList();
+        return allActions.Where(a => SatisfiesOneConditon(a.GetEffects(), lastNode.openPreconditions) && a.CanRun()).ToList();
     }
     static List<Node> ConvertActionsToNode(List<ActionBase> actions, Node lastNode)
     {
         List<Node> possibleActions = new List<Node>();
         foreach (var vA in actions)
         {
+
             Node n = new Node(vA, vA.Cost() + lastNode.GCost);
             n.PreviousNode = lastNode;
             n.openPreconditions = lastNode.openPreconditions;
