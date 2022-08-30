@@ -11,9 +11,9 @@ public class GatherResourceGoal : BaseGoal
     [SerializeField] int MinPrio = 1;
     [SerializeField] int MaxPrio = 100;
     [SerializeField] public int GatherAmount;
-    [SerializeField] ResourceType resourceToGather;
+    [SerializeField] Item resourceToGather;
 
-    public ResourceType ResourceToGather => resourceToGather;
+    public Item ItemToGather => resourceToGather;
 
 
     protected override void Start()
@@ -38,6 +38,8 @@ public class GatherResourceGoal : BaseGoal
     {
         GatherAmount = 0;
         Agent.WorldState.AddWorldState("deliveredResource", false);
+        Agent.WorldState.AddWorldState("resourceToGather", null);
+        Agent.WorldState.AddWorldState("gatherAmount", 0);
         base.OnGoalDeactivated();
     }
 

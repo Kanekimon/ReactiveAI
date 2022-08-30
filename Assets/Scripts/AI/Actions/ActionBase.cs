@@ -10,6 +10,8 @@ public class ActionBase : MonoBehaviour
     protected BaseGoal LinkedGoal;
     protected Agent Agent;
     protected bool _hasFinished;
+    protected bool _needsReplanning = false;
+
 
     [SerializeField]protected float _cost;
 
@@ -56,6 +58,7 @@ public class ActionBase : MonoBehaviour
 
     public virtual void OnActivated(BaseGoal linked)
     {
+        _needsReplanning = false;
         LinkedGoal = linked;
         _hasFinished = false;
     }
@@ -71,6 +74,10 @@ public class ActionBase : MonoBehaviour
 
     }
 
+    public virtual bool NeedsReplanning()
+    {
+        return _needsReplanning;
+    }
     public List<KeyValuePair<string, object>> GetEffects()
     {
         return effects;

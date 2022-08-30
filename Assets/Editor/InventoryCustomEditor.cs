@@ -34,8 +34,8 @@ public class InventoryCustomEditor : Editor
             Item i = new Item()
             {
                 Id = 0,
-                Name = item_name,
-                ItemTypes = new List<ItemType>() { ItemType.Food }
+                Name = item_name
+                //ItemTypes = new List<ItemType>() { ItemType.Food }
             };
             inventorySystem.AddItem(i, item_amount);
             Debug.Log(flags);
@@ -43,11 +43,11 @@ public class InventoryCustomEditor : Editor
         }
 
 
-        foreach(KeyValuePair<Item, int> item in inventorySystem._inventory)
+        foreach (KeyValuePair<Item, InventoryItem> item in inventorySystem._inventory)
         {
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.TextField("Item-Name", item.Key.Name);
-            EditorGUILayout.TextField("Item-Amount", item.Value.ToString());
+            EditorGUILayout.TextField("Item-Amount", item.Value.Amount.ToString());
             EditorGUILayout.EndHorizontal();
         }
 

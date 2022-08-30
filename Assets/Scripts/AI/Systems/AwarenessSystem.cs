@@ -217,13 +217,13 @@ public class AwarenessSystem : MonoBehaviour
         UpdateAwareness(inProximity.gameObject, inProximity, inProximity.transform.position, awareness, ProximityMinimumAwareness);
     }
 
-    internal bool KnowsResourceOfType(ResourceType resourceToSearch)
+    internal bool KnowsResourceOfType(Item item)
     {
         TrackedTarget candidate = null;
         float closest = float.MaxValue;
         foreach (TrackedTarget res in ResourceNodes.Values)
         {
-            if (((ResourceTarget)res.Detectable).ResourceType == resourceToSearch)
+            if (((ResourceTarget)res.Detectable).GatherableMaterials.Any(a => a.Item.Equals(item)))
             {
                 float distance = Vector3.Distance(res.RawPosition, this.transform.position);
                 if (candidate == null)

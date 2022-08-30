@@ -22,7 +22,6 @@ public class TownCustomEditor : Editor
 
         if (GUILayout.Button("Request"))
         {
-            town.RequestResoruces(ResourceType.Wood, int.Parse(amount));
             amount = "";
         }
         EditorGUILayout.EndHorizontal();

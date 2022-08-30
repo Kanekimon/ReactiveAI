@@ -11,9 +11,9 @@ public class RequestResourceGoal : BaseGoal
     [SerializeField] int MinPrio = 1;
     [SerializeField] int MaxPrio = 100;
     [SerializeField] public int RequestAmount;
-    [SerializeField] string _requestItemName;
+    [SerializeField] Item _requestedItem;
 
-    public string RequestedItem => _requestItemName;
+    public Item RequestedItem => _requestedItem;
     public bool waiting;
 
 
@@ -28,7 +28,7 @@ public class RequestResourceGoal : BaseGoal
     {
         Agent.WorldState.AddWorldState("target", Agent.HomeTown.RequestBoard);
         Agent.WorldState.AddWorldState("requestAmount", RequestAmount);
-        Agent.WorldState.AddWorldState("requestItem", _requestItemName);
+        Agent.WorldState.AddWorldState("requestItem", _requestedItem);
         base.OnGoalActivated();
     }
 

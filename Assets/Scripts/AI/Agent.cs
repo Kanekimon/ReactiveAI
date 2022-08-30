@@ -1,4 +1,6 @@
 ﻿using Assets.Scripts.AI;
+using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -6,6 +8,8 @@ using UnityEngine;
 [RequireComponent(typeof(AwarenessSystem))]
 public class Agent : MonoBehaviour
 {
+    public Queue<Request> FinishedRequests = new Queue<Request>();
+
     [SerializeField]
     private float _visionAngle = 60f;
     [SerializeField]
@@ -49,6 +53,14 @@ public class Agent : MonoBehaviour
         _inventorySystem = GetComponent<InventorySystem>();
     }
 
+    internal void AddWork(Item requestedItem, int requestedAmount)
+    {
+        if (requestedItem.IsResource)
+        {
+            _goapPlanner.RequestResource(requestedItem, requestedAmount);
+        }
+    }
+
     private void Start()
     {
         if (HomeTown != null)
@@ -72,9 +84,9 @@ public class Agent : MonoBehaviour
         Destroy(this.gameObject);
     }
 
-    public void GetRequest(ResourceType resource, int amount)
+    public void GetRequest(Item item, int amount)
     {
-        _goapPlanner.RequestResource(resource, amount);
+        _goapPlanner.RequestResource(item, amount);
     }
 
     public void GetJob(JobType job)
@@ -82,6 +94,11 @@ public class Agent : MonoBehaviour
         this._jobType = job;
     }
 
+
+    public void PickUpResourceFromTarget(Request r)
+    {
+        FinishedRequests.Enqueue(r);
+    }
 
 }
 

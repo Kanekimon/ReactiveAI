@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class InventorySystem : MonoBehaviour
 {
-    public Dictionary<Item, int> _inventory = new Dictionary<Item, int>();
+    public Dictionary<Item, InventoryItem> _inventory = new Dictionary<Item, InventoryItem>();
 
     /// <summary>
     /// Add Items with amount
@@ -15,11 +15,11 @@ public class InventorySystem : MonoBehaviour
     {
         if (_inventory.Any(a => a.Key.Id == item.Id))
         {
-            Item i = _inventory.Where(a => a.Key.Id == item.Id).FirstOrDefault().Key;
-            _inventory[i] += amount;
+            InventoryItem i = _inventory.Where(a => a.Key.Id == item.Id).FirstOrDefault().Value;
+            i.Add(amount);
         }
         else
-            _inventory.Add(item, amount);
+            _inventory.Add(item, new InventoryItem() { Item = item, Amount = amount, Name = item.Name});
     }
 
     /// <summary>
@@ -32,11 +32,11 @@ public class InventorySystem : MonoBehaviour
     {
         if (HasEnough(item, amount))
         {
-            Item i = _inventory.Where(a => a.Key.Id == item.Id).FirstOrDefault().Key;
-            _inventory[i] -= amount;
+            InventoryItem i = _inventory.Where(a => a.Key.Id == item.Id).FirstOrDefault().Value;
+            i.Remove(amount);
 
-            if (_inventory[i] == 0)
-                _inventory.Remove(i);
+            if (i.Amount == 0)
+                _inventory.Remove(item);
         }
     }
 
@@ -49,11 +49,6 @@ public class InventorySystem : MonoBehaviour
         }
     }
 
-    internal bool HasEnoughOfResource(ResourceType resourceToGather, int gatherAmount)
-    {
-        string item = ItemManager.Instance.GetItemFromResourceType(resourceToGather);
-        return HasEnough(item, gatherAmount);
-    }
 
     /// <summary>
     /// Checks if the item is in the inventory
@@ -64,7 +59,7 @@ public class InventorySystem : MonoBehaviour
     /// <returns></returns>
     public bool HasEnough(Item item, int amount)
     {
-        return HasItem(item) && (_inventory.Where(a => a.Key.Id == item.Id).FirstOrDefault().Value >= amount);
+        return HasItem(item) && (_inventory.Where(a => a.Key.Id == item.Id).FirstOrDefault().Value.Amount >= amount);
     }
 
     /// <summary>
@@ -76,7 +71,7 @@ public class InventorySystem : MonoBehaviour
     /// <returns></returns>
     public bool HasEnough(string item_name, int amount)
     {
-        return HasItem(item_name) && (_inventory.Where(a => a.Key.Name == item_name).FirstOrDefault().Value >= amount);
+        return HasItem(item_name) && (_inventory.Where(a => a.Key.Name == item_name).FirstOrDefault().Value.Amount >= amount);
     }
 
     /// <summary>

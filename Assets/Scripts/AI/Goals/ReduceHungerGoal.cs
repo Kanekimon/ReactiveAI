@@ -25,7 +25,7 @@ public class ReduceHungerGoal : BaseGoal
     {
         base.OnGoalActivated();
 
-        Agent.WorldState.AddWorldState("resourceToGather", ResourceType.Food);
+        Agent.WorldState.AddWorldState("resourceToGather", ItemManager.Instance.GetItemByName("food"));
 
     }
 

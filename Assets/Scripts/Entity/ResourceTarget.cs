@@ -1,22 +1,31 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
+using Random = UnityEngine.Random;
 
 public enum ResourceType
 {
-    Stone,
-    Wood,
-    Food
+    rock, 
+    tree,
+    bush,
+    mushroom,
+    none
 }
 
-public class ResourceTarget : DetectableTarget
+[Serializable]
+public class Resource
 {
-    public ResourceType ResourceType;
+    public Item Item;
     public int MinAmount;
     public int MaxAmount;
     public int Amount;
-    public string itemName;
+}
 
 
-
+public class ResourceTarget : DetectableTarget
+{
+    [SerializeField] public List<Resource> GatherableMaterials = new List<Resource>();
+    public ResourceType ResourceType;
 
     protected override void Start()
     {
@@ -26,13 +35,21 @@ public class ResourceTarget : DetectableTarget
 
     public void Interact(Agent interacted)
     {
-        int gatheredAmount = Mathf.Clamp(Random.Range(MinAmount, MaxAmount + 1), 1, Amount);
+        for(int i = GatherableMaterials.Count - 1; i >= 0; i--)
+        {
+            Resource res = GatherableMaterials[i];
+            int gatheredAmount = Mathf.Clamp(Random.Range(res.MinAmount, res.MaxAmount + 1), 1, res.Amount);
 
-        Amount -= gatheredAmount;
-        interacted.InventorySystem.AddItem(ItemManager.Instance.GetItemByName(itemName), gatheredAmount);
+            res.Amount -= gatheredAmount;
+            interacted.InventorySystem.AddItem(res.Item, gatheredAmount);
 
-        if (Amount == 0)
+            if (res.Amount == 0)
+                GatherableMaterials.RemoveAt(i);
+        }
+
+        if (GatherableMaterials.Count == 0)
             Destroy(this.gameObject);
+
     }
 
 }

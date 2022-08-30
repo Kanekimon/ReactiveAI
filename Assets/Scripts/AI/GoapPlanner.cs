@@ -19,20 +19,23 @@ public class GoapPlanner : MonoBehaviour
     private void Awake()
     {
         Agent = GetComponent<Agent>();
+        InitActions();
+        InitGoals();
+    }
+
+
+    public void InitActions()
+    {
         ActionContainer = transform.Find("ActionContainer").gameObject;
+        AllActions =  ActionContainer.GetComponents<ActionBase>().ToList();
+    }
+    public void InitGoals()
+    {
+        GoalContainer = null;
+        AllGoals = new List<BaseGoal>();
+
         GoalContainer = transform.Find("GoalContainer").gameObject;
-
-        AllActions = GetAllActions();
-        AllGoals = GetAllGoals();
-    }
-
-    public List<ActionBase> GetAllActions()
-    {
-        return ActionContainer.GetComponents<ActionBase>().ToList();
-    }
-    public List<BaseGoal> GetAllGoals()
-    {
-        return GoalContainer.GetComponents<BaseGoal>().ToList();
+        AllGoals = GoalContainer.GetComponents<BaseGoal>().ToList();
     }
 
 
@@ -52,8 +55,8 @@ public class GoapPlanner : MonoBehaviour
                 DeactiveOldGoal();
 
             CurrentGoal = HighestPrioGoal;
-            Plan();
             CurrentGoal.OnGoalActivated();
+            Plan();
         }
 
         if (CurrentActionSequence.Count > 0 && (CurrentAction == null || CurrentAction != CurrentActionSequence.Peek()))
@@ -76,6 +79,8 @@ public class GoapPlanner : MonoBehaviour
             else
             {
                 CurrentAction.OnTick();
+                if (CurrentAction.NeedsReplanning())
+                    Plan();
             }
         }
 
@@ -124,14 +129,14 @@ public class GoapPlanner : MonoBehaviour
             GoapHelper.DebugPlan(this.Agent, CurrentGoal, CurrentActionSequence.ToList());
     }
 
-    public void RequestResource(ResourceType resource, int amount)
+    public void RequestResource(Item item, int amount)
     {
         foreach(BaseGoal goal in AllGoals)
         {
             if(goal is GatherResourceGoal)
             {
                 GatherResourceGoal gG = ((GatherResourceGoal)goal);
-                if (gG.ResourceToGather == resource)
+                if (gG.ItemToGather == item)
                     gG.GatherAmount += amount;
                 
             }

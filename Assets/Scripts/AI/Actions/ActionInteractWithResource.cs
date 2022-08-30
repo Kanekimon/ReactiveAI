@@ -9,7 +9,7 @@ public class ActionInteractWithResource : ActionBase
 {
     [SerializeField] int AmountToGather;
     private GameObject _target;
-    private string resourceToGather;
+    private Item resourceToGather;
 
     private float timer;
     public float delay = 2f;
@@ -26,9 +26,9 @@ public class ActionInteractWithResource : ActionBase
     public override void OnActivated(BaseGoal linked)
     {
         base.OnActivated(linked);
-
+        
         AmountToGather = int.Parse(Agent.WorldState.GetValue("gatherAmount")?.ToString() ?? "1");
-        resourceToGather = Agent.WorldState.GetValue("resourceToGather").ToString();
+        resourceToGather = Agent.WorldState.GetValue("resourceToGather") as Item;
     }
 
 
@@ -42,9 +42,12 @@ public class ActionInteractWithResource : ActionBase
             {
                 _target.GetComponent<ResourceTarget>().Interact(this.Agent);
             }
+            else if(_target == null && !Agent.InventorySystem.HasEnough(resourceToGather, AmountToGather))
+            {
+                this._needsReplanning = true;
+            }
             else
             {
-                _hasFinished = true;
                 OnDeactived();
             }
         }

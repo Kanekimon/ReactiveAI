@@ -87,6 +87,10 @@ public class NavigationAgent : MonoBehaviour
         Vector3 dist = (target - transform.position).normalized;
         Vector3 targetPoint = targetObject.transform.position - (dist * range);
         NavMeshHit hitResult;
+
+        targetPoint.y = Terrain.activeTerrain.SampleHeight(targetPoint);
+
+
         if(NavMesh.SamplePosition(targetPoint, out hitResult, 1, NavMesh.AllAreas))
         {
             return hitResult.position;

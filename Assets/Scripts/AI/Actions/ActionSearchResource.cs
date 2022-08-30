@@ -5,11 +5,12 @@ using UnityEngine;
 
 public class ActionSearchResource : ActionBase
 {
-    ResourceType _resourceToSearch;
+    Item _item;
 
     protected override void Start()
     {
-        effects.Add(new KeyValuePair<string, object>("hasWantedResourceTarget", true));        base.Start();
+        effects.Add(new KeyValuePair<string, object>("hasWantedResourceTarget", true));        
+        base.Start();
     }
 
     protected override void Awake()
@@ -17,43 +18,24 @@ public class ActionSearchResource : ActionBase
         base.Awake();
     }
 
+
+
     public override void OnTick()
     {
         if (NavAgent.AtDestination)
             OnActivated(LinkedGoal);
 
-        if (Agent.AwarenessSystem.KnowsResourceOfType(_resourceToSearch))
+        if (Agent.AwarenessSystem.KnowsResourceOfType(_item))
         {
             OnDeactived();
         }
-
-        //if (Agent.AwarenessSystem.ResourceNodesInRange.Any(a => ((ResourceTarget)a.Detectable).ResourceType == ResourceType.Food))
-        //{
-        //    float closestDistance = float.MaxValue;
-        //    TrackedTarget r = null;
-
-        //    foreach (var resource in Agent.AwarenessSystem.ResourceNodesInRange.Where(a => ((ResourceTarget)a.Detectable).ResourceType == ResourceType.Food))
-        //    {
-        //        var distance = Vector3.Distance(resource.RawPosition, Agent.transform.position);
-        //        if (distance < closestDistance)
-        //        {
-        //            closestDistance = distance;
-        //            r = resource;
-        //        }
-        //    }
-
-        //    if (r != null)
-        //    {
-        //        Agent.SaveValueInMemory("targetLocation", r.RawPosition);
-        //    }
-        //}
     }
 
     public override void OnActivated(BaseGoal linked)
     {
         base.OnActivated(linked);
 
-        _resourceToSearch = (ResourceType)Enum.Parse(typeof(ResourceType), Agent.WorldState.GetValue("resourceToGather").ToString());
+        _item = Agent.WorldState.GetValue("resourceToGather") as Item;
 
         Vector3 location = NavAgent.PickLocationInRange(10f);
         NavAgent.MoveTo(location);
