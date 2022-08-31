@@ -13,6 +13,7 @@ public enum RequestStatus
     Finished
 }
 
+[Serializable]
 public class Request
 {
     public Item RequestedItem;

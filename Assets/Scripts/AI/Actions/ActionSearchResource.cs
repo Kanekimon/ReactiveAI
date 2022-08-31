@@ -35,7 +35,7 @@ public class ActionSearchResource : ActionBase
     {
         base.OnActivated(linked);
 
-        _item = Agent.WorldState.GetValue("resourceToGather") as Item;
+        _item = Agent.WorldState.GetValue("requestedItem") as Item;
 
         Vector3 location = NavAgent.PickLocationInRange(10f);
         NavAgent.MoveTo(location);

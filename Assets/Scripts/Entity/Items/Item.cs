@@ -12,5 +12,7 @@ public class Item : ScriptableObject
     public string Name;
     public List<ItemType> ItemTypes = new List<ItemType>();
     public bool IsResource;
+    public bool HasRecipe;
+    public GameObject Prefab;
 }
 

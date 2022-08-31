@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 
-public class GatherResourceGoal : BaseGoal
+public class DeliverItemGoal : BaseGoal
 {
     [SerializeField] int Priority = 10;
     [SerializeField] int MinPrio = 1;
@@ -25,6 +25,8 @@ public class GatherResourceGoal : BaseGoal
     public override void OnGoalActivated()
     {
         base.OnGoalActivated();
+        Agent.WorldState.AddWorldState("requestedItem", resourceToGather);
+        Agent.WorldState.AddWorldState("gatherAmount", GatherAmount);
     }
 
     public override int CalculatePriority()
@@ -34,6 +36,7 @@ public class GatherResourceGoal : BaseGoal
 
     public override void OnGoalDeactivated()
     {
+        GatherAmount = 0;
         Agent.WorldState.AddWorldState("deliveredResource", false);
         Agent.WorldState.AddWorldState("requestedItem", null);
         Agent.WorldState.AddWorldState("gatherAmount", 0);
@@ -42,16 +45,11 @@ public class GatherResourceGoal : BaseGoal
 
     public override void OnTickGoal()
     {
-        if (Agent.WorldState.GetValue("requestedItem") != null)
-        {
-            GatherAmount = int.Parse(Agent.WorldState.GetValue("gatherAmount").ToString());
-            if (GatherAmount == 0 || (bool)(Agent.WorldState.GetValue("deliveredResource") ?? false))
-                Priority = MinPrio;
-            else
-                Priority = MaxPrio;
-        }
-        else
+        if (GatherAmount == 0 || (bool)Agent.WorldState.GetValue("deliveredResource"))
             Priority = MinPrio;
+        else
+            Priority = MaxPrio;
 
     }
 }
+

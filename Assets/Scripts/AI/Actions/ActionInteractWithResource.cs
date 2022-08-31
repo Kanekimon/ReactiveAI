@@ -18,8 +18,18 @@ public class ActionInteractWithResource : ActionBase
     {
         preconditions.Add(new KeyValuePair<string, object>("isAtResource", true));
         effects.Add(new KeyValuePair<string, object>("interactWithResource", true));
-        effects.Add(new KeyValuePair<string, object>("hasResource", true));
+        effects.Add(new KeyValuePair<string, object>("hasItem", true));
         base.Start();
+    }
+
+    public override bool CanRun()
+    {
+        Item tmp = Agent.WorldState.GetValue("requestedItem") as Item;
+        if(tmp != null && !tmp.IsResource)
+        {
+            return false;
+        }
+        return true;
     }
 
 
@@ -28,7 +38,7 @@ public class ActionInteractWithResource : ActionBase
         base.OnActivated(linked);
         
         AmountToGather = int.Parse(Agent.WorldState.GetValue("gatherAmount")?.ToString() ?? "1");
-        resourceToGather = Agent.WorldState.GetValue("resourceToGather") as Item;
+        resourceToGather = Agent.WorldState.GetValue("requestedItem") as Item;
     }
 
 

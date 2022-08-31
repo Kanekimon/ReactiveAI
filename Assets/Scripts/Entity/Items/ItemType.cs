@@ -9,5 +9,6 @@ public enum ItemType
     Food,
     Weapon,
     Armor,
-    Resource
+    Resource,
+    Buildable
 }

@@ -8,7 +8,7 @@ using UnityEngine;
 [RequireComponent(typeof(AwarenessSystem))]
 public class Agent : MonoBehaviour
 {
-    public Queue<Request> FinishedRequests = new Queue<Request>();
+    public Queue<Request> ReadyForPickUp = new Queue<Request>();
 
     [SerializeField]
     private float _visionAngle = 60f;
@@ -32,11 +32,14 @@ public class Agent : MonoBehaviour
     AwarenessSystem _awareness;
     ConditionSystem _conditionSystem;
     InventorySystem _inventorySystem;
+    CraftingSystem _craftingSystem;
     GoapPlanner _goapPlanner;
+
  
     public ConditionSystem ConditionSystem => _conditionSystem;
     public AwarenessSystem AwarenessSystem => _awareness;
     public InventorySystem InventorySystem => _inventorySystem;
+    public CraftingSystem CraftingSystem => _craftingSystem;
     public JobType JobType => _jobType;
 
     public StateMemory WorldState => _memory;
@@ -51,6 +54,7 @@ public class Agent : MonoBehaviour
         _awareness = GetComponent<AwarenessSystem>();
         _conditionSystem = GetComponent<ConditionSystem>();
         _inventorySystem = GetComponent<InventorySystem>();
+        _craftingSystem = GetComponent<CraftingSystem>();
     }
 
     internal void AddWork(Item requestedItem, int requestedAmount)
@@ -58,6 +62,10 @@ public class Agent : MonoBehaviour
         if (requestedItem.IsResource)
         {
             _goapPlanner.RequestResource(requestedItem, requestedAmount);
+        }
+        else if (requestedItem.HasRecipe)
+        {
+            _goapPlanner.RequestCraftedItem(requestedItem, requestedAmount);
         }
     }
 
@@ -97,7 +105,7 @@ public class Agent : MonoBehaviour
 
     public void PickUpResourceFromTarget(Request r)
     {
-        FinishedRequests.Enqueue(r);
+        ReadyForPickUp.Enqueue(r);
     }
 
 }

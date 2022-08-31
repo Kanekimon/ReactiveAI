@@ -18,6 +18,8 @@ public interface IGoal
 
 public class BaseGoal : MonoBehaviour, IGoal
 {
+    float timer;
+    float delay = 10f;
 
     protected int _id;
     protected GameObject Parent;
@@ -26,8 +28,9 @@ public class BaseGoal : MonoBehaviour, IGoal
     protected GOAPUI DebugUI;
     protected ActionBase LinkedAction;
     protected Agent Agent;
-
+    [SerializeField] protected bool Pause = false;
     protected StateMemory NeededWorldState;
+    [SerializeField] protected bool Runnable = true;
 
     public int Id { get { return _id; } }
 
@@ -55,7 +58,18 @@ public class BaseGoal : MonoBehaviour, IGoal
 
     void Update()
     {
-        OnTickGoal();
+        if (Pause)
+        {
+            if(timer > delay)
+            {
+                timer = 0;
+                Runnable = true;
+                Pause = false;
+            }
+            timer += Time.deltaTime;
+        }
+        else
+            OnTickGoal();
         //DebugUI.UpdateGoal(this, GetType().Name, LinkedAction ? "Running" : "Paused", CalculatePriority());
     }
 
@@ -67,9 +81,15 @@ public class BaseGoal : MonoBehaviour, IGoal
 
     }
 
+    public virtual void PauseGoal()
+    {
+        Pause = true;
+        Runnable = false;
+    }
+
     public virtual bool CanRun()
     {
-        return true;
+        return Runnable;
     }
 
     public virtual int CalculatePriority()

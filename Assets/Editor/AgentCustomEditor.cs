@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEditor;
+using UnityEngine;
 
 [CustomEditor(typeof(Agent))]
 public class AgentCustomEditor : Editor
@@ -7,6 +8,8 @@ public class AgentCustomEditor : Editor
     bool showWorldStates = true;
     string status = "World State";
 
+    string key = "placeAmount";
+    string value = "2";
 
     public override void OnInspectorGUI()
     {
@@ -14,6 +17,15 @@ public class AgentCustomEditor : Editor
         Agent agent = (Agent)target;
 
         showWorldStates = EditorGUILayout.Foldout(showWorldStates, status);
+
+        EditorGUILayout.BeginHorizontal();
+        key = EditorGUILayout.TextField(key);
+        value = EditorGUILayout.TextField(value);
+        EditorGUILayout.EndHorizontal();
+        if(GUILayout.Button("Add Worldstate"))
+        {
+            agent.WorldState.AddWorldState(key, value);
+        }
 
 
         if (showWorldStates)

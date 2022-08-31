@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(InventorySystem))]
@@ -22,17 +23,21 @@ public class BeloningsSensor : MonoBehaviour
     private void Update()
     {
         Agent.WorldState.ChangeValue("hasFood", InventorySystem.HasItemWithType(ItemType.Food));
-        if (Agent.WorldState.GetValue("resourceToGather") != null && !string.IsNullOrEmpty(Agent.WorldState.GetValue("resourceToGather").ToString()))
+        if (Agent.WorldState.GetValue("requestedItem") != null && !string.IsNullOrEmpty(Agent.WorldState.GetValue("requestedItem").ToString()))
         {
             int amount = int.Parse(Agent.WorldState.GetValue("gatherAmount").ToString());
-            Item item = ItemManager.Instance.GetItemByName(Agent.WorldState.GetValue("resourceToGather").ToString().ToLower());
-            if(item != null)
+            Item requested = Agent.WorldState.GetValue("requestedItem") as Item;
+            bool hasItem =  InventorySystem.HasEnough(requested, amount);
+
+            if(!hasItem && Agent.JobType == JobType.Crafter && requested.HasRecipe)
             {
-                Agent.WorldState.AddWorldState("hasResource", (InventorySystem.HasEnough(item, amount)));
+                Agent.WorldState.AddWorldState("hasMaterials", Agent.CraftingSystem.HasEnoughToCraft(requested));
             }
+
+            Agent.WorldState.AddWorldState("hasItem", hasItem);
         }
         else
-            Agent.WorldState.AddWorldState("hasResource", false);
+            Agent.WorldState.AddWorldState("hasItem", false);
     }
 
 }

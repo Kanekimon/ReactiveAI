@@ -35,6 +35,7 @@ public class AStar
 {
     public static Queue<ActionBase> PlanActionSequence(BaseGoal goal, List<ActionBase> allActions)
     {
+        
         Queue<ActionBase> queue = new Queue<ActionBase>();
 
         int counter = 100;

@@ -25,7 +25,9 @@ internal class StorageInteractionAction : ActionBase
     public override void OnTick()
     {
         base.OnTick();
+        request = Agent.WorldState.GetValue("request") as Request;
         request.Storage.RetrieveFromStorage(Agent.InventorySystem, request.RequestedItem, request.RequestedAmount);
+        request.Status = RequestStatus.Finished;
         OnDeactived();
     }
 

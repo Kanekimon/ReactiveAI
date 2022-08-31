@@ -7,8 +7,8 @@ using UnityEngine;
 public class RequestSystem : MonoBehaviour
 {
     TownSystem townSystem;
-    [SerializeField] List<Request> _open = new List<Request>();
-    [SerializeField] List<Request> _inWork = new List<Request>();
+    List<Request> _open = new List<Request>();
+    List<Request> _inWork = new List<Request>();
 
     public List<Request> Open => _open;
     public List<Request> InWork => _inWork;
@@ -52,6 +52,14 @@ public class RequestSystem : MonoBehaviour
         _open.Add(r);
     }
 
+    public void RequestItems(Agent agent, List<Request> requ)
+    {
+        foreach(Request r in requ)
+        {
+            RequestItem(agent, r.RequestedItem, r.RequestedAmount);
+        }
+    }
+
     internal void FinishedRequest(Agent agent, Item itemDelivered, GameObject storage)
     {
         foreach (Request req in _inWork.Where(a => a.Giver == agent.gameObject))
@@ -59,7 +67,7 @@ public class RequestSystem : MonoBehaviour
             if (req.RequestedItem == itemDelivered)
             {
                 req.Storage = storage.GetComponent<Storage>();
-                req.Status = RequestStatus.Finished;
+                req.Status = RequestStatus.Ready;
                 req.Requester.GetComponent<Agent>().PickUpResourceFromTarget(req);
             }
         }

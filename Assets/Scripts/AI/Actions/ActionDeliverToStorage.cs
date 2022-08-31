@@ -12,8 +12,8 @@ public class ActionDeliverToStorage : ActionBase
 
     protected override void Start()
     {
-        preconditions.Add(new KeyValuePair<string, object>("hasResource", true));
-        effects.Add(new KeyValuePair<string, object>("deliveredResource", true));
+        preconditions.Add(new KeyValuePair<string, object>("hasItem", true));
+        effects.Add(new KeyValuePair<string, object>("deliveredItem", true));
 
         town = Agent.HomeTown;
 
@@ -24,8 +24,8 @@ public class ActionDeliverToStorage : ActionBase
     public override void OnActivated(BaseGoal linked)
     {
         base.OnActivated(linked);
-        targetStorage = town.GetStorage(Agent.WorldState.GetValue("resourceToGather") as Item);
-        NavAgent.MoveTo(NavAgent.PickClosestPositionInRange(targetStorage, 1f));
+        targetStorage = town.GetStorage(Agent.WorldState.GetValue("requestedItem") as Item);
+        NavAgent.MoveTo(NavAgent.PickClosestPositionInRange(targetStorage, Agent.InteractionRange));
     }
 
     public override void OnTick()
@@ -34,7 +34,7 @@ public class ActionDeliverToStorage : ActionBase
         {
             if (NavAgent.AtDestination)
             {
-                Item toDeliver = Agent.WorldState.GetValue("resourceToGather") as Item;
+                Item toDeliver = Agent.WorldState.GetValue("requestedItem") as Item;
                 int amount = int.Parse(Agent.WorldState.GetValue("gatherAmount").ToString());
                 Agent.InventorySystem.TransferToOther(targetStorage.GetComponent<InventorySystem>(), toDeliver, amount);
                 town.FinishedRequest(Agent, toDeliver, targetStorage);

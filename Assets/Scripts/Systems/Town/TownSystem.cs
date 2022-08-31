@@ -8,7 +8,7 @@ using UnityEngine;
 public class TownSystem : MonoBehaviour
 {
     List<Agent> _population = new List<Agent>();
-    public GameObject RequestBoard;
+    public RequestSystem RequestBoard;
 
     public List<Storage> Storages = new List<Storage>();
 
@@ -41,6 +41,8 @@ public class TownSystem : MonoBehaviour
             if(_population.Any(a => a.JobType == JobType.None))
             {
                 worker = _population.Where(a => a.JobType == JobType.None && a.gameObject != r.Requester).FirstOrDefault();
+                if (worker == null)
+                    return false;
                 worker.GetJob(requiredWorker);
             }
         }

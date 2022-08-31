@@ -49,6 +49,14 @@ public class InventorySystem : MonoBehaviour
         }
     }
 
+    internal int GetItemAmount(Item item)
+    {
+        if (!HasItem(item))
+            return 0;
+
+        return _inventory.Where(a => a.Key.Id == item.Id).FirstOrDefault().Value.Amount;
+    }
+
 
     /// <summary>
     /// Checks if the item is in the inventory

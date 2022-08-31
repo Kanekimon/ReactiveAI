@@ -5,7 +5,7 @@ using UnityEngine;
 public class GoapPlanner : MonoBehaviour
 {
     Queue<ActionBase> CurrentActionSequence { get; set; } = new Queue<ActionBase>();
-    [SerializeField]ActionBase CurrentAction;
+    [SerializeField] ActionBase CurrentAction;
     [SerializeField] BaseGoal CurrentGoal;
 
 
@@ -27,7 +27,7 @@ public class GoapPlanner : MonoBehaviour
     public void InitActions()
     {
         ActionContainer = transform.Find("ActionContainer").gameObject;
-        AllActions =  ActionContainer.GetComponents<ActionBase>().ToList();
+        AllActions = ActionContainer.GetComponents<ActionBase>().ToList();
     }
     public void InitGoals()
     {
@@ -58,11 +58,16 @@ public class GoapPlanner : MonoBehaviour
             CurrentGoal.OnGoalActivated();
             Plan();
         }
-
-        if (CurrentActionSequence.Count > 0 && (CurrentAction == null || CurrentAction != CurrentActionSequence.Peek()))
+        try
         {
-            CurrentAction = CurrentActionSequence.Peek();
-            CurrentAction.OnActivated(CurrentGoal);
+            if (CurrentActionSequence.Count > 0 && (CurrentAction == null || CurrentAction != CurrentActionSequence.Peek()))
+            {
+                CurrentAction = CurrentActionSequence.Peek();
+                CurrentAction.OnActivated(CurrentGoal);
+            }
+        } catch(System.Exception ex)
+        {
+            Debug.Log("Test");
         }
 
 
@@ -97,7 +102,7 @@ public class GoapPlanner : MonoBehaviour
     BaseGoal TickGoals()
     {
         BaseGoal bestGoal = null;
-        foreach(BaseGoal goal in AllGoals)
+        foreach (BaseGoal goal in AllGoals)
         {
             goal.OnTickGoal();
 
@@ -125,27 +130,39 @@ public class GoapPlanner : MonoBehaviour
     {
 
         CurrentActionSequence = AStar.PlanActionSequence(CurrentGoal, AllActions);
-        if(CurrentActionSequence != null && CurrentActionSequence.Count > 0)
+        if (CurrentActionSequence != null && CurrentActionSequence.Count > 0)
             GoapHelper.DebugPlan(this.Agent, CurrentGoal, CurrentActionSequence.ToList());
     }
 
     public void RequestResource(Item item, int amount)
     {
-        foreach(BaseGoal goal in AllGoals)
-        {
-            if(goal is GatherResourceGoal)
-            {
-                GatherResourceGoal gG = ((GatherResourceGoal)goal);
-                if (gG.ItemToGather == item)
-                    gG.GatherAmount += amount;
-                
-            }
-        }
+        Agent.WorldState.AddWorldState("requestedItem", item);
+        Agent.WorldState.AddWorldState("gatherAmount", amount);
     }
 
+    public void RequestCraftedItem(Item item, int amount)
+    {
+        Agent.WorldState.AddWorldState("requestedItem", item);
+        Agent.WorldState.AddWorldState("gatherAmount", amount);
 
+        if (Agent.InventorySystem.HasEnough(item, amount))
+        {
+            Agent.WorldState.AddWorldState("hasItem", true);
+        }
+        else if (Agent.CraftingSystem.HasEnoughToCraft(item))
+        {
+            Agent.WorldState.AddWorldState("hasMaterial", true);
+        }
+        else
+        {
+            List<Request> reqs = new List<Request>();
+            foreach(KeyValuePair<Item, int> n in Agent.CraftingSystem.GetMissingResources(item))
+            {
+                reqs.Add(new Request(Agent.gameObject, n.Key, n.Value));
+            }
+            Agent.WorldState.AddWorldState("requests", reqs);
+        }
 
-
-
+    }
 }
 

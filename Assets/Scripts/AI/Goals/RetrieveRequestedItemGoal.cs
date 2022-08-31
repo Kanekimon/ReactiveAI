@@ -22,10 +22,17 @@ public class RetrieveRequestedItemGoal : BaseGoal
     {
         base.OnTickGoal();
 
-        if (request != null || Agent.FinishedRequests.Count > 0)
+        if (Agent.ReadyForPickUp.Count > 0)
             Priority = MaxPrio;
         else
             Priority = MinPrio;
+
+        if (request != null)
+        {
+            if (request.Status == RequestStatus.Finished)
+                Priority = MinPrio;
+        }
+
     }
 
     public override int CalculatePriority()
@@ -36,7 +43,7 @@ public class RetrieveRequestedItemGoal : BaseGoal
     public override void OnGoalActivated()
     {
 
-        request = Agent.FinishedRequests.Dequeue();
+        request = Agent.ReadyForPickUp.Dequeue();
         Agent.WorldState.AddWorldState("interactWithStorage", false);
         Agent.WorldState.AddWorldState("request", request);
         Agent.WorldState.AddWorldState("hasTarget", true);

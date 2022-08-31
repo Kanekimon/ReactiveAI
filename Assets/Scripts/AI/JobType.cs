@@ -13,6 +13,7 @@ public enum JobType
     Blacksmith,
     Builder,
     Farmer,
-    Cook
+    Cook,
+    Crafter
 }
 

@@ -26,7 +26,10 @@ public class RequestAtTownAction : ActionBase
     public override void OnTick()
     {
         base.OnTick();
-        Agent.HomeTown.RequestBoard.GetComponent<RequestSystem>().RequestItem(Agent, Agent.WorldState.GetValue("requestItem") as Item, int.Parse(Agent.WorldState.GetValue("requestAmount").ToString()));
+
+        List<Request> Requests = Agent.WorldState.GetValue("requests") as List<Request>;
+        Agent.HomeTown.RequestBoard.RequestItems(Agent, Requests);
+        //Agent.HomeTown.RequestBoard.GetComponent<RequestSystem>().RequestItem(Agent, Agent.WorldState.GetValue("requestItem") as Item, int.Parse(Agent.WorldState.GetValue("requestAmount").ToString()));
         Agent.WorldState.AddWorldState("requestResource", true);
         OnDeactived();
     }
