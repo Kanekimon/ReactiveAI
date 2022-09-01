@@ -19,7 +19,7 @@ internal class MoveToAction : ActionBase
     public override void OnActivated(BaseGoal linked)
     {
         base.OnActivated(linked);
-        _target = Agent.WorldState.GetValue("target") as GameObject;
+        _target = Agent.WorldState.GetValue<GameObject>("target");
         NavAgent.MoveTo(NavAgent.PickClosestPositionInRange(_target, 5f));
     }
 

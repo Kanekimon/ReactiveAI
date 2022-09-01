@@ -7,9 +7,6 @@ using UnityEngine;
 
 public class PlantTreeGoal : BaseGoal
 {
-    public int Prio;
-    public int MinPrio;
-    public int MaxPrio;
     public int AmountToPlace;
     protected override void Start()
     {

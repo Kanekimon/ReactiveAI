@@ -4,10 +4,6 @@ using UnityEngine;
 public class ReduceHungerGoal : BaseGoal
 {
 
-    [SerializeField] int MinPriority = 0;
-    [SerializeField] int MaxPriority = 50;
-    
-
     private void Start()
     {
         Preconditions.Add(new KeyValuePair<string, object>("isHungry", false));
@@ -16,9 +12,9 @@ public class ReduceHungerGoal : BaseGoal
     public override int CalculatePriority()
     {
         if ((bool)Agent.WorldState.GetValue("isHungry"))
-            return MaxPriority;
+            return MaxPrio;
         else
-            return MinPriority;
+            return MinPrio;
     }
 
     public override void OnGoalActivated()

@@ -18,6 +18,10 @@ public interface IGoal
 
 public class BaseGoal : MonoBehaviour, IGoal
 {
+    [SerializeField] protected int Prio;
+    [SerializeField] protected int MinPrio;
+    [SerializeField] protected int MaxPrio;
+
     float timer;
     float delay = 10f;
 
@@ -28,9 +32,11 @@ public class BaseGoal : MonoBehaviour, IGoal
     protected GOAPUI DebugUI;
     protected ActionBase LinkedAction;
     protected Agent Agent;
+    protected StateMemory WorldState;
     [SerializeField] protected bool Pause = false;
     protected StateMemory NeededWorldState;
     [SerializeField] protected bool Runnable = true;
+    
 
     public int Id { get { return _id; } }
 
@@ -42,6 +48,7 @@ public class BaseGoal : MonoBehaviour, IGoal
         NavAgent = Parent.GetComponent<NavigationAgent>();
         AwarenessSystem = Parent.GetComponent<AwarenessSystem>();
         Agent = Parent.GetComponent<Agent>();
+        WorldState = Agent.WorldState;
         NeededWorldState = CreateRequiredWorldState();
     }
 
@@ -94,7 +101,7 @@ public class BaseGoal : MonoBehaviour, IGoal
 
     public virtual int CalculatePriority()
     {
-        return -1;
+        return Prio;
     }
 
     public virtual void OnGoalActivated()

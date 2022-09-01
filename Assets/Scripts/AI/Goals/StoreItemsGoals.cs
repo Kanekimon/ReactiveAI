@@ -3,36 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UnityEngine;
 
-public class CraftGoal : BaseGoal
+
+public class StoreItemsGoals : BaseGoal
 {
-    public Recipe RequestedRecipe;
+    public Storage Storage;
 
     protected override void Start()
     {
-        Preconditions.Add(new KeyValuePair<string, object>("deliveredResource", true));
+        Preconditions.Add(new KeyValuePair<string, object>("inventoryFull", false));
         base.Start();
     }
 
     public override void OnGoalActivated()
     {
-        
-    }
-
-
-    public override int CalculatePriority()
-    {
-        return Prio;
+        base.OnGoalActivated();
+        WorldState.AddWorldState("target", Storage.gameObject);
     }
 
 
     public override void OnTickGoal()
     {
-        if(RequestedRecipe != null)
+        if (WorldState.GetValue<bool>("inventoryFull"))
             Prio = MaxPrio;
         else
             Prio = MinPrio;
+
+        base.OnTickGoal();
     }
 }
 

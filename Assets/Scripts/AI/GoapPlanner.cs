@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 
@@ -21,6 +22,19 @@ public class GoapPlanner : MonoBehaviour
         Agent = GetComponent<Agent>();
         InitActions();
         InitGoals();
+
+    }
+
+    public void WriteAllWorldStatesToFile()
+    {
+        string states = "";
+        foreach (KeyValuePair<string, object> state in Agent.WorldState.GetWorldState)
+        {
+            states += $"{state.Key}" + "\n";
+        }
+
+        string file = Path.Combine(@"D:\Unity\Dump", "states.txt");
+        using (StreamWriter stW = new StreamWriter(file)) { stW.Write(states); }
     }
 
 
@@ -41,7 +55,7 @@ public class GoapPlanner : MonoBehaviour
 
     private void Start()
     {
-
+        WriteAllWorldStatesToFile();
     }
 
 
@@ -58,16 +72,19 @@ public class GoapPlanner : MonoBehaviour
             CurrentGoal.OnGoalActivated();
             Plan();
         }
-        try
+
+        if (CurrentActionSequence == null)
         {
-            if (CurrentActionSequence.Count > 0 && (CurrentAction == null || CurrentAction != CurrentActionSequence.Peek()))
-            {
-                CurrentAction = CurrentActionSequence.Peek();
-                CurrentAction.OnActivated(CurrentGoal);
-            }
-        } catch(System.Exception ex)
+            if (CurrentGoal != null)
+                DeactiveOldGoal();
+            CurrentGoal = null;
+            return;
+        }
+
+        if (CurrentActionSequence.Count > 0 && (CurrentAction == null || CurrentAction != CurrentActionSequence.Peek()))
         {
-            Debug.Log("Test");
+            CurrentAction = CurrentActionSequence.Peek();
+            CurrentAction.OnActivated(CurrentGoal);
         }
 
 
@@ -119,17 +136,17 @@ public class GoapPlanner : MonoBehaviour
     void DeactiveOldGoal()
     {
         CurrentGoal.OnGoalDeactivated();
-        if (CurrentActionSequence.Count > 0)
+        if (CurrentActionSequence != null && CurrentActionSequence.Count > 0)
         {
             CurrentActionSequence.Peek().OnDeactived();
+            CurrentActionSequence.Clear();
         }
-        CurrentActionSequence.Clear();
+
     }
 
     void Plan()
     {
-
-        CurrentActionSequence = AStar.PlanActionSequence(CurrentGoal, AllActions);
+        CurrentActionSequence = AStar.PlanActionSequence(CurrentGoal, AllActions, Agent.WorldState);
         if (CurrentActionSequence != null && CurrentActionSequence.Count > 0)
             GoapHelper.DebugPlan(this.Agent, CurrentGoal, CurrentActionSequence.ToList());
     }
@@ -156,7 +173,7 @@ public class GoapPlanner : MonoBehaviour
         else
         {
             List<Request> reqs = new List<Request>();
-            foreach(KeyValuePair<Item, int> n in Agent.CraftingSystem.GetMissingResources(item))
+            foreach (KeyValuePair<Item, int> n in Agent.CraftingSystem.GetMissingResources(item))
             {
                 reqs.Add(new Request(Agent.gameObject, n.Key, n.Value));
             }

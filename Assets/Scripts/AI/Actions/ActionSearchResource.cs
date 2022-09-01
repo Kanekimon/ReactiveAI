@@ -9,7 +9,7 @@ public class ActionSearchResource : ActionBase
 
     protected override void Start()
     {
-        effects.Add(new KeyValuePair<string, object>("hasWantedResourceTarget", true));        
+        effects.Add(new KeyValuePair<string, object>("hasTarget", true));        
         base.Start();
     }
 
@@ -35,7 +35,7 @@ public class ActionSearchResource : ActionBase
     {
         base.OnActivated(linked);
 
-        _item = Agent.WorldState.GetValue("requestedItem") as Item;
+        _item = Agent.WorldState.GetValue<Item>("requestedResource");
 
         Vector3 location = NavAgent.PickLocationInRange(10f);
         NavAgent.MoveTo(location);

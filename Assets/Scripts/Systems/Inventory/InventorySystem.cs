@@ -6,13 +6,31 @@ public class InventorySystem : MonoBehaviour
 {
     public Dictionary<Item, InventoryItem> _inventory = new Dictionary<Item, InventoryItem>();
 
+    [SerializeField] List<InventoryItem> _items = new List<InventoryItem>();
+    public List<InventoryItem> InventoryItems { get => _items; set { _items =value; } }
+    public int MaximimumItems;
+    public int NumberOfItems => _inventory.Values.Sum(a => a.Amount);
+
+    private void Update()
+    {
+        InventoryItems = _inventory.Values.ToList();
+    }
+
+    public InventoryItem GetInventoryItem(Item item)
+    {
+        return _inventory.ContainsKey(item) ? _inventory[item] : null;
+    }
+
     /// <summary>
     /// Add Items with amount
     /// </summary>
     /// <param name="item">Item to add</param>
     /// <param name="amount">Amount to add</param>
-    public void AddItem(Item item, int amount)
+    public int AddItem(Item item, int amount)
     {
+        if(NumberOfItems + amount > MaximimumItems)
+            amount = MaximimumItems-NumberOfItems;
+
         if (_inventory.Any(a => a.Key.Id == item.Id))
         {
             InventoryItem i = _inventory.Where(a => a.Key.Id == item.Id).FirstOrDefault().Value;
@@ -20,6 +38,8 @@ public class InventorySystem : MonoBehaviour
         }
         else
             _inventory.Add(item, new InventoryItem() { Item = item, Amount = amount, Name = item.Name});
+
+        return amount;
     }
 
     /// <summary>
@@ -40,6 +60,7 @@ public class InventorySystem : MonoBehaviour
         }
     }
 
+
     internal void TransferToOther(InventorySystem inventorySystem, Item toDeliver, int amount)
     {
         if(HasEnough(toDeliver, amount))
@@ -55,6 +76,11 @@ public class InventorySystem : MonoBehaviour
             return 0;
 
         return _inventory.Where(a => a.Key.Id == item.Id).FirstOrDefault().Value.Amount;
+    }
+
+    public int GetFreeSpaceSize()
+    {
+        return MaximimumItems - NumberOfItems;
     }
 
 

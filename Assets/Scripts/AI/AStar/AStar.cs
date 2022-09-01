@@ -33,16 +33,21 @@ class Node
 
 public class AStar
 {
-    public static Queue<ActionBase> PlanActionSequence(BaseGoal goal, List<ActionBase> allActions)
+    public static Queue<ActionBase> PlanActionSequence(BaseGoal goal, List<ActionBase> allActions, StateMemory worldState)
     {
-        
+
         Queue<ActionBase> queue = new Queue<ActionBase>();
 
         int counter = 100;
 
-        Node currentNode = new Node() { GCost = 0, HCost = goal.Preconditions.Count, openPreconditions = goal.Preconditions };
+        if (goal is ChopTreeGoal)
+            Debug.Log("test");
+
+        Node currentNode = new Node() { GCost = 0, HCost = goal.Preconditions.Count, openPreconditions = new List<KeyValuePair<string, object>>(goal.Preconditions) };
         List<Node> open = new List<Node>();
         List<Node> closed = new List<Node>();
+
+        currentNode = CheckForAlreadySatisfiedWorldStates(currentNode, worldState);
 
         bool run = true;
         open.Add(currentNode);
@@ -109,6 +114,21 @@ public class AStar
         }
 
         return queue;
+    }
+
+    static Node CheckForAlreadySatisfiedWorldStates(Node current, StateMemory states)
+    {
+        for (int i = current.openPreconditions.Count - 1; i >= 0; i--)
+        {
+            KeyValuePair<string, object> precon = current.openPreconditions[i];
+
+            if (states.GetValue(precon.Key) != null)
+            {
+                if (states.GetValue(precon.Key).Equals(precon.Value))
+                    current.openPreconditions.Remove(precon);
+            }
+        }
+        return current;
     }
 
     static Node GetLowestCostNode(List<Node> open)

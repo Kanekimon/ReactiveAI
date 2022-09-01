@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
+
 [CustomEditor(typeof(InventorySystem))]
 public class InventoryCustomEditor : Editor
 {
@@ -32,17 +33,28 @@ public class InventoryCustomEditor : Editor
             Debug.Log(flags);
             item = null;
         }
+        //foreach (KeyValuePair<Item, InventoryItem> item in inventorySystem._inventory)
+        //{
+        //    EditorGUILayout.BeginHorizontal();
+        //    EditorGUILayout.TextField("Item-Name", item.Key.Name);
+        //    EditorGUILayout.TextField("Item-Amount", item.Value.Amount.ToString());
+        //    EditorGUILayout.EndHorizontal();
+        //}
+        //EditorGUI.BeginChangeCheck();
 
-
-        foreach (KeyValuePair<Item, InventoryItem> item in inventorySystem._inventory)
-        {
-            EditorGUILayout.BeginHorizontal();
-            EditorGUILayout.TextField("Item-Name", item.Key.Name);
-            EditorGUILayout.TextField("Item-Amount", item.Value.Amount.ToString());
-            EditorGUILayout.EndHorizontal();
-        }
+        //if (EditorGUI.EndChangeCheck())
+        //{
+        //    foreach (KeyValuePair<Item, InventoryItem> item in inventorySystem._inventory)
+        //    {
+        //        EditorGUILayout.BeginHorizontal();
+        //        EditorGUILayout.TextField("Item-Name", item.Key.Name);
+        //        EditorGUILayout.TextField("Item-Amount", item.Value.Amount.ToString());
+        //        EditorGUILayout.EndHorizontal();
+        //    }
+        //}
 
     }
+
 
 }
 

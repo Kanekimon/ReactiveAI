@@ -7,7 +7,7 @@ public class BeloningsSensor : MonoBehaviour
 {
     Agent Agent;
     InventorySystem InventorySystem;
-
+    bool InventoryHasSpace = true;
     private void Awake()
     {
         Agent = GetComponent<Agent>();
@@ -22,6 +22,17 @@ public class BeloningsSensor : MonoBehaviour
 
     private void Update()
     {
+        if (InventoryHasSpace && InventorySystem.GetFreeSpaceSize() == 0)
+        {
+            InventoryHasSpace = false;
+            Agent.WorldState.AddWorldState("inventoryFull", true);
+        }
+        else if (!InventoryHasSpace && InventorySystem.GetFreeSpaceSize() > 0)
+        {
+            InventoryHasSpace=true;
+            Agent.WorldState.AddWorldState("inventoryFull", false);
+        }
+
         Agent.WorldState.ChangeValue("hasFood", InventorySystem.HasItemWithType(ItemType.Food));
         if (Agent.WorldState.GetValue("requestedItem") != null && !string.IsNullOrEmpty(Agent.WorldState.GetValue("requestedItem").ToString()))
         {

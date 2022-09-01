@@ -5,8 +5,6 @@ using UnityEngine;
 
 public class WanderGoal : BaseGoal
 {
-    [SerializeField] int MinPriority = 0;
-    [SerializeField] int MaxPriority = 30;
 
     [SerializeField] float PriorityBuildRate = 1;
     [SerializeField] float PriorityDecayRate = 0.1f;
@@ -38,13 +36,13 @@ public class WanderGoal : BaseGoal
     public override void OnGoalActivated()
     {
         base.OnGoalActivated();
-        CurrentPriority = MaxPriority;
+        CurrentPriority = MaxPrio;
     }
 
     public override void OnGoalDeactivated()
     {
         base.OnGoalDeactivated();
-        CurrentPriority = MinPriority;
+        CurrentPriority = MinPrio;
     }
 }
 

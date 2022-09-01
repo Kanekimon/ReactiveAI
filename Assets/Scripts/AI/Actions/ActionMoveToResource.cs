@@ -19,7 +19,7 @@ public class ActionMoveToResource : ActionBase
     public override void OnActivated(BaseGoal linked)
     {
         base.OnActivated(linked);
-        _target = Agent.WorldState.GetValue("wantedResource") as GameObject;
+        _target = Agent.WorldState.GetValue("target") as GameObject;
         NavAgent.MoveTo(NavAgent.PickClosestPositionInRange(_target,5f));
     }
 

@@ -7,10 +7,6 @@ using UnityEngine;
 
 public class RequestResourceGoal : BaseGoal
 {
-    [SerializeField] int Priority = 10;
-    [SerializeField] int MinPrio = 1;
-    [SerializeField] int MaxPrio = 100;
-
     [SerializeField] List<Request> Requests = new List<Request>();
     public bool waiting;
 
@@ -20,11 +16,11 @@ public class RequestResourceGoal : BaseGoal
     {
         Preconditions.Add(new KeyValuePair<string, object>("requestResource", true));
 
-        if (Agent.name.Equals("Agent#02"))
-        {
-            Requests.Add(new Request(Agent.gameObject, ItemManager.Instance.GetItemByName("hammer"), 1));
-            Agent.WorldState.AddWorldState("requests", Requests);
-        }
+        //if (Agent.name.Equals("Agent#02"))
+        //{
+        //    Requests.Add(new Request(Agent.gameObject, ItemManager.Instance.GetItemByName("hammer"), 1));
+        //    Agent.WorldState.AddWorldState("requests", Requests);
+        //}
 
        
         base.Start();
@@ -38,14 +34,11 @@ public class RequestResourceGoal : BaseGoal
 
     public override int CalculatePriority()
     {
-        return Priority;
+        return Prio;
     }
 
     public override void OnGoalDeactivated()
     {
-        if (Agent.JobType == JobType.Crafter)
-            Debug.Log("Crafter");
-
         Requests.Clear();
         Agent.WorldState.AddWorldState("deliveredResource", false);
         Agent.WorldState.AddWorldState("requests", null);
@@ -54,32 +47,25 @@ public class RequestResourceGoal : BaseGoal
 
     public override void OnTickGoal()
     {
-        if (Agent.JobType == JobType.Crafter)
-            Debug.Log("Crafter");
 
-        if (Agent.WorldState.GetValue("requests") != null)
+        if (WorldState.GetValue("requests") != null)
         {
-            Requests = Agent.WorldState.GetValue("requests") as List<Request>;
+            Requests = WorldState.GetValue<List<Request>>("requests");
 
             if (Requests.Count > 0)
             {
-                Priority = MaxPrio;//waiting ? (MinPrio + MaxPrio)/2 : MaxPrio;
+                Prio = MaxPrio;//waiting ? (MinPrio + MaxPrio)/2 : MaxPrio;
             }
             else
             {
-                Priority = MinPrio;
+                Prio = MinPrio;
             }
         }
         else
-        {          
-            Priority = MinPrio;
+        {
+            Prio = MinPrio;
         }
     }
 
-
-    public void AddRequests(List<Request> r)
-    {
-        Requests = r;
-    }
 }
 

@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class IdleGoal : BaseGoal
 {
-
-    [SerializeField] int Priority = 10;
-
     private void Start()
     {
         Preconditions.Add(new KeyValuePair<string, object>("isIdle", true));
@@ -14,7 +11,7 @@ public class IdleGoal : BaseGoal
 
     public override int CalculatePriority()
     {
-        return Priority;
+        return Prio;
     }
 
     public override bool CanRun()

@@ -1,3 +1,4 @@
+using Assets.Scripts.AI;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,7 @@ public class ActionBase : MonoBehaviour
     protected AwarenessSystem AwarenessSystem;
     protected BaseGoal LinkedGoal;
     protected Agent Agent;
+    protected StateMemory WorldState;
     protected bool _hasFinished;
     protected bool _needsReplanning = false;
 
@@ -25,6 +27,7 @@ public class ActionBase : MonoBehaviour
         NavAgent = Parent.GetComponent<NavigationAgent>();
         AwarenessSystem = Parent.GetComponent<AwarenessSystem>();
         Agent = Parent.GetComponent<Agent>();
+        WorldState = Agent.WorldState;
     }
 
     protected virtual void Start()
@@ -33,11 +36,11 @@ public class ActionBase : MonoBehaviour
 
         foreach (KeyValuePair<string, object> kvp in preconditions)
         {
-            Agent.WorldState.AddWorldState(kvp.Key, ObjectHelper.GetDefault(kvp.Value.GetType() ?? null));
+            WorldState.AddWorldState(kvp.Key, ObjectHelper.GetDefault(kvp.Value.GetType() ?? null));
         }
         foreach (KeyValuePair<string, object> kvp in effects)
         {
-            Agent.WorldState.AddWorldState(kvp.Key, ObjectHelper.GetDefault(kvp.Value.GetType() ?? null));
+            WorldState.AddWorldState(kvp.Key, ObjectHelper.GetDefault(kvp.Value.GetType() ?? null));
         }
     }
 

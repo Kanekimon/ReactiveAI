@@ -14,5 +14,6 @@ public class Item : ScriptableObject
     public bool IsResource;
     public bool HasRecipe;
     public GameObject Prefab;
+    public List<ResourceType> ResourceType = new List<ResourceType>();
 }
 

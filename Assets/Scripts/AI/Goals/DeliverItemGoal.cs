@@ -7,9 +7,6 @@ using UnityEngine;
 
 public class DeliverItemGoal : BaseGoal
 {
-    [SerializeField] int Priority = 10;
-    [SerializeField] int MinPrio = 1;
-    [SerializeField] int MaxPrio = 100;
     [SerializeField] public int GatherAmount;
     [SerializeField] Item resourceToGather;
 
@@ -31,7 +28,7 @@ public class DeliverItemGoal : BaseGoal
 
     public override int CalculatePriority()
     {
-        return Priority;
+        return Prio;
     }
 
     public override void OnGoalDeactivated()
@@ -46,9 +43,9 @@ public class DeliverItemGoal : BaseGoal
     public override void OnTickGoal()
     {
         if (GatherAmount == 0 || (bool)Agent.WorldState.GetValue("deliveredResource"))
-            Priority = MinPrio;
+            Prio = MinPrio;
         else
-            Priority = MaxPrio;
+            Prio = MaxPrio;
 
     }
 }

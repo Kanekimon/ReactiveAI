@@ -33,15 +33,16 @@ public class ResourceTarget : DetectableTarget
     }
 
 
-    public void Interact(Agent interacted)
+    public int Interact(Agent interacted)
     {
-        for(int i = GatherableMaterials.Count - 1; i >= 0; i--)
+        int gatheredAmount = 0;
+        for (int i = GatherableMaterials.Count - 1; i >= 0; i--)
         {
             Resource res = GatherableMaterials[i];
-            int gatheredAmount = Mathf.Clamp(Random.Range(res.MinAmount, res.MaxAmount + 1), 1, res.Amount);
-
+            gatheredAmount = Mathf.Clamp(Random.Range(res.MinAmount, res.MaxAmount + 1), 1, res.Amount);
+            gatheredAmount = interacted.InventorySystem.AddItem(res.Item, gatheredAmount);
             res.Amount -= gatheredAmount;
-            interacted.InventorySystem.AddItem(res.Item, gatheredAmount);
+           
 
             if (res.Amount == 0)
                 GatherableMaterials.RemoveAt(i);
@@ -49,7 +50,7 @@ public class ResourceTarget : DetectableTarget
 
         if (GatherableMaterials.Count == 0)
             Destroy(this.gameObject);
-
+        return gatheredAmount;
     }
 
 }
