@@ -1,6 +1,4 @@
-﻿using Assets.Scripts.AI;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -27,7 +25,7 @@ public class Agent : MonoBehaviour
     public float CoVisionAngle { get; private set; } = 0f;
 
     private StateMemory _memory = new StateMemory();
-    [SerializeField]private JobType _jobType;
+    [SerializeField] private JobType _jobType;
 
     AwarenessSystem _awareness;
     ConditionSystem _conditionSystem;
@@ -35,7 +33,7 @@ public class Agent : MonoBehaviour
     CraftingSystem _craftingSystem;
     GoapPlanner _goapPlanner;
 
- 
+
     public ConditionSystem ConditionSystem => _conditionSystem;
     public AwarenessSystem AwarenessSystem => _awareness;
     public InventorySystem InventorySystem => _inventorySystem;
@@ -44,7 +42,7 @@ public class Agent : MonoBehaviour
 
     public StateMemory WorldState => _memory;
     public TownSystem HomeTown;
-    
+
 
 
     private void Awake()

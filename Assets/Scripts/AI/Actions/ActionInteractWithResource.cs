@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class ActionInteractWithResource : ActionBase
@@ -25,8 +21,8 @@ public class ActionInteractWithResource : ActionBase
 
     public override bool CanRun()
     {
-        Item tmp = Agent.WorldState.GetValue("requestedResource") as Item;
-        if(tmp != null)
+        Item tmp = WorldState.GetValue<Item>("requestedResource");
+        if (tmp != null)
             return true;
         return false;
     }
@@ -36,14 +32,14 @@ public class ActionInteractWithResource : ActionBase
     {
         base.OnActivated(linked);
         gatherCount = 0;
-        AmountToGather = Agent.WorldState.GetValue<int>("gatherAmount");
+        AmountToGather = WorldState.GetValue<int>("gatherAmount");
         resourceToGather = WorldState.GetValue<Item>("requestedResource");
     }
 
 
     public override void OnTick()
     {
-        _target = Agent.WorldState.GetValue<GameObject>("target");
+        _target = WorldState.GetValue<GameObject>("target");
         if (timer >= delay)
         {
             timer = 0;
@@ -51,7 +47,7 @@ public class ActionInteractWithResource : ActionBase
             {
                 gatherCount += _target.GetComponent<ResourceTarget>().Interact(this.Agent);
             }
-            else if(_target == null && gatherCount < AmountToGather)
+            else if (_target == null && gatherCount < AmountToGather)
             {
                 this._needsReplanning = true;
             }

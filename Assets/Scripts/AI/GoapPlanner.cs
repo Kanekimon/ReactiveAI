@@ -16,10 +16,12 @@ public class GoapPlanner : MonoBehaviour
     List<ActionBase> AllActions;
     List<BaseGoal> AllGoals;
     Agent Agent;
+    StateMemory WorldState;
 
     private void Awake()
     {
         Agent = GetComponent<Agent>();
+        WorldState = Agent.WorldState;
         InitActions();
         InitGoals();
 
@@ -28,7 +30,7 @@ public class GoapPlanner : MonoBehaviour
     public void WriteAllWorldStatesToFile()
     {
         string states = "";
-        foreach (KeyValuePair<string, object> state in Agent.WorldState.GetWorldState)
+        foreach (KeyValuePair<string, object> state in WorldState.GetWorldState)
         {
             states += $"{state.Key}" + "\n";
         }
@@ -146,29 +148,29 @@ public class GoapPlanner : MonoBehaviour
 
     void Plan()
     {
-        CurrentActionSequence = AStar.PlanActionSequence(CurrentGoal, AllActions, Agent.WorldState);
+        CurrentActionSequence = AStar.PlanActionSequence(CurrentGoal, AllActions, WorldState);
         if (CurrentActionSequence != null && CurrentActionSequence.Count > 0)
             GoapHelper.DebugPlan(this.Agent, CurrentGoal, CurrentActionSequence.ToList());
     }
 
     public void RequestResource(Item item, int amount)
     {
-        Agent.WorldState.AddWorldState("requestedItem", item);
-        Agent.WorldState.AddWorldState("gatherAmount", amount);
+        WorldState.AddWorldState("requestedItem", item);
+        WorldState.AddWorldState("gatherAmount", amount);
     }
 
     public void RequestCraftedItem(Item item, int amount)
     {
-        Agent.WorldState.AddWorldState("requestedItem", item);
-        Agent.WorldState.AddWorldState("gatherAmount", amount);
+        WorldState.AddWorldState("requestedItem", item);
+        WorldState.AddWorldState("gatherAmount", amount);
 
         if (Agent.InventorySystem.HasEnough(item, amount))
         {
-            Agent.WorldState.AddWorldState("hasItem", true);
+            WorldState.AddWorldState("hasItem", true);
         }
         else if (Agent.CraftingSystem.HasEnoughToCraft(item))
         {
-            Agent.WorldState.AddWorldState("hasMaterial", true);
+            WorldState.AddWorldState("hasMaterial", true);
         }
         else
         {
@@ -177,7 +179,7 @@ public class GoapPlanner : MonoBehaviour
             {
                 reqs.Add(new Request(Agent.gameObject, n.Key, n.Value));
             }
-            Agent.WorldState.AddWorldState("requests", reqs);
+            WorldState.AddWorldState("requests", reqs);
         }
 
     }

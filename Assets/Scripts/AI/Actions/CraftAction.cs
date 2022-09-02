@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 
 public class CraftAction : ActionBase
@@ -27,7 +23,7 @@ public class CraftAction : ActionBase
     public override void OnActivated(BaseGoal linked)
     {
         base.OnActivated(linked);
-        Requested = Agent.WorldState.GetValue("requestedItem") as Item;
+        Requested = WorldState.GetValue<Item>("requestedItem");
     }
 
     public override void OnTick()

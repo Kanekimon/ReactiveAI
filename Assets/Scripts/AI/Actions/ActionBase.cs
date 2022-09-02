@@ -1,5 +1,3 @@
-using Assets.Scripts.AI;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -15,7 +13,7 @@ public class ActionBase : MonoBehaviour
     protected bool _needsReplanning = false;
 
 
-    [SerializeField]protected float _cost;
+    [SerializeField] protected float _cost;
 
     protected List<KeyValuePair<string, object>> preconditions = new List<KeyValuePair<string, object>>();
     protected List<KeyValuePair<string, object>> effects = new List<KeyValuePair<string, object>>();
@@ -97,7 +95,7 @@ public class ActionBase : MonoBehaviour
 
         foreach (KeyValuePair<string, object> precon in preconditions)
         {
-            object valueInMemory = Agent.WorldState.GetValue(precon.Key);
+            object valueInMemory = WorldState.GetValue(precon.Key);
             if (valueInMemory != null)
             {
                 if (!valueInMemory.Equals(precon.Value))
@@ -112,7 +110,7 @@ public class ActionBase : MonoBehaviour
         float count = 0f;
         foreach (KeyValuePair<string, object> precon in preconditions)
         {
-            object valueInMemory = Agent.WorldState.GetValue(precon.Key);
+            object valueInMemory = WorldState.GetValue(precon.Key);
             if (valueInMemory != null)
             {
                 if (!valueInMemory.Equals(precon.Value))
@@ -122,7 +120,7 @@ public class ActionBase : MonoBehaviour
         return count;
     }
 
-   
+
 
     public bool HasFinished()
     {

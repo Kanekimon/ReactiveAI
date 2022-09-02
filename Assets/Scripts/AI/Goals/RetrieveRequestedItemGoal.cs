@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 
 public class RetrieveRequestedItemGoal : BaseGoal
@@ -40,16 +36,16 @@ public class RetrieveRequestedItemGoal : BaseGoal
     {
 
         request = Agent.ReadyForPickUp.Dequeue();
-        Agent.WorldState.AddWorldState("interactWithStorage", false);
-        Agent.WorldState.AddWorldState("request", request);
-        Agent.WorldState.AddWorldState("hasTarget", true);
-        Agent.WorldState.AddWorldState("target", request.Storage.gameObject);
+        WorldState.AddWorldState("interactWithStorage", false);
+        WorldState.AddWorldState("request", request);
+        WorldState.AddWorldState("hasTarget", true);
+        WorldState.AddWorldState("target", request.Storage.gameObject);
         base.OnGoalActivated();
     }
 
     public override void OnGoalDeactivated()
     {
-        Agent.WorldState.RemoveWorldState("interactWithStorage");
+        WorldState.RemoveWorldState("interactWithStorage");
         request = null;
         base.OnGoalDeactivated();
     }

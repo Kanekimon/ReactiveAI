@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
 public class CraftGoal : BaseGoal
 {
@@ -17,7 +12,7 @@ public class CraftGoal : BaseGoal
 
     public override void OnGoalActivated()
     {
-        
+
     }
 
 
@@ -29,7 +24,7 @@ public class CraftGoal : BaseGoal
 
     public override void OnTickGoal()
     {
-        if(RequestedRecipe != null)
+        if (RequestedRecipe != null)
             Prio = MaxPrio;
         else
             Prio = MinPrio;

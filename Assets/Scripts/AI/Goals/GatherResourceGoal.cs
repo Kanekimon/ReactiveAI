@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class GatherResourceGoal : BaseGoal
@@ -31,18 +27,18 @@ public class GatherResourceGoal : BaseGoal
 
     public override void OnGoalDeactivated()
     {
-        Agent.WorldState.AddWorldState("deliveredResource", false);
-        Agent.WorldState.AddWorldState("requestedItem", null);
-        Agent.WorldState.AddWorldState("gatherAmount", 0);
+        WorldState.AddWorldState("deliveredResource", false);
+        WorldState.AddWorldState("requestedItem", null);
+        WorldState.AddWorldState("gatherAmount", 0);
         base.OnGoalDeactivated();
     }
 
     public override void OnTickGoal()
     {
-        if (Agent.WorldState.GetValue("requestedItem") != null)
+        if (WorldState.GetValue("requestedItem") != null)
         {
-            GatherAmount = int.Parse(Agent.WorldState.GetValue("gatherAmount").ToString());
-            if (GatherAmount == 0 || (bool)(Agent.WorldState.GetValue("deliveredResource") ?? false))
+            GatherAmount = WorldState.GetValue<int>("gatherAmount");
+            if (GatherAmount == 0 || (WorldState.GetValue<bool>("deliveredResource")))
                 Prio = MinPrio;
             else
                 Prio = MaxPrio;

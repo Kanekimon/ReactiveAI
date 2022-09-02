@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 public enum RequestStatus
@@ -43,7 +39,7 @@ public class Request
         RequestedAmount += amount;
         this.Status = RequestStatus.Requested;
     }
-    
+
     public void ChangeStatus(RequestStatus newStatus)
     {
         this.Status = newStatus;

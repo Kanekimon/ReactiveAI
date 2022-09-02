@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -15,6 +16,7 @@ public class Condition
     public float MaximumValue;
     public bool IsFatal;
 
+
     public void Tick()
     {
         Value = Mathf.Clamp(Value - DecreaseRate * Time.deltaTime, MinimumValue, MaximumValue);
@@ -26,10 +28,12 @@ public class ConditionSystem : MonoBehaviour
     [SerializeField]
     List<Condition> Conditions = new List<Condition>();
     Agent Agent;
+    StateMemory WorldState;
 
     private void Start()
     {
         Agent = GetComponent<Agent>();
+        WorldState = Agent.WorldState;
         Condition hunger = new Condition()
         {
             Name = "Hungry",
@@ -57,7 +61,7 @@ public class ConditionSystem : MonoBehaviour
 
         foreach (Condition c in Conditions)
         {
-            Agent.WorldState.AddWorldState($"is{c.Name}", false);
+            WorldState.AddWorldState($"is{c.Name}", false);
         }
 
     }
@@ -70,12 +74,12 @@ public class ConditionSystem : MonoBehaviour
             var cond = Conditions[i];
             if (cond.Ticked)
             {
-                bool currentlyActive = (bool)Agent.WorldState.GetValue($"is{cond.Name}");
+                bool currentlyActive = (bool)WorldState.GetValue($"is{cond.Name}");
                 cond.Tick();
                 if (!currentlyActive && cond.Value <= cond.TriggerValue)
-                    Agent.WorldState.AddWorldState($"is{cond.Name}", true);
+                    WorldState.AddWorldState($"is{cond.Name}", true);
                 else if (currentlyActive && cond.Value > cond.TriggerValue)
-                    Agent.WorldState.AddWorldState($"is{cond.Name}", false);
+                    WorldState.AddWorldState($"is{cond.Name}", false);
 
                 if (cond.Value == cond.MinimumValue && cond.IsFatal)
                     Agent.Die();

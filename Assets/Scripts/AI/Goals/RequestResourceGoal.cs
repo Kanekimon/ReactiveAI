@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class RequestResourceGoal : BaseGoal
@@ -19,16 +15,16 @@ public class RequestResourceGoal : BaseGoal
         //if (Agent.name.Equals("Agent#02"))
         //{
         //    Requests.Add(new Request(Agent.gameObject, ItemManager.Instance.GetItemByName("hammer"), 1));
-        //    Agent.WorldState.AddWorldState("requests", Requests);
+        //    WorldState.AddWorldState("requests", Requests);
         //}
 
-       
+
         base.Start();
     }
 
     public override void OnGoalActivated()
     {
-        Agent.WorldState.AddWorldState("target", Agent.HomeTown.RequestBoard.gameObject);
+        WorldState.AddWorldState("target", Agent.HomeTown.RequestBoard.gameObject);
         base.OnGoalActivated();
     }
 
@@ -40,8 +36,8 @@ public class RequestResourceGoal : BaseGoal
     public override void OnGoalDeactivated()
     {
         Requests.Clear();
-        Agent.WorldState.AddWorldState("deliveredResource", false);
-        Agent.WorldState.AddWorldState("requests", null);
+        WorldState.AddWorldState("deliveredResource", false);
+        WorldState.AddWorldState("requests", null);
         base.OnGoalDeactivated();
     }
 

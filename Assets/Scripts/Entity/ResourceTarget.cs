@@ -5,7 +5,7 @@ using Random = UnityEngine.Random;
 
 public enum ResourceType
 {
-    rock, 
+    rock,
     tree,
     bush,
     mushroom,
@@ -42,7 +42,7 @@ public class ResourceTarget : DetectableTarget
             gatheredAmount = Mathf.Clamp(Random.Range(res.MinAmount, res.MaxAmount + 1), 1, res.Amount);
             gatheredAmount = interacted.InventorySystem.AddItem(res.Item, gatheredAmount);
             res.Amount -= gatheredAmount;
-           
+
 
             if (res.Amount == 0)
                 GatherableMaterials.RemoveAt(i);

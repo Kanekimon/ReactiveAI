@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 public class TownSystem : MonoBehaviour
@@ -30,7 +27,7 @@ public class TownSystem : MonoBehaviour
 
         Agent worker = null;
 
-        if(workers.Count > 0)
+        if (workers.Count > 0)
         {
             //TODO: Check if occupied
             int random = UnityEngine.Random.Range(0, workers.Count);
@@ -38,7 +35,7 @@ public class TownSystem : MonoBehaviour
         }
         else
         {
-            if(_population.Any(a => a.JobType == JobType.None))
+            if (_population.Any(a => a.JobType == JobType.None))
             {
                 worker = _population.Where(a => a.JobType == JobType.None && a.gameObject != r.Requester).FirstOrDefault();
                 if (worker == null)

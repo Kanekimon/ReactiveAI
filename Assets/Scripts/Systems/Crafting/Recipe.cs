@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 [Serializable]
@@ -13,7 +10,7 @@ public class RecipesMaterial
 }
 
 
-[CreateAssetMenu(menuName ="Assets/Recipe")]
+[CreateAssetMenu(menuName = "Assets/Recipe")]
 public class Recipe : ScriptableObject
 {
     public List<RecipesMaterial> Materials = new List<RecipesMaterial>();

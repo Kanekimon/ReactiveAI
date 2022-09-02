@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class ActionDeliverToStorage : ActionBase
@@ -24,7 +20,7 @@ public class ActionDeliverToStorage : ActionBase
     public override void OnActivated(BaseGoal linked)
     {
         base.OnActivated(linked);
-        targetStorage = town.GetStorage(Agent.WorldState.GetValue("requestedItem") as Item);
+        targetStorage = town.GetStorage(WorldState.GetValue<Item>("requestedItem"));
         NavAgent.MoveTo(NavAgent.PickClosestPositionInRange(targetStorage, Agent.InteractionRange));
     }
 
@@ -34,11 +30,11 @@ public class ActionDeliverToStorage : ActionBase
         {
             if (NavAgent.AtDestination)
             {
-                Item toDeliver = Agent.WorldState.GetValue("requestedItem") as Item;
-                int amount = int.Parse(Agent.WorldState.GetValue("gatherAmount").ToString());
+                Item toDeliver = WorldState.GetValue<Item>("requestedItem") as Item;
+                int amount = WorldState.GetValue<int>("gatherAmount");
                 Agent.InventorySystem.TransferToOther(targetStorage.GetComponent<InventorySystem>(), toDeliver, amount);
                 town.FinishedRequest(Agent, toDeliver, targetStorage);
-                Agent.WorldState.AddWorldState("deliveredResource", true);
+                WorldState.AddWorldState("deliveredResource", true);
                 OnDeactived();
             }
         }

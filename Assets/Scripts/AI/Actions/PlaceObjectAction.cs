@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -19,14 +15,14 @@ public class PlaceObjectAction : ActionBase
     public override void OnActivated(BaseGoal linked)
     {
         base.OnActivated(linked);
-        toPlace = Agent.WorldState.GetValue("itemToPlace") as Item;
-        AmountToPlace = (int)Agent.WorldState.GetValue("placeAmount");
+        toPlace = WorldState.GetValue<Item>("itemToPlace");
+        AmountToPlace = WorldState.GetValue<int>("placeAmount");
 
     }
 
     public override void OnTick()
     {
-        AmountToPlace = int.Parse(Agent.WorldState.GetValue("placeAmount").ToString());
+        AmountToPlace = WorldState.GetValue<int>("placeAmount");
         /**
          *                        
          *    ----------------------  z2
@@ -42,7 +38,7 @@ public class PlaceObjectAction : ActionBase
          *    ----------------------- z1
          *   x1                    x2
         */
-        for (int i = AmountToPlace-1; i >= 0; i--)
+        for (int i = AmountToPlace - 1; i >= 0; i--)
         {
             GameObject placed = null;
             Vector3 randomPos = GetRandomPositionInRange(toPlace.Prefab.transform.localScale);
@@ -52,11 +48,11 @@ public class PlaceObjectAction : ActionBase
                 placed = Instantiate(toPlace.Prefab);
                 placed.transform.localPosition = randomPos;
                 Agent.InventorySystem.RemoveItem(toPlace, 1);
-                Agent.WorldState.AddWorldState("placeAmount", i);
+                WorldState.AddWorldState("placeAmount", i);
             }
         }
 
-        if(Agent.WorldState.GetValue<int>("placeAmount") > 0)
+        if (WorldState.GetValue<int>("placeAmount") > 0)
         {
             LinkedGoal.PauseGoal();
             NeedsReplanning();
@@ -108,7 +104,7 @@ public class PlaceObjectAction : ActionBase
         if (Terrain.activeTerrain.terrainData.bounds.Contains(pos) && pos.y >= sH && pos.y <= (sH + size.y))
         {
             Vector3 halfSize = size / 2;
-            if (Physics.CheckBox(pos, size / 2,Quaternion.identity, layerMask))
+            if (Physics.CheckBox(pos, size / 2, Quaternion.identity, layerMask))
             {
                 //Debug.DrawRay(pos, Vector3.up, Color.red, 100);
                 return false;

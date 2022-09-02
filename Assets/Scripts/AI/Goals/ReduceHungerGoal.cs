@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 public class ReduceHungerGoal : BaseGoal
 {
@@ -11,7 +10,7 @@ public class ReduceHungerGoal : BaseGoal
 
     public override int CalculatePriority()
     {
-        if ((bool)Agent.WorldState.GetValue("isHungry"))
+        if (WorldState.GetValue<bool>("isHungry"))
             return MaxPrio;
         else
             return MinPrio;
@@ -21,7 +20,7 @@ public class ReduceHungerGoal : BaseGoal
     {
         base.OnGoalActivated();
 
-        Agent.WorldState.AddWorldState("requestedItem", ItemManager.Instance.GetItemByName("food"));
+        WorldState.AddWorldState("requestedItem", ItemManager.Instance.GetItemByName("food"));
 
     }
 

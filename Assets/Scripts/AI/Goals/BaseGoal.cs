@@ -1,4 +1,4 @@
-﻿using Assets.Scripts.AI;
+﻿
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -36,7 +36,7 @@ public class BaseGoal : MonoBehaviour, IGoal
     [SerializeField] protected bool Pause = false;
     protected StateMemory NeededWorldState;
     [SerializeField] protected bool Runnable = true;
-    
+
 
     public int Id { get { return _id; } }
 
@@ -48,7 +48,7 @@ public class BaseGoal : MonoBehaviour, IGoal
         NavAgent = Parent.GetComponent<NavigationAgent>();
         AwarenessSystem = Parent.GetComponent<AwarenessSystem>();
         Agent = Parent.GetComponent<Agent>();
-        WorldState = Agent.WorldState;
+        WorldState = WorldState;
         NeededWorldState = CreateRequiredWorldState();
     }
 
@@ -59,7 +59,7 @@ public class BaseGoal : MonoBehaviour, IGoal
 
         foreach (KeyValuePair<string, object> state in Preconditions)
         {
-            Agent.WorldState.AddWorldState(state.Key, ObjectHelper.GetDefault(state.Value.GetType()));
+            WorldState.AddWorldState(state.Key, ObjectHelper.GetDefault(state.Value.GetType()));
         }
     }
 
@@ -67,7 +67,7 @@ public class BaseGoal : MonoBehaviour, IGoal
     {
         if (Pause)
         {
-            if(timer > delay)
+            if (timer > delay)
             {
                 timer = 0;
                 Runnable = true;
@@ -82,7 +82,7 @@ public class BaseGoal : MonoBehaviour, IGoal
 
     protected StateMemory CreateRequiredWorldState()
     {
-        StateMemory currentWorldState = Agent.WorldState;
+        StateMemory currentWorldState = WorldState;
 
         return currentWorldState;
 

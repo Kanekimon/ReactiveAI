@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class PlantTreeGoal : BaseGoal
@@ -11,14 +7,14 @@ public class PlantTreeGoal : BaseGoal
     protected override void Start()
     {
         Preconditions.Add(new KeyValuePair<string, object>("placedObject", true));
-        Agent.WorldState.AddWorldState("placeAmount", 0);
+        WorldState.AddWorldState("placeAmount", 0);
         Debug.Log($"Start {Time.time}");
         base.Start();
     }
 
     public override void OnGoalActivated()
     {
-        Agent.WorldState.AddWorldState("itemToPlace", ItemManager.Instance.GetItemByName("plot"));
+        WorldState.AddWorldState("itemToPlace", ItemManager.Instance.GetItemByName("plot"));
         base.OnGoalActivated();
     }
 
@@ -31,8 +27,8 @@ public class PlantTreeGoal : BaseGoal
 
     public override void OnTickGoal()
     {
-        AmountToPlace = Agent.WorldState.GetValue<int>("placeAmount");
-        if (Agent.WorldState.GetValue<int>("placeAmount") > 0)
+        AmountToPlace = WorldState.GetValue<int>("placeAmount");
+        if (WorldState.GetValue<int>("placeAmount") > 0)
             Prio = MaxPrio;
         else
             Prio = MinPrio;

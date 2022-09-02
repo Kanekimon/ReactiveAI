@@ -26,7 +26,7 @@ public class ActionChase : ActionBase
 
     public override void OnTick()
     {
-        if(target != null)
+        if (target != null)
             NavAgent.MoveTo(target.transform.position);
         else
         {
@@ -38,7 +38,7 @@ public class ActionChase : ActionBase
     public override void OnActivated(BaseGoal linked)
     {
         base.OnActivated(linked);
-        target = Agent.WorldState.GetValue("target") as GameObject;
+        target = WorldState.GetValue<GameObject>("target");
     }
 
     public override void OnDeactived()

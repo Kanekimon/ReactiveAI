@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 [RequireComponent(typeof(InventorySystem))]
@@ -25,7 +22,7 @@ public class CraftingSystem : MonoBehaviour
     public bool HasEnoughToCraft(Item item)
     {
         Recipe recipe = Learned.Where(a => a.Result == item).FirstOrDefault();
-        foreach(RecipesMaterial mats in recipe.Materials)
+        foreach (RecipesMaterial mats in recipe.Materials)
         {
             if (!inventorySystem.HasEnough(mats.Item, mats.Amount))
                 return false;
@@ -59,9 +56,9 @@ public class CraftingSystem : MonoBehaviour
         List<KeyValuePair<Item, int>> missingResources = new List<KeyValuePair<Item, int>>();
 
         Recipe rec = GetRecipeForItem(item);
-        foreach(RecipesMaterial material in rec.Materials)
+        foreach (RecipesMaterial material in rec.Materials)
         {
-            if(!inventorySystem.HasEnough(material.Item, material.Amount))
+            if (!inventorySystem.HasEnough(material.Item, material.Amount))
             {
                 int missingAmount = Mathf.Max(material.Amount - inventorySystem.GetItemAmount(item), 0);
                 missingResources.Add(new KeyValuePair<Item, int>(material.Item, missingAmount));

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class ActionSearchResource : ActionBase
@@ -9,7 +7,7 @@ public class ActionSearchResource : ActionBase
 
     protected override void Start()
     {
-        effects.Add(new KeyValuePair<string, object>("hasTarget", true));        
+        effects.Add(new KeyValuePair<string, object>("hasTarget", true));
         base.Start();
     }
 
@@ -35,7 +33,7 @@ public class ActionSearchResource : ActionBase
     {
         base.OnActivated(linked);
 
-        _item = Agent.WorldState.GetValue<Item>("requestedResource");
+        _item = WorldState.GetValue<Item>("requestedResource");
 
         Vector3 location = NavAgent.PickLocationInRange(10f);
         NavAgent.MoveTo(location);

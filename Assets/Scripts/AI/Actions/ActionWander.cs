@@ -4,7 +4,7 @@ using UnityEngine;
 public class ActionWander : ActionBase
 {
     [SerializeField] float SearchRange = 10f;
-    
+
 
     protected override void Awake()
     {

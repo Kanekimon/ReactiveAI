@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class MoveToTargetAction : ActionBase
@@ -17,7 +13,7 @@ public class MoveToTargetAction : ActionBase
     public override void OnActivated(BaseGoal linked)
     {
         base.OnActivated(linked);
-        _target = Agent.WorldState.GetValue("target") as GameObject;
+        _target = WorldState.GetValue<GameObject>("target");
         NavAgent.MoveTo(NavAgent.PickClosestPositionInRange(_target, Agent.InteractionRange));
     }
 

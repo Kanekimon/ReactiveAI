@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 
 public class RequestAtTownAction : ActionBase
@@ -27,10 +23,10 @@ public class RequestAtTownAction : ActionBase
     {
         base.OnTick();
 
-        List<Request> Requests = Agent.WorldState.GetValue("requests") as List<Request>;
+        List<Request> Requests = WorldState.GetValue<List<Request>>("requests");
         Agent.HomeTown.RequestBoard.RequestItems(Agent, Requests);
-        //Agent.HomeTown.RequestBoard.GetComponent<RequestSystem>().RequestItem(Agent, Agent.WorldState.GetValue("requestItem") as Item, int.Parse(Agent.WorldState.GetValue("requestAmount").ToString()));
-        Agent.WorldState.AddWorldState("requestResource", true);
+        //Agent.HomeTown.RequestBoard.GetComponent<RequestSystem>().RequestItem(Agent, WorldState.GetValue("requestItem") as Item, int.Parse(WorldState.GetValue("requestAmount").ToString()));
+        WorldState.AddWorldState("requestResource", true);
         OnDeactived();
     }
 

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 public class ItemManager : MonoBehaviour
@@ -32,9 +29,9 @@ public class ItemManager : MonoBehaviour
 
     public List<RecipesMaterial> GetMaterialsForItem(Item i)
     {
-        foreach(Recipe recipe in AllRecipes)
+        foreach (Recipe recipe in AllRecipes)
         {
-            if(recipe.Result == i)
+            if (recipe.Result == i)
             {
                 return recipe.Materials;
             }

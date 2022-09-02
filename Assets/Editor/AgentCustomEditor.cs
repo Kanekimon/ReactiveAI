@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -15,7 +16,7 @@ public class AgentCustomEditor : Editor
     {
         base.OnInspectorGUI();
         Agent agent = (Agent)target;
-
+        StateMemory WorldState = agent.WorldState;
         showWorldStates = EditorGUILayout.Foldout(showWorldStates, status);
 
         EditorGUILayout.BeginHorizontal();
@@ -24,15 +25,15 @@ public class AgentCustomEditor : Editor
         EditorGUILayout.EndHorizontal();
         if(GUILayout.Button("Add Worldstate"))
         {
-            agent.WorldState.AddWorldState(key, value);
+            WorldState.AddWorldState(key, value);
         }
 
 
         if (showWorldStates)
         {
-            if (agent.WorldState != null && agent.WorldState.GetWorldState != null)
+            if (WorldState != null && WorldState.GetWorldState != null)
             {
-                foreach (KeyValuePair<string, object> state in agent.WorldState.GetWorldState)
+                foreach (KeyValuePair<string, object> state in WorldState.GetWorldState)
                 {
                     EditorGUILayout.BeginHorizontal();
                     EditorGUILayout.LabelField("State: " + state.Key);

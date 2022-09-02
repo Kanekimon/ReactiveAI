@@ -13,6 +13,7 @@ public class NavigationAgent : MonoBehaviour
 {
     NavMeshAgent NavMeshAgent;
     Agent Agent;
+    StateMemory WorldState;
     [SerializeField] float NearestPointSearchRange = 5f;
     bool DestinationSet = false;
     EOffMeshLinkStatus OffMeshLinkStatus = EOffMeshLinkStatus.NotStarted;
@@ -38,7 +39,7 @@ public class NavigationAgent : MonoBehaviour
             if (OffMeshLinkStatus == EOffMeshLinkStatus.NotStarted)
                 StartCoroutine(FollowOffmeshLink());
         }
-        Agent.WorldState.ChangeValue("currentPosition", transform.position);
+        WorldState.ChangeValue("currentPosition", transform.position);
 
     }
 
@@ -91,7 +92,7 @@ public class NavigationAgent : MonoBehaviour
         targetPoint.y = Terrain.activeTerrain.SampleHeight(targetPoint);
 
 
-        if(NavMesh.SamplePosition(targetPoint, out hitResult, 1, NavMesh.AllAreas))
+        if (NavMesh.SamplePosition(targetPoint, out hitResult, 1, NavMesh.AllAreas))
         {
             return hitResult.position;
         }

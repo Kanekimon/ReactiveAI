@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 
@@ -20,7 +17,7 @@ public class ResponsibilityChecker : MonoBehaviour
 
     public JobType GetResponsibleJob(Item item)
     {
-        foreach(JobResponsibilities resp in Responsibilities)
+        foreach (JobResponsibilities resp in Responsibilities)
         {
             if (resp.Gathering.Contains(item))
                 return resp.JobType;

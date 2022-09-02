@@ -7,7 +7,7 @@ public class InventorySystem : MonoBehaviour
     public Dictionary<Item, InventoryItem> _inventory = new Dictionary<Item, InventoryItem>();
 
     [SerializeField] List<InventoryItem> _items = new List<InventoryItem>();
-    public List<InventoryItem> InventoryItems { get => _items; set { _items =value; } }
+    public List<InventoryItem> InventoryItems { get => _items; set { _items = value; } }
     public int MaximimumItems;
     public int NumberOfItems => _inventory.Values.Sum(a => a.Amount);
 
@@ -28,8 +28,8 @@ public class InventorySystem : MonoBehaviour
     /// <param name="amount">Amount to add</param>
     public int AddItem(Item item, int amount)
     {
-        if(NumberOfItems + amount > MaximimumItems)
-            amount = MaximimumItems-NumberOfItems;
+        if (NumberOfItems + amount > MaximimumItems)
+            amount = MaximimumItems - NumberOfItems;
 
         if (_inventory.Any(a => a.Key.Id == item.Id))
         {
@@ -37,7 +37,7 @@ public class InventorySystem : MonoBehaviour
             i.Add(amount);
         }
         else
-            _inventory.Add(item, new InventoryItem() { Item = item, Amount = amount, Name = item.Name});
+            _inventory.Add(item, new InventoryItem() { Item = item, Amount = amount, Name = item.Name });
 
         return amount;
     }
@@ -63,7 +63,7 @@ public class InventorySystem : MonoBehaviour
 
     internal void TransferToOther(InventorySystem inventorySystem, Item toDeliver, int amount)
     {
-        if(HasEnough(toDeliver, amount))
+        if (HasEnough(toDeliver, amount))
         {
             inventorySystem.AddItem(toDeliver, amount);
             this.RemoveItem(toDeliver, amount);

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -69,6 +68,7 @@ public class AwarenessSystem : MonoBehaviour
     Dictionary<GameObject, TrackedTarget> Targets = new Dictionary<GameObject, TrackedTarget>();
     Dictionary<GameObject, TrackedTarget> ResourceNodes = new Dictionary<GameObject, TrackedTarget>();
     Agent Agent;
+    StateMemory WorldState;
 
     public List<TrackedTarget> ActiveTargets => Targets.Values.ToList();
     public List<TrackedTarget> ResourceNodesInRange => ResourceNodes.Values.ToList();
@@ -81,7 +81,8 @@ public class AwarenessSystem : MonoBehaviour
     private void Start()
     {
         Agent = GetComponent<Agent>();
-        Agent.WorldState.AddWorldState("hasTarget", false);
+        WorldState = Agent.WorldState;
+        WorldState.AddWorldState("hasTarget", false);
     }
 
     private void Update()
@@ -92,10 +93,10 @@ public class AwarenessSystem : MonoBehaviour
         ResourceCount = ResourceNodesInRange.Count;
         TargetsCount = ActiveTargets.Count;
 
-        if (Agent.WorldState.GetValue<GameObject>("target") != null)
+        if (WorldState.GetValue<GameObject>("target") != null)
         {
-            GameObject currentTarget = Agent.WorldState.GetValue<GameObject>("target");
-            Agent.WorldState.AddWorldState("isAtTarget", (Vector3.Distance(currentTarget.transform.position, this.transform.position) <= Agent.InteractionRange));
+            GameObject currentTarget = WorldState.GetValue<GameObject>("target");
+            WorldState.AddWorldState("isAtTarget", (Vector3.Distance(currentTarget.transform.position, this.transform.position) <= Agent.InteractionRange));
         }
 
 
@@ -104,23 +105,23 @@ public class AwarenessSystem : MonoBehaviour
 
     private void SaveToWorldState()
     {
-        Agent.WorldState.AddWorldState("hasTargets", Targets.Count > 0);
-        Agent.WorldState.AddWorldState("hasResourceTargets", ResourceCount > 0);
+        WorldState.AddWorldState("hasTargets", Targets.Count > 0);
+        WorldState.AddWorldState("hasResourceTargets", ResourceCount > 0);
 
-        GameObject currentTarget = Agent.WorldState.GetValue<GameObject>("target");
+        GameObject currentTarget = WorldState.GetValue<GameObject>("target");
         if (currentTarget != null)
         {
-            //if (Agent.WorldState.GetValue<GameObject>("target") != currentResourceTarget)
-            //    Agent.WorldState.AddWorldState("target", currentResourceTarget);
+            //if (WorldState.GetValue<GameObject>("target") != currentResourceTarget)
+            //    WorldState.AddWorldState("target", currentResourceTarget);
 
             if (Vector3.Distance(currentTarget.transform.position, this.transform.position) < Agent.InteractionRange)
-                Agent.WorldState.ChangeValue("isAtResource", true);
+                WorldState.ChangeValue("isAtResource", true);
             else
-                Agent.WorldState.ChangeValue("isAtResource", false);
+                WorldState.ChangeValue("isAtResource", false);
         }
         else
         {
-            Agent.WorldState.ChangeValue("isAtResource", false);
+            WorldState.ChangeValue("isAtResource", false);
         }
 
     }
@@ -142,9 +143,9 @@ public class AwarenessSystem : MonoBehaviour
         if (cand != null)
         {
             if (Vector3.Distance(cand.transform.position, transform.position) < 10f)
-                Agent.WorldState.ChangeValue("isAtResource", true);
+                WorldState.ChangeValue("isAtResource", true);
             else
-                Agent.WorldState.ChangeValue("isAtResource", false);
+                WorldState.ChangeValue("isAtResource", false);
         }
 
         return cand;
@@ -194,7 +195,7 @@ public class AwarenessSystem : MonoBehaviour
             //Debug.Log("Threshold change for " + targetGo.name + " " + typeOfTarget[targetGo].Awareness);
         }
 
-        Agent.WorldState.AddWorldState("hasTargets", typeOfTarget.Count > 0);
+        WorldState.AddWorldState("hasTargets", typeOfTarget.Count > 0);
 
     }
 
@@ -245,7 +246,7 @@ public class AwarenessSystem : MonoBehaviour
         if (candidate != null)
         {
             currentTarget = candidate.Detectable.gameObject;
-            Agent.WorldState.AddWorldState("target", currentTarget);
+            WorldState.AddWorldState("target", currentTarget);
         }
         else
             currentTarget = null;

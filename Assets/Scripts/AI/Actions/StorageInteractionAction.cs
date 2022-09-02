@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using System.Collections.Generic;
 
 internal class StorageInteractionAction : ActionBase
 {
@@ -19,13 +14,13 @@ internal class StorageInteractionAction : ActionBase
     public override void OnActivated(BaseGoal linked)
     {
         base.OnActivated(linked);
-        request = Agent.WorldState.GetValue("request") as Request;
+        request = WorldState.GetValue<Request>("request");
     }
 
     public override void OnTick()
     {
         base.OnTick();
-        request = Agent.WorldState.GetValue("request") as Request;
+        request = WorldState.GetValue<Request>("request");
         request.Storage.RetrieveFromStorage(Agent.InventorySystem, request.RequestedItem, request.RequestedAmount);
         request.Status = RequestStatus.Finished;
         OnDeactived();

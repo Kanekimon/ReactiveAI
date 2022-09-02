@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -54,7 +52,7 @@ public class RequestSystem : MonoBehaviour
 
     public void RequestItems(Agent agent, List<Request> requ)
     {
-        foreach(Request r in requ)
+        foreach (Request r in requ)
         {
             RequestItem(agent, r.RequestedItem, r.RequestedAmount);
         }
