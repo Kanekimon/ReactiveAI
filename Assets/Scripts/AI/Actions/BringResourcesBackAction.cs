@@ -19,10 +19,12 @@ public class BringResourcesBackAction : ActionBase
     public override void OnTick()
     {
         base.OnTick();
-        Item item = WorldState.GetValue<Item>("requestedResource");
-        InventoryItem gathered = Agent.InventorySystem.GetInventoryItem(item);
-        WorldState.GetValue<GameObject>("target").GetComponent<Storage>().PutIntoStorage(gathered.Item, gathered.Amount);
-        Agent.InventorySystem.RemoveItem(item, gathered.Amount);
+        foreach(InventoryItem invItem in Agent.InventorySystem.InventoryItems)
+        {
+            WorldState.GetValue<GameObject>("target").GetComponent<Storage>().PutIntoStorage(invItem.Item, invItem.Amount);
+            Agent.InventorySystem.RemoveItem(invItem.Item, invItem.Amount);
+        }
+
     }
 
 }

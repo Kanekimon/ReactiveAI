@@ -40,7 +40,7 @@ public class BeloningsSensor : MonoBehaviour
             Item requested = WorldState.GetValue<Item>("requestedItem");
             bool hasItem = InventorySystem.HasEnough(requested, amount);
 
-            if (!hasItem && Agent.JobType == JobType.Crafter && requested.HasRecipe)
+            if (!hasItem && Agent.Job.JobType == JobType.Crafter && requested.HasRecipe)
             {
                 WorldState.AddWorldState("hasMaterials", Agent.CraftingSystem.HasEnoughToCraft(requested));
             }

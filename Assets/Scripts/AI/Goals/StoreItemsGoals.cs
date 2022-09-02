@@ -14,7 +14,7 @@ public class StoreItemsGoals : BaseGoal
     public override void OnGoalActivated()
     {
         base.OnGoalActivated();
-        WorldState.AddWorldState("target", Storage.gameObject);
+        WorldState.AddWorldState("target", Agent.Job.Workplace.gameObject);
     }
 
 

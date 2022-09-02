@@ -27,17 +27,17 @@ public class VisualSensor : MonoBehaviour
 
             var vectorToTarget = candTarget.transform.position - Agent.transform.position;
 
-            if (vectorToTarget.sqrMagnitude > (Agent.VisionRange * Agent.VisionRange))
+            if (vectorToTarget.sqrMagnitude > (Agent.AwarenessSystem.VisionRange * Agent.AwarenessSystem.VisionRange))
                 continue;
 
             vectorToTarget.Normalize();
 
-            if (Vector3.Dot(vectorToTarget, Agent.transform.forward) < Agent.CoVisionAngle)
+            if (Vector3.Dot(vectorToTarget, Agent.transform.forward) < Agent.AwarenessSystem.CoVisionAngle)
                 continue;
 
             RaycastHit hit;
 
-            if (Physics.Raycast(Agent.transform.position, vectorToTarget, out hit, Agent.VisionRange, DetectionMask, QueryTriggerInteraction.Collide))
+            if (Physics.Raycast(Agent.transform.position, vectorToTarget, out hit, Agent.AwarenessSystem.VisionRange, DetectionMask, QueryTriggerInteraction.Collide))
             {
                 Agent.CanSee(candTarget);
             }

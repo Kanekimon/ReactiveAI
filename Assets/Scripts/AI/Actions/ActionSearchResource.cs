@@ -23,10 +23,15 @@ public class ActionSearchResource : ActionBase
         if (NavAgent.AtDestination)
             OnActivated(LinkedGoal);
 
-        if (Agent.AwarenessSystem.KnowsResourceOfType(_item))
+        if (Agent.AwarenessSystem.SeesResourceTarget(WorldState.GetValue<List<ResourceType>>("possibleResources")))
         {
             OnDeactived();
         }
+
+        //if (Agent.AwarenessSystem.KnowsResourceOfType(_item))
+        //{
+        //    OnDeactived();
+        //}
     }
 
     public override void OnActivated(BaseGoal linked)

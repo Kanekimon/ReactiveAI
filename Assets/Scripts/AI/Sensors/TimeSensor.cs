@@ -12,6 +12,7 @@ public class TimeSensor : MonoBehaviour
     private void Awake()
     {
         Agent = GetComponent<Agent>();
+        WorldState = Agent.WorldState;
     }
 
     private void Start()

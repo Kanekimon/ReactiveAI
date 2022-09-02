@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 
-public class ChopTreeGoal : BaseGoal
+public class CollectJobResourceGoal : BaseGoal
 {
     public Item Gather;
     public Storage Storage;
@@ -14,9 +14,10 @@ public class ChopTreeGoal : BaseGoal
     public override void OnGoalActivated()
     {
         base.OnGoalActivated();
-        WorldState.AddWorldState("requestedResource", Gather);
+        //WorldState.AddWorldState("requestedResource", Gather);
+        WorldState.AddWorldState("possibleResources", Agent.Job.GatherThese);
         WorldState.AddWorldState("gatherAmount", Agent.InventorySystem.GetFreeSpaceSize());
-
+        Storage = Agent.Job.Workplace;
 
     }
 

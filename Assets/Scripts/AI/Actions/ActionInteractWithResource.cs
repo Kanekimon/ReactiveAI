@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class ActionInteractWithResource : ActionBase
@@ -13,6 +14,7 @@ public class ActionInteractWithResource : ActionBase
 
     protected override void Start()
     {
+        
         preconditions.Add(new KeyValuePair<string, object>("isAtPosition", true));
         effects.Add(new KeyValuePair<string, object>("interactWithResource", true));
         effects.Add(new KeyValuePair<string, object>("gatherResource", true));
@@ -21,8 +23,7 @@ public class ActionInteractWithResource : ActionBase
 
     public override bool CanRun()
     {
-        Item tmp = WorldState.GetValue<Item>("requestedResource");
-        if (tmp != null)
+        if (WorldState.GetValue<List<ResourceType>>("possibleResources") != null)
             return true;
         return false;
     }
@@ -36,16 +37,25 @@ public class ActionInteractWithResource : ActionBase
         resourceToGather = WorldState.GetValue<Item>("requestedResource");
     }
 
+    public override void OnDeactived()
+    {
+        base.OnDeactived();
+        Agent.GetComponent<Animator>().ResetTrigger("isAttacking");
+
+    }
 
     public override void OnTick()
     {
         _target = WorldState.GetValue<GameObject>("target");
+
+
         if (timer >= delay)
         {
+            Agent.GetComponent<Animator>().SetTrigger("isAttacking");
             timer = 0;
             if (_target != null && gatherCount < AmountToGather)
             {
-                gatherCount += _target.GetComponent<ResourceTarget>().Interact(this.Agent);
+                gatherCount += _target.GetComponent<ResourceTarget>().Interact(this.Agent).Sum(a => a.Amount);
             }
             else if (_target == null && gatherCount < AmountToGather)
             {
@@ -55,6 +65,8 @@ public class ActionInteractWithResource : ActionBase
             {
                 OnDeactived();
             }
+           
+
         }
         timer += Time.deltaTime;
     }

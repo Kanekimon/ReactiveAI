@@ -21,7 +21,7 @@ public class ProximitySensor : MonoBehaviour
             if (candTarget.gameObject == this.gameObject)
                 continue;
 
-            if (Vector3.Distance(Agent.transform.position, candTarget.transform.position) <= Agent.ProximityDetectionRange)
+            if (Vector3.Distance(Agent.transform.position, candTarget.transform.position) <= Agent.AwarenessSystem.ProximityDetectionRange)
             {
                 Agent.ReportProximity(candTarget);
             }

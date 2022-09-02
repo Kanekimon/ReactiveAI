@@ -15,6 +15,7 @@ public class NavigationAgent : MonoBehaviour
     Agent Agent;
     StateMemory WorldState;
     [SerializeField] float NearestPointSearchRange = 5f;
+    public float RotationSpeed;
     bool DestinationSet = false;
     EOffMeshLinkStatus OffMeshLinkStatus = EOffMeshLinkStatus.NotStarted;
     bool ReachedDestination = false;
@@ -24,10 +25,13 @@ public class NavigationAgent : MonoBehaviour
     {
         NavMeshAgent = GetComponent<NavMeshAgent>();
         Agent = GetComponent<Agent>();
+        WorldState = Agent.WorldState;
     }
 
     void Update()
     {
+        Agent.GetComponent<Animator>().SetFloat("WalkSpeed", NavMeshAgent.velocity.magnitude);
+
         if (!NavMeshAgent.pathPending && !NavMeshAgent.isOnOffMeshLink && DestinationSet && (NavMeshAgent.remainingDistance <= NavMeshAgent.stoppingDistance))
         {
             DestinationSet = false;
@@ -41,6 +45,10 @@ public class NavigationAgent : MonoBehaviour
         }
         WorldState.ChangeValue("currentPosition", transform.position);
 
+    }
+
+    private void FixedUpdate()
+    {
     }
 
     IEnumerator FollowOffmeshLink()
@@ -85,8 +93,8 @@ public class NavigationAgent : MonoBehaviour
     public Vector3 PickClosestPositionInRange(GameObject targetObject, float range)
     {
         Vector3 target = targetObject.transform.position;
-        Vector3 dist = (target - transform.position).normalized;
-        Vector3 targetPoint = targetObject.transform.position - (dist * range);
+        Vector3 dist = (transform.position - target).normalized;
+        Vector3 targetPoint = targetObject.transform.position + (dist * range);
         NavMeshHit hitResult;
 
         targetPoint.y = Terrain.activeTerrain.SampleHeight(targetPoint);
@@ -123,7 +131,9 @@ public class NavigationAgent : MonoBehaviour
 
     public void MoveTo(Vector3 destination)
     {
+
         CancelCurrentCommand();
+        RotateTowards(destination);
         SetDestination(destination);
     }
 
@@ -138,13 +148,20 @@ public class NavigationAgent : MonoBehaviour
 
         if (NavMesh.SamplePosition(destination, out hitResult, NearestPointSearchRange, NavMesh.AllAreas))
         {
+
+
             NavMeshAgent.SetDestination(hitResult.position);
             DestinationSet = true;
             ReachedDestination = false;
         }
     }
 
-
+    private void RotateTowards(Vector3 target)
+    {
+        Vector3 direction = (target - transform.position).normalized;
+        Quaternion lookRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * RotationSpeed);
+    }
 
 
 }

@@ -38,7 +38,7 @@ public class AStar
 
         int counter = 100;
 
-        if (goal is ChopTreeGoal)
+        if (goal is CollectJobResourceGoal)
             Debug.Log("test");
 
         Node currentNode = new Node() { GCost = 0, HCost = goal.Preconditions.Count, openPreconditions = new List<KeyValuePair<string, object>>(goal.Preconditions) };

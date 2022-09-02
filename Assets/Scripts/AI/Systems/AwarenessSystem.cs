@@ -55,6 +55,19 @@ public class TrackedTarget
 [RequireComponent(typeof(Agent))]
 public class AwarenessSystem : MonoBehaviour
 {
+
+    [SerializeField]
+    private float _visionAngle = 60f;
+    [SerializeField]
+    private float _visionRange = 10f;
+    [SerializeField]
+    private float _proximityDetectionRange = 3f;
+
+    public float VisionAngle => _visionAngle;
+    public float VisionRange => _visionRange;
+    public float ProximityDetectionRange => _proximityDetectionRange;
+    public float CoVisionAngle { get; private set; } = 0f;
+
     [SerializeField] AnimationCurve VisionSensitivity;
     [SerializeField] float VisualMinimumAwareness = 1f;
     [SerializeField] float VisionAwarenessBuildRate = 10f;
@@ -80,6 +93,7 @@ public class AwarenessSystem : MonoBehaviour
 
     private void Start()
     {
+        CoVisionAngle = Mathf.Cos(VisionAngle * Mathf.Deg2Rad);
         Agent = GetComponent<Agent>();
         WorldState = Agent.WorldState;
         WorldState.AddWorldState("hasTarget", false);
@@ -115,9 +129,15 @@ public class AwarenessSystem : MonoBehaviour
             //    WorldState.AddWorldState("target", currentResourceTarget);
 
             if (Vector3.Distance(currentTarget.transform.position, this.transform.position) < Agent.InteractionRange)
+            {
                 WorldState.ChangeValue("isAtResource", true);
+                WorldState.ChangeValue("isAtTarget", true);
+            }
             else
+            {
+                WorldState.ChangeValue("isAtTarget", false);
                 WorldState.ChangeValue("isAtResource", false);
+            }
         }
         else
         {
@@ -216,6 +236,47 @@ public class AwarenessSystem : MonoBehaviour
     {
         var awareness = ProximityBuildRate * Time.deltaTime;
         UpdateAwareness(inProximity.gameObject, inProximity, inProximity.transform.position, awareness, ProximityMinimumAwareness);
+    }
+
+    public bool SeesResourceTarget(List<ResourceType> resourceTargets)
+    {
+        if (resourceTargets == null || resourceTargets.Count == 0)
+            return false;
+
+        TrackedTarget candidate = null;
+        float closest = float.MaxValue;
+        foreach (TrackedTarget res in ResourceNodes.Values)
+        {
+            if (resourceTargets.Contains((((ResourceTarget)res.Detectable).ResourceType)))
+            {
+                float distance = Vector3.Distance(res.RawPosition, this.transform.position);
+                if (candidate == null)
+                {
+                    candidate = res;
+                    closest = distance;
+                }
+                else
+                {
+                    if (distance < closest)
+                    {
+                        candidate = res;
+                        closest = distance;
+                    }
+                }
+            }
+
+        }
+        if (candidate != null)
+        {
+            currentTarget = candidate.Detectable.gameObject;
+            WorldState.AddWorldState("target", currentTarget);
+        }
+        else
+            currentTarget = null;
+
+
+
+        return candidate != null;
     }
 
     internal bool KnowsResourceOfType(Item item)

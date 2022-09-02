@@ -74,7 +74,7 @@ public class ConditionSystem : MonoBehaviour
             var cond = Conditions[i];
             if (cond.Ticked)
             {
-                bool currentlyActive = (bool)WorldState.GetValue($"is{cond.Name}");
+                bool currentlyActive = WorldState.GetValue<bool>($"is{cond.Name}");
                 cond.Tick();
                 if (!currentlyActive && cond.Value <= cond.TriggerValue)
                     WorldState.AddWorldState($"is{cond.Name}", true);

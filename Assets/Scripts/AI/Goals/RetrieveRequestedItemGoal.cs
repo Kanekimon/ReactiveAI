@@ -34,7 +34,6 @@ public class RetrieveRequestedItemGoal : BaseGoal
 
     public override void OnGoalActivated()
     {
-
         request = Agent.ReadyForPickUp.Dequeue();
         WorldState.AddWorldState("interactWithStorage", false);
         WorldState.AddWorldState("request", request);

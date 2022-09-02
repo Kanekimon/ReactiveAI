@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 
@@ -45,6 +46,7 @@ public class StateMemory
     {
         if (!WorldStates.Any(a => a.Key.Equals(key)))
             return default(T);
+
         return (T)System.Convert.ChangeType(WorldStates.Where(a => a.Key == key).FirstOrDefault().Value, typeof(T));
     }
 

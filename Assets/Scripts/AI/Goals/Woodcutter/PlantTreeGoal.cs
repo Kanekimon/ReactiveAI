@@ -14,7 +14,8 @@ public class PlantTreeGoal : BaseGoal
 
     public override void OnGoalActivated()
     {
-        WorldState.AddWorldState("itemToPlace", ItemManager.Instance.GetItemByName("plot"));
+        WorldState.AddWorldState("itemToPlace", ItemManager.Instance.GetItemByName("sapling"));
+        WorldState.AddWorldState("placeAmount", Agent.InventorySystem.GetItemAmount(ItemManager.Instance.GetItemByName("sapling")));
         base.OnGoalActivated();
     }
 
@@ -27,9 +28,10 @@ public class PlantTreeGoal : BaseGoal
 
     public override void OnTickGoal()
     {
-        AmountToPlace = WorldState.GetValue<int>("placeAmount");
-        if (WorldState.GetValue<int>("placeAmount") > 0)
-            Prio = MaxPrio;
+        if (Agent.InventorySystem.HasItem("sapling"))
+        {
+            Prio = (int)(MaxPrio * 0.1f) * Agent.InventorySystem.GetItemAmount(ItemManager.Instance.GetItemByName("sapling"));
+        }
         else
             Prio = MinPrio;
     }

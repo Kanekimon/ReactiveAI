@@ -26,6 +26,11 @@ public class TownCustomEditor : Editor
         }
         EditorGUILayout.EndHorizontal();
 
+        if(GUILayout.Button("Hire Agents"))
+        {
+            
+        }
+
     }
 
 }

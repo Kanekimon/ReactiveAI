@@ -48,7 +48,7 @@ public class BaseGoal : MonoBehaviour, IGoal
         NavAgent = Parent.GetComponent<NavigationAgent>();
         AwarenessSystem = Parent.GetComponent<AwarenessSystem>();
         Agent = Parent.GetComponent<Agent>();
-        WorldState = WorldState;
+        WorldState = Agent.WorldState;
         NeededWorldState = CreateRequiredWorldState();
     }
 

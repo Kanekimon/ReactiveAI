@@ -74,7 +74,7 @@ public class PlaceObjectAction : ActionBase
             float y = Terrain.activeTerrain.SampleHeight(new Vector3(randomX, 0, randomZ));
 
             Vector3 randomPoint = new Vector3(randomX, y, randomZ);
-            //Debug.DrawRay(randomPoint, Vector3.up * 10, Color.cyan, 100);
+            Debug.DrawRay(randomPoint, Vector3.up * 10, Color.cyan, 100);
 
             float x1 = randomPoint.x - size.x / 2;
             float x2 = randomPoint.x + size.x / 2;
@@ -83,33 +83,52 @@ public class PlaceObjectAction : ActionBase
 
             randomPoint.y += size.y / 2;
 
-            if (IsValidEdge(new Vector3(x1, randomPoint.y, z1), size) &&
+            if (IsSpaceFree(randomPoint, size) &&
+                IsValidEdge(new Vector3(x1, randomPoint.y, z1), size) &&
                 IsValidEdge(new Vector3(x2, randomPoint.y, z1), size) &&
                 IsValidEdge(new Vector3(x1, randomPoint.y, z2), size) &&
                 IsValidEdge(new Vector3(x2, randomPoint.y, z2), size))
             {
                 return randomPoint;
             }
+
             counter--;
         }
 
         return new Vector3(-1, -1, -1);
     }
 
+    public bool IsSpaceFree(Vector3 pos, Vector3 size)
+    {
+        int layerMask = ~LayerMask.GetMask("Terrain");
+        Vector3 halfSize = size / 2;
+        Collider[] overlap = Physics.OverlapBox(pos, halfSize);
+        if(overlap!= null && overlap.Length > 0)
+        {
+            Debug.Log("Test");
+        }
+
+        if (Physics.CheckBox(pos, size / 2, Quaternion.identity, layerMask))
+        {
+            //Debug.DrawRay(pos, Vector3.up, Color.red, 100);
+            return false;
+        }
+
+        return true;
+    }
 
     public bool IsValidEdge(Vector3 pos, Vector3 size)
     {
         int layerMask = ~LayerMask.GetMask("Terrain");
+        Vector3 posyzero = pos;
+        posyzero.y = 0;
         float sH = Terrain.activeTerrain.SampleHeight(pos);
-        if (Terrain.activeTerrain.terrainData.bounds.Contains(pos) && pos.y >= sH && pos.y <= (sH + size.y))
-        {
-            Vector3 halfSize = size / 2;
-            if (Physics.CheckBox(pos, size / 2, Quaternion.identity, layerMask))
-            {
-                //Debug.DrawRay(pos, Vector3.up, Color.red, 100);
-                return false;
-            }
+        bool inBounds = Terrain.activeTerrain.terrainData.bounds.Contains(posyzero);
+        bool aboveTerrain = pos.y >= sH;
+        bool notFloatin = pos.y <= (sH + size.y);
 
+        if (inBounds && aboveTerrain && notFloatin)
+        {
             //Debug.DrawRay(pos, Vector3.up, Color.green, 100);
             return true;
         }

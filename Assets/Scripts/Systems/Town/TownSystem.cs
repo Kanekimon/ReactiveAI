@@ -5,8 +5,10 @@ using UnityEngine;
 public class TownSystem : MonoBehaviour
 {
     List<Agent> _population = new List<Agent>();
-    public RequestSystem RequestBoard;
+    
 
+    public RequestSystem RequestBoard;
+    public List<Job> AvailableJobs = new List<Job>();
     public List<Storage> Storages = new List<Storage>();
 
     public void RegisterAgent(Agent agent)
@@ -21,9 +23,9 @@ public class TownSystem : MonoBehaviour
 
     public bool RequestResoruces(Request r)
     {
-
-        JobType requiredWorker = this.GetComponent<ResponsibilityChecker>().GetResponsibleJob(r.RequestedItem);
-        List<Agent> workers = _population.Where(a => a.JobType == requiredWorker).ToList();
+        Job job = AvailableJobs.Where(a => a.JobType == this.GetComponent<ResponsibilityChecker>().GetResponsibleJob(r.RequestedItem)).FirstOrDefault();
+        JobType requiredWorker = job.JobType;
+        List<Agent> workers = _population.Where(a => a.Job.JobType == requiredWorker).ToList();
 
         Agent worker = null;
 
@@ -35,12 +37,12 @@ public class TownSystem : MonoBehaviour
         }
         else
         {
-            if (_population.Any(a => a.JobType == JobType.None))
+            if (_population.Any(a => a.Job.JobType == JobType.None))
             {
-                worker = _population.Where(a => a.JobType == JobType.None && a.gameObject != r.Requester).FirstOrDefault();
+                worker = _population.Where(a => a.Job.JobType == JobType.None && a.gameObject != r.Requester).FirstOrDefault();
                 if (worker == null)
                     return false;
-                worker.GetJob(requiredWorker);
+                worker.GetJob(job);
             }
         }
 
