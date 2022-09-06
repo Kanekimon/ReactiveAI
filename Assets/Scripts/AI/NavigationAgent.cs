@@ -92,6 +92,7 @@ public class NavigationAgent : MonoBehaviour
 
     public Vector3 PickClosestPositionInRange(GameObject targetObject, float range)
     {
+
         Vector3 target = targetObject.transform.position;
         Vector3 dist = (transform.position - target).normalized;
         Vector3 targetPoint = targetObject.transform.position + (dist * range);
@@ -105,7 +106,21 @@ public class NavigationAgent : MonoBehaviour
             return hitResult.position;
         }
 
-        return transform.position;
+        return GetRandomPoint(targetPoint, range);
+    }
+
+    // Get Random Point on a Navmesh surface
+    public static Vector3 GetRandomPoint(Vector3 center, float maxDistance)
+    {
+        // Get Random Point inside Sphere which position is center, radius is maxDistance
+        Vector3 randomPos = Random.insideUnitSphere * maxDistance + center;
+
+        NavMeshHit hit; // NavMesh Sampling Info Container
+
+        // from randomPos find a nearest point on NavMesh surface in range of maxDistance
+        NavMesh.SamplePosition(randomPos, out hit, maxDistance, NavMesh.AllAreas);
+
+        return hit.position;
     }
 
     public Vector3 PickLocationNearTarget(Vector3 targetPos, float range)
@@ -156,7 +171,7 @@ public class NavigationAgent : MonoBehaviour
         }
     }
 
-    private void RotateTowards(Vector3 target)
+    public void RotateTowards(Vector3 target)
     {
         Vector3 direction = (target - transform.position).normalized;
         Quaternion lookRotation = Quaternion.LookRotation(direction);

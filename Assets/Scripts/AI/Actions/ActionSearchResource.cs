@@ -21,7 +21,10 @@ public class ActionSearchResource : ActionBase
     public override void OnTick()
     {
         if (NavAgent.AtDestination)
+        {
             OnActivated(LinkedGoal);
+        }
+
 
         if (Agent.AwarenessSystem.SeesResourceTarget(WorldState.GetValue<List<ResourceType>>("possibleResources")))
         {
@@ -37,6 +40,10 @@ public class ActionSearchResource : ActionBase
     public override void OnActivated(BaseGoal linked)
     {
         base.OnActivated(linked);
+
+        NavAgent.RotateTowards(Agent.transform.position + Vector3.forward);
+        NavAgent.RotateTowards(Agent.transform.position + Vector3.left);
+        NavAgent.RotateTowards(Agent.transform.position + Vector3.right);
 
         _item = WorldState.GetValue<Item>("requestedResource");
 

@@ -70,6 +70,9 @@ public class GoapPlanner : MonoBehaviour
             if (CurrentGoal != null)
                 DeactiveOldGoal();
 
+            if (HighestPrioGoal is SatisfyConditionGoal)
+                Debug.Log("Test");
+
             CurrentGoal = HighestPrioGoal;
             CurrentGoal.OnGoalActivated();
             Plan();

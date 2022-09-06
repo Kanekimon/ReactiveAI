@@ -83,6 +83,7 @@ public class AStar
                         inOpen.HCost = hCost;
                         inOpen.openPreconditions.Clear();
                         inOpen.openPreconditions = GetOpenPreconditions(action, currentNode.openPreconditions);
+                        inOpen = CheckForAlreadySatisfiedWorldStates(inOpen, worldState);
                     }
                 }
                 else
@@ -95,6 +96,7 @@ public class AStar
                         PreviousNode = currentNode,
                         openPreconditions = GetOpenPreconditions(action, currentNode.openPreconditions)
                     };
+                    n = CheckForAlreadySatisfiedWorldStates(n, worldState);
                     open.Add(n);
                 }
             }
@@ -151,6 +153,8 @@ public class AStar
         }
 
         stillOpen.AddRange(action.GetOpenPreconditions());
+
+
         return stillOpen;
     }
 

@@ -35,12 +35,13 @@ public class ActionInteractWithResource : ActionBase
         gatherCount = 0;
         AmountToGather = WorldState.GetValue<int>("gatherAmount");
         resourceToGather = WorldState.GetValue<Item>("requestedResource");
+        Agent.GetComponent<Animator>().SetBool("isAttacking", true);
     }
 
     public override void OnDeactived()
     {
         base.OnDeactived();
-        Agent.GetComponent<Animator>().ResetTrigger("isAttacking");
+        Agent.GetComponent<Animator>().SetBool("isAttacking", false);
 
     }
 
@@ -51,7 +52,7 @@ public class ActionInteractWithResource : ActionBase
 
         if (timer >= delay)
         {
-            Agent.GetComponent<Animator>().SetTrigger("isAttacking");
+
             timer = 0;
             if (_target != null && gatherCount < AmountToGather)
             {

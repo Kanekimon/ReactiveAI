@@ -4,7 +4,8 @@
 public class MoveBehaviour : GenericBehaviour
 {
     public float walkSpeed = 0.15f;                 // Default walk speed.
-    public float runSpeed = 1.0f;                   // Default run speed.
+    public float runSpeed = 1.0f;
+    public float sprintCost = 1f;// Default run speed.
     public float sprintSpeed = 2.0f;                // Default sprint speed.
     public float speedDampTime = 0.1f;              // Default damp time to change the animations based on current speed.
     public string jumpButton = "Jump";              // Default jump button.
@@ -17,14 +18,19 @@ public class MoveBehaviour : GenericBehaviour
     private bool jump;                              // Boolean to determine whether or not the player started a jump.
     private bool isColliding;                       // Boolean to determine if the player has collided with an obstacle.
 
+    public PlayerSystem playerSystem;
+
     // Start is always called after any Awake functions.
     void Start()
     {
+        playerSystem = GetComponent<PlayerSystem>();
+
         // Set up the references.
         jumpBool = Animator.StringToHash("Jump");
         groundedBool = Animator.StringToHash("Grounded");
         behaviourManager.GetAnim.SetBool(groundedBool, true);
 
+        
         // Subscribe and register this behaviour as the default behaviour.
         behaviourManager.SubscribeBehaviour(this);
         behaviourManager.RegisterDefaultBehaviour(this.behaviourCode);
@@ -120,9 +126,10 @@ public class MoveBehaviour : GenericBehaviour
         speedSeeker += Input.GetAxis("Mouse ScrollWheel");
         speedSeeker = Mathf.Clamp(speedSeeker, walkSpeed, runSpeed);
         speed *= speedSeeker;
-        if (behaviourManager.IsSprinting())
+        if (behaviourManager.IsSprinting() && playerSystem.ConditionSystem.GetValueFromCondition("stamina") > sprintCost)
         {
             speed = sprintSpeed;
+            playerSystem.ConditionSystem.DecreaseValue("stamina", sprintCost);
         }
 
         behaviourManager.GetAnim.SetFloat(speedFloat, speed, speedDampTime, Time.deltaTime);

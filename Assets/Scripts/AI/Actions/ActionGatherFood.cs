@@ -12,6 +12,18 @@ public class ActionGatherFood : ActionBase
         base.Start();
     }
 
+    public override void OnActivated(BaseGoal linked)
+    {
+        base.OnActivated(linked);
+
+    }
+
+    public override void OnTick()
+    {
+        base.OnTick();
+        OnDeactived();
+    }
+
     public override float Cost()
     {
         return _cost;
