@@ -28,7 +28,7 @@ public class PlantTreeGoal : BaseGoal
 
     public override void OnTickGoal()
     {
-        if (Agent.InventorySystem.HasItem("sapling"))
+        if (Agent.InventorySystem.HasItem(ItemManager.Instance.GetItemByName("sapling")))
         {
             Prio = (int)(MaxPrio * 0.1f) * Agent.InventorySystem.GetItemAmount(ItemManager.Instance.GetItemByName("sapling"));
         }

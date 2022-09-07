@@ -1,8 +1,8 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/Style/Inventory.uss?fileID=7433441132597879392&amp;guid=5387d8501d20f3d4992ede0713219080&amp;type=3#Inventory" />
     <ui:VisualElement name="Container" class="container">
-        <ui:VisualElement name="Inventory" class="inventory">
-            <ui:Label text="Inventory" display-tooltip-when-elided="true" name="Header" class="header" />
+        <ui:VisualElement name="Inventory" class="inventory" style="border-left-width: 1px; border-right-width: 1px; border-bottom-width: 1px; height: 80%; max-height: 80%; width: 60%; max-width: 55%;">
+            <ui:Label text="Inventory" display-tooltip-when-elided="true" name="Header" class="header" style="border-left-color: rgb(154, 143, 151); border-right-color: rgb(154, 143, 151); border-top-color: rgb(154, 143, 151); border-bottom-color: rgb(154, 143, 151);" />
             <ui:VisualElement name="SlotContainer" class="slot-container" />
         </ui:VisualElement>
     </ui:VisualElement>

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
 
 struct View
@@ -23,6 +24,11 @@ public class UIManager : MonoBehaviour
 
     VisualElement currentlyOpen;
     Dictionary<string, View> views = new Dictionary<string, View>();
+
+    private void Awake()
+    {
+        EventSystem.SetUITookitEventSystemOverride(null, false, false);
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -82,6 +88,7 @@ public class UIManager : MonoBehaviour
             currentlyOpen = window;
             window.style.display = DisplayStyle.Flex;
             views[key].script.Open();
+            //views[key].view.Focus();
         }
         else
         {

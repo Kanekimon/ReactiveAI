@@ -167,7 +167,7 @@ public class GoapPlanner : MonoBehaviour
         WorldState.AddWorldState("requestedItem", item);
         WorldState.AddWorldState("gatherAmount", amount);
 
-        if (Agent.InventorySystem.HasEnough(item, amount))
+        if (Agent.InventorySystem.HasItemWithAmount(item, amount))
         {
             WorldState.AddWorldState("hasItem", true);
         }

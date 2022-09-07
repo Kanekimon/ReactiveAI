@@ -22,12 +22,12 @@ public class BeloningsSensor : MonoBehaviour
 
     private void Update()
     {
-        if (InventoryHasSpace && InventorySystem.GetFreeSpaceSize() == 0)
+        if (InventoryHasSpace && InventorySystem.GetNumberOfFreeSlots() == 0)
         {
             InventoryHasSpace = false;
             WorldState.AddWorldState("inventoryFull", true);
         }
-        else if (!InventoryHasSpace && InventorySystem.GetFreeSpaceSize() > 0)
+        else if (!InventoryHasSpace && InventorySystem.GetNumberOfFreeSlots() > 0)
         {
             InventoryHasSpace = true;
             WorldState.AddWorldState("inventoryFull", false);
@@ -38,7 +38,7 @@ public class BeloningsSensor : MonoBehaviour
         {
             int amount = WorldState.GetValue<int>("gatherAmount");
             Item requested = WorldState.GetValue<Item>("requestedItem");
-            bool hasItem = InventorySystem.HasEnough(requested, amount);
+            bool hasItem = InventorySystem.HasItemWithAmount(requested, amount);
 
             if (!hasItem && Agent.Job.JobType == JobType.Crafter && requested.HasRecipe)
             {

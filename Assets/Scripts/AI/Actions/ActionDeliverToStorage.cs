@@ -32,7 +32,7 @@ public class ActionDeliverToStorage : ActionBase
             {
                 Item toDeliver = WorldState.GetValue<Item>("requestedItem") as Item;
                 int amount = WorldState.GetValue<int>("gatherAmount");
-                Agent.InventorySystem.TransferToOther(targetStorage.GetComponent<InventorySystem>(), toDeliver, amount);
+                Agent.InventorySystem.TransferItemToOtherInventory(targetStorage.GetComponent<InventorySystem>(), toDeliver, amount);
                 town.FinishedRequest(Agent, toDeliver, targetStorage);
                 WorldState.AddWorldState("deliveredResource", true);
                 OnDeactived();

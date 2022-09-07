@@ -24,7 +24,7 @@ public class CraftingSystem : MonoBehaviour
         Recipe recipe = Learned.Where(a => a.Result == item).FirstOrDefault();
         foreach (RecipesMaterial mats in recipe.Materials)
         {
-            if (!inventorySystem.HasEnough(mats.Item, mats.Amount))
+            if (!inventorySystem.HasItemWithAmount(mats.Item, mats.Amount))
                 return false;
         }
         return true;
@@ -58,7 +58,7 @@ public class CraftingSystem : MonoBehaviour
         Recipe rec = GetRecipeForItem(item);
         foreach (RecipesMaterial material in rec.Materials)
         {
-            if (!inventorySystem.HasEnough(material.Item, material.Amount))
+            if (!inventorySystem.HasItemWithAmount(material.Item, material.Amount))
             {
                 int missingAmount = Mathf.Max(material.Amount - inventorySystem.GetItemAmount(item), 0);
                 missingResources.Add(new KeyValuePair<Item, int>(material.Item, missingAmount));

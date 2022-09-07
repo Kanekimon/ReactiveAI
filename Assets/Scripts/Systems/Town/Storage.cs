@@ -27,7 +27,7 @@ public class Storage : MonoBehaviour
 
     public void RetrieveFromStorage(InventorySystem retriever, Item item, int amount)
     {
-        InventorySystem.TransferToOther(retriever, item, amount);
+        InventorySystem.TransferItemToOtherInventory(retriever, item, amount);
     }
 }
 

@@ -107,6 +107,11 @@ public class AwarenessSystem : MonoBehaviour
         ResourceCount = ResourceNodesInRange.Count;
         TargetsCount = ActiveTargets.Count;
 
+        if (WorldState.GetValue<List<ResourceType>>("possibleResources") != null)
+        {
+            SeesResourceTarget(WorldState.GetValue<List<ResourceType>>("possibleResources"));
+        }
+
         if (WorldState.GetValue<GameObject>("target") != null)
         {
             GameObject currentTarget = WorldState.GetValue<GameObject>("target");
@@ -144,31 +149,6 @@ public class AwarenessSystem : MonoBehaviour
             WorldState.ChangeValue("isAtResource", false);
         }
 
-    }
-
-    GameObject GetClosestTarget(Dictionary<GameObject, TrackedTarget> candidates)
-    {
-        float closest = float.MaxValue;
-        GameObject cand = null;
-
-        foreach (KeyValuePair<GameObject, TrackedTarget> target in candidates)
-        {
-            float distance = Vector3.Distance(transform.position, target.Value.RawPosition);
-            if (closest > distance)
-            {
-                closest = distance;
-                cand = target.Key;
-            }
-        }
-        if (cand != null)
-        {
-            if (Vector3.Distance(cand.transform.position, transform.position) < 10f)
-                WorldState.ChangeValue("isAtResource", true);
-            else
-                WorldState.ChangeValue("isAtResource", false);
-        }
-
-        return cand;
     }
 
     private void CleanUpAwareness(Dictionary<GameObject, TrackedTarget> targetsToclean)
@@ -279,42 +259,5 @@ public class AwarenessSystem : MonoBehaviour
         return candidate != null;
     }
 
-    internal bool KnowsResourceOfType(Item item)
-    {
-        TrackedTarget candidate = null;
-        float closest = float.MaxValue;
-        foreach (TrackedTarget res in ResourceNodes.Values)
-        {
-            if (((ResourceTarget)res.Detectable).GatherableMaterials.Any(a => a.Item.Equals(item)))
-            {
-                float distance = Vector3.Distance(res.RawPosition, this.transform.position);
-                if (candidate == null)
-                {
-                    candidate = res;
-                    closest = distance;
-                }
-                else
-                {
-                    if (distance < closest)
-                    {
-                        candidate = res;
-                        closest = distance;
-                    }
-                }
-            }
-
-        }
-        if (candidate != null)
-        {
-            currentTarget = candidate.Detectable.gameObject;
-            WorldState.AddWorldState("target", currentTarget);
-        }
-        else
-            currentTarget = null;
-
-
-
-        return candidate != null;
-    }
 }
 

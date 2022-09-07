@@ -16,13 +16,14 @@ public class CollectJobResourceGoal : BaseGoal
         base.OnGoalActivated();
         //WorldState.AddWorldState("requestedResource", Gather);
         WorldState.AddWorldState("possibleResources", Agent.Job.GatherThese);
-        WorldState.AddWorldState("gatherAmount", Agent.InventorySystem.GetFreeSpaceSize());
+        WorldState.AddWorldState("gatherAmount", Agent.InventorySystem.GetNumberOfFreeSlots() > 0 ? 64 : 0);
         Storage = Agent.Job.Workplace;
 
     }
 
     public override void OnGoalDeactivated()
     {
+        WorldState.AddWorldState("possibleResources", null);
         base.OnGoalDeactivated();
     }
 
