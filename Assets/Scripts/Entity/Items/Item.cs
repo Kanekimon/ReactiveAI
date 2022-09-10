@@ -12,5 +12,6 @@ public class Item : ScriptableObject
     public GameObject Prefab;
     public List<ResourceType> ResourceType = new List<ResourceType>();
     public Sprite Icon;
+    public float Weigth;
 }
 

@@ -17,18 +17,19 @@ public class CraftAction : ActionBase
 
     public override bool CanRun()
     {
-        return base.CanRun();
+        return WorldState.GetValue<Request>("activeRequest")?.RequestedItem?.HasRecipe ?? false;
     }
 
     public override void OnActivated(BaseGoal linked)
     {
         base.OnActivated(linked);
-        Requested = WorldState.GetValue<Item>("requestedItem");
+        Requested = WorldState.GetValue<Request>("activeRequest").RequestedItem;
     }
 
     public override void OnTick()
     {
         cSystem.CraftItem(Requested);
+        OnDeactived();
     }
 }
 

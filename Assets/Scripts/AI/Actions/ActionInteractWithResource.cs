@@ -8,6 +8,7 @@ public class ActionInteractWithResource : ActionBase
     private GameObject _target;
     private Item resourceToGather;
     private int gatherCount;
+    private bool sameResource = false;
 
     private float timer;
     public float delay = 2f;
@@ -16,13 +17,25 @@ public class ActionInteractWithResource : ActionBase
     {
         
         preconditions.Add(new KeyValuePair<string, object>("isAtPosition", true));
+        preconditions.Add(new KeyValuePair<string, object>("hasTool", true));
         effects.Add(new KeyValuePair<string, object>("interactWithResource", true));
         effects.Add(new KeyValuePair<string, object>("gatherResource", true));
+        effects.Add(new KeyValuePair<string, object>("hasItem", true));
         base.Start();
     }
 
     public override bool CanRun()
     {
+        Item requested = WorldState.GetValue<Item>("requestedItem");
+
+        if (!WorldState.GetValue<bool>("hasTool"))
+            return false;
+
+        if(requested != null && !requested.HasRecipe && requested.IsResource)
+        {
+            return true;
+        }
+
         if (WorldState.GetValue<List<ResourceType>>("possibleResources") != null)
             return true;
         return false;
@@ -36,6 +49,7 @@ public class ActionInteractWithResource : ActionBase
         AmountToGather = WorldState.GetValue<int>("gatherAmount");
         resourceToGather = WorldState.GetValue<Item>("requestedResource");
         Agent.GetComponent<Animator>().SetBool("isAttacking", true);
+        sameResource = false;
     }
 
     public override void OnDeactived()
@@ -47,10 +61,27 @@ public class ActionInteractWithResource : ActionBase
 
     public override void OnTick()
     {
-        _target = WorldState.GetValue<GameObject>("target");
+        
+        GameObject tmp = WorldState.GetValue<GameObject>("target");
+
+        if (_target == null)
+        {
+            if (!sameResource)
+            {
+                _target = tmp;
+                sameResource = true;
+            }
+            else
+            {
+                this._needsReplanning = true;
+                OnDeactived();
+                return;
+            }
+        }
 
 
-        if (timer >= delay)
+
+        if (timer >= delay || _target == null)
         {
 
             timer = 0;

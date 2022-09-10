@@ -6,7 +6,7 @@ public class CraftGoal : BaseGoal
 
     protected override void Start()
     {
-        Preconditions.Add(new KeyValuePair<string, object>("deliveredResource", true));
+        Preconditions.Add(new KeyValuePair<string, object>("deliveredItem", true));
         base.Start();
     }
 

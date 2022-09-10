@@ -17,7 +17,7 @@ public class Request
     public RequestStatus Status;
     public GameObject Requester;
     public GameObject Giver;
-    public Storage Storage;
+    public GameObject Storage;
 
     public Request(GameObject requester, Item item, int amount)
     {
@@ -43,11 +43,6 @@ public class Request
     public void ChangeStatus(RequestStatus newStatus)
     {
         this.Status = newStatus;
-    }
-
-    public void SetStorage(Storage st)
-    {
-        Storage = st;
     }
 }
 

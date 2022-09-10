@@ -7,7 +7,7 @@
             case ResourceType.rock:
                 return JobType.Miner;
             case ResourceType.tree:
-                return JobType.Woodcutter;
+                return JobType.Lumberjack;
             case ResourceType.mushroom:
                 return JobType.Farmer;
             case ResourceType.bush:

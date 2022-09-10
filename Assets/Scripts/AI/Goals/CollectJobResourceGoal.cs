@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-
+using UnityEngine;
 
 public class CollectJobResourceGoal : BaseGoal
 {
     public Item Gather;
-    public Storage Storage;
+    public GameObject WorkPlace;
     protected override void Start()
     {
         Preconditions.Add(new KeyValuePair<string, object>("gatherResource", true));
@@ -17,12 +17,14 @@ public class CollectJobResourceGoal : BaseGoal
         //WorldState.AddWorldState("requestedResource", Gather);
         WorldState.AddWorldState("possibleResources", Agent.Job.GatherThese);
         WorldState.AddWorldState("gatherAmount", Agent.InventorySystem.GetNumberOfFreeSlots() > 0 ? 64 : 0);
-        Storage = Agent.Job.Workplace;
+        WorkPlace = Agent.Job.Workplace;
 
     }
 
     public override void OnGoalDeactivated()
     {
+        WorldState.AddWorldState("target", null);
+        WorldState.AddWorldState("isAtTarget", false);
         WorldState.AddWorldState("possibleResources", null);
         base.OnGoalDeactivated();
     }
@@ -30,7 +32,7 @@ public class CollectJobResourceGoal : BaseGoal
 
     public override void OnTickGoal()
     {
-        if (WorldState.GetValue<bool>("isDayTime") && !WorldState.GetValue<bool>("inventoryFull"))
+        if (WorldState.GetValue<bool>("startedWork") && !WorldState.GetValue<bool>("requestResource") && WorldState.GetValue<bool>("isDayTime") && !WorldState.GetValue<bool>("inventoryFull"))
             Prio = MaxPrio;
         else
             Prio = MinPrio;

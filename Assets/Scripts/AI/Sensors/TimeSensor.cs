@@ -1,6 +1,8 @@
 ﻿
 using UnityEngine;
 
+
+
 public class TimeSensor : MonoBehaviour
 {
 
@@ -17,6 +19,7 @@ public class TimeSensor : MonoBehaviour
 
     private void Start()
     {
+        WorldState.AddWorldState("dayTime", TimeManager.Instance.GetDayTime());
         WorldState.AddWorldState("isDayTime", TimeManager.Instance.IsDayTime());
     }
 
@@ -26,6 +29,7 @@ public class TimeSensor : MonoBehaviour
         {
             timer = 0;
             WorldState.ChangeValue("isDayTime", TimeManager.Instance.IsDayTime());
+            WorldState.AddWorldState("dayTime", TimeManager.Instance.GetDayTime());
         }
         timer += Time.deltaTime;
     }

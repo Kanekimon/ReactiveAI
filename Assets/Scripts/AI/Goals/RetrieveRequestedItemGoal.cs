@@ -34,11 +34,11 @@ public class RetrieveRequestedItemGoal : BaseGoal
 
     public override void OnGoalActivated()
     {
-        request = Agent.ReadyForPickUp.Dequeue();
+        request = Agent.ReadyForPickUp.Peek();
         WorldState.AddWorldState("interactWithStorage", false);
         WorldState.AddWorldState("request", request);
         WorldState.AddWorldState("hasTarget", true);
-        WorldState.AddWorldState("target", request.Storage.gameObject);
+        WorldState.AddWorldState("target", Agent.HomeTown.RequestBoard.gameObject);
         base.OnGoalActivated();
     }
 
@@ -46,6 +46,7 @@ public class RetrieveRequestedItemGoal : BaseGoal
     {
         WorldState.RemoveWorldState("interactWithStorage");
         request = null;
+        Agent.WorldState.AddWorldState("requestResource", false);
         base.OnGoalDeactivated();
     }
 

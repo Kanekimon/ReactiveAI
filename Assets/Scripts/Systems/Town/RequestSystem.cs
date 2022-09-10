@@ -64,10 +64,17 @@ public class RequestSystem : MonoBehaviour
         {
             if (req.RequestedItem == itemDelivered)
             {
-                req.Storage = storage.GetComponent<Storage>();
+                req.Storage = storage.gameObject;
                 req.Status = RequestStatus.Ready;
                 req.Requester.GetComponent<Agent>().PickUpResourceFromTarget(req);
+                return;
             }
         }
+    }
+
+
+    public void AssingRequest(Agent agent)
+    {
+
     }
 }

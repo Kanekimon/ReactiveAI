@@ -44,7 +44,8 @@ public class RequestResourceGoal : BaseGoal
     public override void OnTickGoal()
     {
 
-        if (WorldState.GetValue("requests") != null)
+
+        if (WorldState.GetValue<List<Request>>("requests") != null)
         {
             Requests = WorldState.GetValue<List<Request>>("requests");
 

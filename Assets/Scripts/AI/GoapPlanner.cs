@@ -42,16 +42,27 @@ public class GoapPlanner : MonoBehaviour
 
     public void InitActions()
     {
-        ActionContainer = transform.Find("ActionContainer").gameObject;
-        AllActions = ActionContainer.GetComponents<ActionBase>().ToList();
+        ActionContainer = transform.Find("Actions").gameObject;
+        AllActions = new List<ActionBase>();
+
+        foreach (Transform child in ActionContainer.transform)
+        {
+            AllActions.AddRange(child.gameObject.GetComponents<ActionBase>().ToList());
+        }
     }
     public void InitGoals()
     {
         GoalContainer = null;
         AllGoals = new List<BaseGoal>();
 
-        GoalContainer = transform.Find("GoalContainer").gameObject;
-        AllGoals = GoalContainer.GetComponents<BaseGoal>().ToList();
+        GoalContainer = transform.Find("Goals").gameObject;
+        AllGoals = new List<BaseGoal>();
+
+        foreach(Transform child in GoalContainer.transform)
+        {
+            AllGoals.AddRange(child.gameObject.GetComponents<BaseGoal>().ToList());
+        }
+
     }
 
 
@@ -63,6 +74,9 @@ public class GoapPlanner : MonoBehaviour
 
     private void Update()
     {
+        if (CurrentGoal != null && CurrentGoal.IsPaused)
+            CurrentGoal = null;
+
         BaseGoal HighestPrioGoal = TickGoals();
 
         if (HighestPrioGoal != null && HighestPrioGoal != CurrentGoal)
@@ -70,7 +84,7 @@ public class GoapPlanner : MonoBehaviour
             if (CurrentGoal != null)
                 DeactiveOldGoal();
 
-            if (HighestPrioGoal is SatisfyConditionGoal)
+            if (HighestPrioGoal is CollectJobResourceGoal)
                 Debug.Log("Test");
 
             CurrentGoal = HighestPrioGoal;
@@ -128,8 +142,12 @@ public class GoapPlanner : MonoBehaviour
         {
             goal.OnTickGoal();
 
-            if (!goal.CanRun())
+            if (!goal.CanRun() || goal.IsPaused)
                 continue;
+
+            if (bestGoal is RequestResourceGoal && Agent.Job != null && Agent.Job.JobType == JobType.Crafter)
+                Debug.Log("Test");
+
 
             if ((CurrentGoal == null || goal.CalculatePriority() > CurrentGoal.CalculatePriority()) && (bestGoal != null && bestGoal.CalculatePriority() < goal.CalculatePriority() || bestGoal == null))
                 bestGoal = goal;
@@ -156,29 +174,28 @@ public class GoapPlanner : MonoBehaviour
             GoapHelper.DebugPlan(this.Agent, CurrentGoal, CurrentActionSequence.ToList());
     }
 
-    public void RequestResource(Item item, int amount)
+    public void AddRequestToWorkOn(Request r)
     {
-        WorldState.AddWorldState("requestedItem", item);
-        WorldState.AddWorldState("gatherAmount", amount);
+        WorldState.AddWorldState("activeRequest", r);
     }
 
-    public void RequestCraftedItem(Item item, int amount)
+    public void AddCraftingRequestToWorkOn(Request r)
     {
-        WorldState.AddWorldState("requestedItem", item);
-        WorldState.AddWorldState("gatherAmount", amount);
+        WorldState.AddWorldState("activeRequest", r);
 
-        if (Agent.InventorySystem.HasItemWithAmount(item, amount))
+
+        if (Agent.InventorySystem.HasItemWithAmount(r.RequestedItem, r.RequestedAmount))
         {
             WorldState.AddWorldState("hasItem", true);
         }
-        else if (Agent.CraftingSystem.HasEnoughToCraft(item))
+        else if (Agent.CraftingSystem.HasEnoughToCraft(r.RequestedItem))
         {
             WorldState.AddWorldState("hasMaterial", true);
         }
         else
         {
             List<Request> reqs = new List<Request>();
-            foreach (KeyValuePair<Item, int> n in Agent.CraftingSystem.GetMissingResources(item))
+            foreach (KeyValuePair<Item, int> n in Agent.CraftingSystem.GetMissingResources(r.RequestedItem))
             {
                 reqs.Add(new Request(Agent.gameObject, n.Key, n.Value));
             }

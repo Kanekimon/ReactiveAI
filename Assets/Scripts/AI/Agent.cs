@@ -13,6 +13,12 @@ public class Agent : MonoBehaviour
     public float InteractionRange => _interactionRange;
     private StateMemory _memory = new StateMemory();
 
+    private Request _workingOn;
+    public Request WorkingOn { get { return _workingOn; } set { _workingOn = value; } }
+    public bool IsOccupied => _workingOn != null;
+
+    public GameObject Home;
+
     #region Systems
     AwarenessSystem _awareness;
     ConditionSystem _conditionSystem;
@@ -38,15 +44,16 @@ public class Agent : MonoBehaviour
         _craftingSystem = GetComponent<CraftingSystem>();
     }
 
-    internal void AddWork(Item requestedItem, int requestedAmount)
+    internal void AddWork(Request r)
     {
-        if (requestedItem.IsResource)
+        _workingOn = r;
+        if (r.RequestedItem.IsResource)
         {
-            _goapPlanner.RequestResource(requestedItem, requestedAmount);
+            _goapPlanner.AddRequestToWorkOn(r);
         }
-        else if (requestedItem.HasRecipe)
+        else if (r.RequestedItem.HasRecipe)
         {
-            _goapPlanner.RequestCraftedItem(requestedItem, requestedAmount);
+            _goapPlanner.AddCraftingRequestToWorkOn(r);
         }
     }
 
@@ -71,11 +78,6 @@ public class Agent : MonoBehaviour
     public void Die()
     {
         Destroy(this.gameObject);
-    }
-
-    public void GetRequest(Item item, int amount)
-    {
-        _goapPlanner.RequestResource(item, amount);
     }
 
     public void GetJob(Job job)

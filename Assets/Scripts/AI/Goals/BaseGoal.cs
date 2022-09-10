@@ -34,6 +34,7 @@ public class BaseGoal : MonoBehaviour, IGoal
     protected Agent Agent;
     protected StateMemory WorldState;
     [SerializeField] protected bool Pause = false;
+    public bool IsPaused => Pause;
     protected StateMemory NeededWorldState;
     [SerializeField] protected bool Runnable = true;
 
@@ -44,7 +45,7 @@ public class BaseGoal : MonoBehaviour, IGoal
 
     protected virtual void Awake()
     {
-        Parent = transform.parent.gameObject;
+        Parent = transform.parent.parent.gameObject;
         NavAgent = Parent.GetComponent<NavigationAgent>();
         AwarenessSystem = Parent.GetComponent<AwarenessSystem>();
         Agent = Parent.GetComponent<Agent>();
@@ -63,7 +64,7 @@ public class BaseGoal : MonoBehaviour, IGoal
         }
     }
 
-    void Update()
+    protected virtual void Update()
     {
         if (Pause)
         {
@@ -79,6 +80,7 @@ public class BaseGoal : MonoBehaviour, IGoal
             OnTickGoal();
         //DebugUI.UpdateGoal(this, GetType().Name, LinkedAction ? "Running" : "Paused", CalculatePriority());
     }
+
 
     protected StateMemory CreateRequiredWorldState()
     {

@@ -3,11 +3,7 @@ using UnityEngine;
 
 public class DeliverItemGoal : BaseGoal
 {
-    [SerializeField] public int GatherAmount;
-    [SerializeField] Item resourceToGather;
-
-    public Item ItemToGather => resourceToGather;
-
+    [SerializeField] Request workingOn;
 
     protected override void Start()
     {
@@ -18,9 +14,24 @@ public class DeliverItemGoal : BaseGoal
     public override void OnGoalActivated()
     {
         base.OnGoalActivated();
-        WorldState.AddWorldState("requestedItem", resourceToGather);
-        WorldState.AddWorldState("gatherAmount", GatherAmount);
+        workingOn = WorldState.GetValue<Request>("activeRequest");
     }
+
+
+    protected override void Update()
+    {
+        if (Pause)
+        {
+            if (WorldState.GetValue<bool>("hasItem"))
+            {
+                Runnable = true;
+                Pause = false;
+            }
+        }
+        else
+            OnTickGoal();
+    }
+
 
     public override int CalculatePriority()
     {
@@ -29,16 +40,16 @@ public class DeliverItemGoal : BaseGoal
 
     public override void OnGoalDeactivated()
     {
-        GatherAmount = 0;
-        WorldState.AddWorldState("deliveredResource", false);
-        WorldState.AddWorldState("requestedItem", null);
-        WorldState.AddWorldState("gatherAmount", 0);
+        if (WorldState.GetValue<bool>("deliveredItem"))
+        {
+            WorldState.AddWorldState("activeRequest", null);
+        }
         base.OnGoalDeactivated();
     }
 
     public override void OnTickGoal()
     {
-        if (GatherAmount == 0 || WorldState.GetValue<bool>("deliveredResource"))
+        if (WorldState.GetValue<Request>("activeRequest") == null)
             Prio = MinPrio;
         else
             Prio = MaxPrio;

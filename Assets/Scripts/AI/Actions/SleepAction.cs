@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UnityEngine;
 
-public class RecoverAction : ActionBase
+public class SleepAction : ActionBase
 {
     ConditionSystem CSystem;
     float timer = 0;
@@ -13,8 +12,7 @@ public class RecoverAction : ActionBase
 
     protected override void Start()
     {
-        CSystem = Agent.ConditionSystem;
-        effects.Add(new KeyValuePair<string, object>("isExhausted", false));
+        effects.Add(new KeyValuePair<string, object>("isSleeping", true));
         preconditions.Add(new KeyValuePair<string, object>("isHome", true));
         base.Start();
     }
@@ -23,18 +21,10 @@ public class RecoverAction : ActionBase
     public override void OnTick()
     {
         base.OnTick();
-        if(timer > delay)
-        {
-            timer = 0;
-            CSystem.ChangeValue("Exhausted", 1f);
-        }
-        timer += Time.deltaTime;
-        if (CSystem.GetActiveCondition() == null)
+        if(WorldState.GetValue<DayTime>("DayTime") == DayTime.Morning)
         {
             OnDeactived();
         }
-
     }
 
 }
-

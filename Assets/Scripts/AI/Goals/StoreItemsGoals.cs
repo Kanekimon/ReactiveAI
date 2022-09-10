@@ -3,7 +3,6 @@
 
 public class StoreItemsGoals : BaseGoal
 {
-    public Storage Storage;
 
     protected override void Start()
     {

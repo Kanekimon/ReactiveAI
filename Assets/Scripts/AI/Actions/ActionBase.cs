@@ -21,7 +21,7 @@ public class ActionBase : MonoBehaviour
 
     protected virtual void Awake()
     {
-        Parent = transform.parent.gameObject;
+        Parent = transform.parent.parent.gameObject;
         NavAgent = Parent.GetComponent<NavigationAgent>();
         AwarenessSystem = Parent.GetComponent<AwarenessSystem>();
         Agent = Parent.GetComponent<Agent>();

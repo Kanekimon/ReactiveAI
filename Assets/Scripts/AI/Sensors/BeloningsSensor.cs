@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Linq;
+using UnityEngine;
 
 [RequireComponent(typeof(InventorySystem))]
 public class BeloningsSensor : MonoBehaviour
@@ -22,22 +23,25 @@ public class BeloningsSensor : MonoBehaviour
 
     private void Update()
     {
-        if (InventoryHasSpace && InventorySystem.GetNumberOfFreeSlots() == 0)
-        {
-            InventoryHasSpace = false;
-            WorldState.AddWorldState("inventoryFull", true);
-        }
-        else if (!InventoryHasSpace && InventorySystem.GetNumberOfFreeSlots() > 0)
-        {
-            InventoryHasSpace = true;
-            WorldState.AddWorldState("inventoryFull", false);
-        }
+
+        WorldState.AddWorldState("inventoryFull", (InventorySystem.GetNumberOfFreeSlots() == 0 || InventorySystem.CurrentWeight >= InventorySystem.MaximumWeight - 3));
+        //if (InventoryHasSpace && InventorySystem.GetNumberOfFreeSlots() == 0 || InventorySystem.CurrentWeight == InventorySystem.MaximumWeight-3)
+        //{
+        //    InventoryHasSpace = false;
+        //    WorldState.AddWorldState("inventoryFull", true);
+        //}
+        //else if (!InventoryHasSpace && (InventorySystem.GetNumberOfFreeSlots() > 0 && InventorySystem.GetWeightLeftUntilFull() > 3))
+        //{
+        //    InventoryHasSpace = true;
+        //    WorldState.AddWorldState("inventoryFull", false);
+        //}
 
         WorldState.ChangeValue("hasFood", InventorySystem.HasItemWithType(ItemType.Food));
-        if (WorldState.GetValue<Item>("requestedItem") != null && WorldState.GetValue<int>("gatherAmount") != null)
+        if (WorldState.GetValue<Request>("activeRequest") != null)
         {
-            int amount = WorldState.GetValue<int>("gatherAmount");
-            Item requested = WorldState.GetValue<Item>("requestedItem");
+            Request r = WorldState.GetValue<Request>("activeRequest");
+            int amount = r.RequestedAmount;
+            Item requested = r.RequestedItem;
             bool hasItem = InventorySystem.HasItemWithAmount(requested, amount);
 
             if (!hasItem && Agent.Job.JobType == JobType.Crafter && requested.HasRecipe)
@@ -49,6 +53,12 @@ public class BeloningsSensor : MonoBehaviour
         }
         else
             WorldState.AddWorldState("hasItem", false);
+    
+    
+        if(Agent.Job != null)
+        {
+            WorldState.AddWorldState("hasTool", Agent.Job.Tools.Any(a => InventorySystem.HasItem(a)));
+        }
     }
 
 }

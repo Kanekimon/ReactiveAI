@@ -13,6 +13,8 @@ public class InventorySystem : MonoBehaviour
     public List<InventoryItem> InventoryItems { get => _items; set { _items = value; } }
     public int MaximumStackSize;
     public int MaximumSlots;
+    public float MaximumWeight;
+    public float CurrentWeight;
     public int NumberOfItems => _inventory.Values.Sum(a => a.Amount);
 
     private void Start()
@@ -26,6 +28,7 @@ public class InventorySystem : MonoBehaviour
     private void Update()
     {
         InventoryItems = _inventory.Values.ToList();
+        CurrentWeight = _inventory.Values.Count > 0 ? _inventory.Values.Where(a => a != null).ToList().Sum(a => a.Item.Weigth * a.Amount) : 0;
     }
 
     /// <summary>
@@ -49,6 +52,11 @@ public class InventorySystem : MonoBehaviour
     public int GetInventoryItemWithSpace(Item item)
     {
         return _inventory.Where(a => a.Value != null && a.Value.Item.Id == item.Id && a.Value.Amount < MaximumStackSize)?.FirstOrDefault().Key ?? GetNextFreeSlot();
+    }
+
+    public List<int> GetAllIndexOfItem(Item item)
+    {
+        return _inventory.Keys.Where(a => _inventory[a] != null && _inventory[a].Item.Id == item.Id && _inventory[a].Amount < MaximumStackSize)?.ToList();
     }
 
     /// <summary>
@@ -79,8 +87,10 @@ public class InventorySystem : MonoBehaviour
                 if (_inventory[slotIndex] != null)
                 {
                     int invStackSize = _inventory[slotIndex].Amount;
+                    amount = Mathf.Clamp(Mathf.FloorToInt((MaximumWeight - CurrentWeight) / ((float)item.Weigth)), 0, amount);
                     if (invStackSize + amount <= MaximumStackSize)
                     {
+                        
                         _inventory[slotIndex].Amount += amount;
                         added += amount;
                     }
@@ -113,6 +123,7 @@ public class InventorySystem : MonoBehaviour
     public int CreateNewSlots(Item item, int amount)
     {
         int added = 0;
+        amount = Mathf.Clamp(Mathf.FloorToInt((MaximumWeight - CurrentWeight) / ((float)item.Weigth)), 0, amount);
         if (amount > MaximumStackSize)
         {
             while (amount > 0)
@@ -200,10 +211,16 @@ public class InventorySystem : MonoBehaviour
 
         for (int i = items.Count - 1; i >= 0; i--)
         {
-            if (items[i].Amount < amount)
+            if (items[i] == null || items[i].Amount == 0)
+                continue;
+
+            if (items[i].Amount <= amount)
             {
                 amount -= items[i].Amount;
                 _inventory[i] = null;
+                if (amount == 0)
+                    return true;
+
             }
             else
             {
@@ -223,13 +240,49 @@ public class InventorySystem : MonoBehaviour
     /// <param name="otherInventory">Transfer to this</param>
     /// <param name="toDeliver">item to transfer</param>
     /// <param name="amount">amount to transfer</param>
-    public void TransferItemToOtherInventory(InventorySystem otherInventory, Item toDeliver, int amount)
+    public bool TransferItemToOtherInventory(InventorySystem otherInventory, Item toDeliver, int amount)
     {
         if(HasItemWithAmount(toDeliver, amount))
         {
-            int added = otherInventory.AddItem(toDeliver, amount);
-            this.RemoveItem(toDeliver, added);
+
+            if(otherInventory.CanAddItem(toDeliver, amount) && RemoveItem(toDeliver, amount))
+            {
+                int added = otherInventory.AddItem(toDeliver, amount);
+                if(added != amount)
+                {
+                    AddItem(toDeliver, amount - added);
+                }
+                return true;
+            }
         }
+        return false;
+    }
+
+    public bool CanAddItem(Item item, int amount)
+    {
+        if (!_inventory.Values.Any(a => a != null && a.Item.Id == item.Id) && GetNextFreeSlot() == -1)
+            return false;
+
+        if (CurrentWeight + (item.Weigth * amount) > MaximumWeight)
+            return false;
+
+        int neededSlots = Mathf.Clamp((amount / 64), 1, MaximumSlots);
+
+        List<int> itemWithSpaceLeft = GetAllIndexOfItem(item);
+        if (itemWithSpaceLeft.Count == 0 && _inventory.Where(a => a.Value != null).Count() + neededSlots > MaximumSlots)
+            return false;
+
+        foreach(int i in itemWithSpaceLeft)
+        {
+            amount -= (64 - _inventory[i].Amount);
+        }
+
+        neededSlots = Mathf.Clamp((amount / 64), 0, MaximumSlots);
+        if (_inventory.Where(a => a.Value != null).Count() + neededSlots > MaximumSlots)
+            return false;
+
+
+        return true;
     }
 
     /// <summary>
@@ -261,6 +314,11 @@ public class InventorySystem : MonoBehaviour
         return _inventory.Count(a => a.Value == null);
     }
 
+    public float GetWeightLeftUntilFull()
+    {
+        return CurrentWeight - MaximumWeight;
+    }
+
     /// <summary>
     /// Checks if an item with a given type is in the inventory
     /// </summary>
@@ -280,6 +338,17 @@ public class InventorySystem : MonoBehaviour
     {
         return _inventory.Where(a => a.Value.Item.ItemTypes.Contains(type)).FirstOrDefault().Value.Item;
     }
+
+    public List<InventoryItem> GetAllItemsOfType(ItemType type)
+    {
+        return _inventory.Values.Where(a => a != null && a.Item.ItemTypes.Contains(type)).ToList();
+    }
+
+    public List<InventoryItem> GetAllItems()
+    {
+        return _inventory.Values.Where(a => a != null).ToList();
+    }
+
 
 }
 

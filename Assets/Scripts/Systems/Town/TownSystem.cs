@@ -11,6 +11,28 @@ public class TownSystem : MonoBehaviour
     public List<Job> AvailableJobs = new List<Job>();
     public List<Storage> Storages = new List<Storage>();
 
+    public GameObject TestWorkPlace;
+    public Agent TestAgent;
+
+
+    public GameObject GoblinPrefab;
+
+
+
+
+    private void Start()
+    {
+        foreach(Job j in JobManager.Instance.AllJobs)
+        {
+            Job copy = Instantiate(j);
+            copy.name = j.name;
+            AddNewJob(copy, TestWorkPlace);
+        }    
+    }
+
+
+
+
     public void RegisterAgent(Agent agent)
     {
         _population.Add(agent);
@@ -21,11 +43,20 @@ public class TownSystem : MonoBehaviour
         _population.Remove(agent);
     }
 
+
+
+    public void AddNewJob(Job job, GameObject workplace)
+    {
+        AvailableJobs.Add(job);
+        job.Workplace = workplace;
+    }
+    
+
     public bool RequestResoruces(Request r)
     {
         Job job = AvailableJobs.Where(a => a.JobType == this.GetComponent<ResponsibilityChecker>().GetResponsibleJob(r.RequestedItem)).FirstOrDefault();
         JobType requiredWorker = job.JobType;
-        List<Agent> workers = _population.Where(a => a.Job.JobType == requiredWorker).ToList();
+        List<Agent> workers = _population.Where(a => a.Job != null && a.Job.JobType == requiredWorker && !a.IsOccupied).ToList() ?? null;
 
         Agent worker = null;
 
@@ -37,12 +68,13 @@ public class TownSystem : MonoBehaviour
         }
         else
         {
-            if (_population.Any(a => a.Job.JobType == JobType.None))
+            if (_population.Any(a => a.Job == null))
             {
-                worker = _population.Where(a => a.Job.JobType == JobType.None && a.gameObject != r.Requester).FirstOrDefault();
+                worker = _population.Where(a => a.Job == null && a.gameObject != r.Requester).FirstOrDefault();
                 if (worker == null)
                     return false;
-                worker.GetJob(job);
+
+                HireWorker(worker, job);
             }
         }
 
@@ -52,12 +84,26 @@ public class TownSystem : MonoBehaviour
         }
         else
         {
-            JobManager.Instance.AddJobGoals(worker, requiredWorker);
-            worker.GetComponent<GoapPlanner>().InitGoals();
-            worker.AddWork(r.RequestedItem, r.RequestedAmount);
+            worker.AddWork(r);
             r.Giver = worker.gameObject;
             return true;
         }
+    }
+
+    public void HireWorker(Agent agent, Job job)
+    {
+        agent.GetJob(job);
+        JobManager.Instance.AddJobGoalsAndActions(agent, job);
+        agent.GetComponent<GoapPlanner>().InitGoals();
+        agent.GetComponent<GoapPlanner>().InitActions();
+    }
+
+    public void FireWorker(Agent agent, Job job)
+    {
+        agent.GetJob(null);
+        JobManager.Instance.RemoveJobGoalsAndActions(agent, job);
+        agent.GetComponent<GoapPlanner>().InitGoals();
+        agent.GetComponent<GoapPlanner>().InitActions();
     }
 
     internal GameObject GetStorage(Item item)
@@ -68,6 +114,14 @@ public class TownSystem : MonoBehaviour
     public void FinishedRequest(Agent agent, Item itemDelivered, GameObject storage)
     {
         RequestBoard.GetComponent<RequestSystem>().FinishedRequest(agent, itemDelivered, storage);
+    }
+
+    public GameObject SpawnAgent()
+    {
+        GameObject ag = Instantiate<GameObject>(GoblinPrefab);
+        ag.GetComponent<Agent>().HomeTown = this;
+        RegisterAgent(ag.GetComponent<Agent>());
+        return ag;
     }
 }
 

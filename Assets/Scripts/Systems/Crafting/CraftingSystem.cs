@@ -16,12 +16,12 @@ public class CraftingSystem : MonoBehaviour
 
     public bool CanCraftItem(Item item)
     {
-        return Learned.Any(a => a.Result == item);
+        return ItemManager.Instance.AllRecipes.Any(a => a.Result == item);
     }
 
     public bool HasEnoughToCraft(Item item)
     {
-        Recipe recipe = Learned.Where(a => a.Result == item).FirstOrDefault();
+        Recipe recipe = ItemManager.Instance.AllRecipes.Where(a => a.Result == item).FirstOrDefault();
         foreach (RecipesMaterial mats in recipe.Materials)
         {
             if (!inventorySystem.HasItemWithAmount(mats.Item, mats.Amount))
@@ -32,7 +32,7 @@ public class CraftingSystem : MonoBehaviour
 
     public Recipe GetRecipeForItem(Item item)
     {
-        return Learned.Where(a => a.Result == item).FirstOrDefault();
+        return ItemManager.Instance.AllRecipes.Where(a => a.Result == item).FirstOrDefault();
     }
 
 

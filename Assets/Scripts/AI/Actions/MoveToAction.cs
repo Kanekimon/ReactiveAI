@@ -14,8 +14,6 @@ internal class MoveToAction : ActionBase
 
     public override void OnActivated(BaseGoal linked)
     {
-        if (Agent.name.Contains("Miner"))
-            Debug.Log("Test");
         base.OnActivated(linked);
         _target = WorldState.GetValue<GameObject>("target");
         NavAgent.MoveTo(NavAgent.PickClosestPositionInRange(_target, Agent.InteractionRange));

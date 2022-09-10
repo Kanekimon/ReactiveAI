@@ -4,5 +4,6 @@
     Weapon,
     Armor,
     Resource,
+    Tool,
     Buildable
 }

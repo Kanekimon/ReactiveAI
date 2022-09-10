@@ -1,7 +1,7 @@
 ﻿public enum JobType
 {
     None,
-    Woodcutter,
+    Lumberjack,
     Miner,
     Blacksmith,
     Builder,

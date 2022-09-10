@@ -6,9 +6,9 @@ using UnityEngine;
 public class WanderGoal : BaseGoal
 {
 
-    [SerializeField] float PriorityBuildRate = 1;
+    [SerializeField] float PriorityBuildRate = 1f;
     [SerializeField] float PriorityDecayRate = 0.1f;
-    float CurrentPriority = 0f;
+    [SerializeField] float CurrentPrio;
 
     private void Start()
     {
@@ -17,7 +17,8 @@ public class WanderGoal : BaseGoal
 
     public override int CalculatePriority()
     {
-        return Mathf.FloorToInt(CurrentPriority);
+        Prio = Mathf.FloorToInt(CurrentPrio);
+        return Prio;
     }
 
     public override bool CanRun()
@@ -28,21 +29,23 @@ public class WanderGoal : BaseGoal
     public override void OnTickGoal()
     {
         if (NavAgent.IsMoving)
-            CurrentPriority -= PriorityDecayRate * Time.deltaTime;
+            CurrentPrio = Mathf.Clamp(CurrentPrio - (PriorityDecayRate * Time.deltaTime), MinPrio, MaxPrio);
         else
-            CurrentPriority += PriorityBuildRate * Time.deltaTime;
+            CurrentPrio = Mathf.Clamp(CurrentPrio + (PriorityBuildRate * Time.deltaTime), MinPrio, MaxPrio);
     }
 
     public override void OnGoalActivated()
     {
         base.OnGoalActivated();
-        CurrentPriority = MaxPrio;
+        Prio = MaxPrio;
+        CurrentPrio = MaxPrio;
     }
 
     public override void OnGoalDeactivated()
     {
         base.OnGoalDeactivated();
-        CurrentPriority = MinPrio;
+        Prio = MinPrio;
+        CurrentPrio = MinPrio;
     }
 }
 
