@@ -36,6 +36,7 @@ public class RequestResourceGoal : BaseGoal
     public override void OnGoalDeactivated()
     {
         Requests.Clear();
+        WorldState.AddWorldState("target", null);
         WorldState.AddWorldState("deliveredResource", false);
         WorldState.AddWorldState("requests", null);
         base.OnGoalDeactivated();

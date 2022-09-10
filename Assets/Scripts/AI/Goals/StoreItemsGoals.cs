@@ -16,6 +16,11 @@ public class StoreItemsGoals : BaseGoal
         WorldState.AddWorldState("target", Agent.Job.Workplace.gameObject);
     }
 
+    public override void OnGoalDeactivated()
+    {
+        WorldState.AddWorldState("target", null);
+        base.OnGoalDeactivated();
+    }
 
     public override void OnTickGoal()
     {

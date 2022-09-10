@@ -47,6 +47,7 @@ public class RequestSystem : MonoBehaviour
     public void RequestItem(Agent agent, Item item, int amount)
     {
         Request r = new Request(agent.gameObject, item, amount);
+
         _open.Add(r);
     }
 
@@ -72,6 +73,21 @@ public class RequestSystem : MonoBehaviour
         }
     }
 
+
+    internal void FinishedRequest(Request r)
+    {
+        Request inOpen = _open.Where(a => a.Equals(r)).FirstOrDefault();
+
+        //TODO: Notification
+        if (inOpen == null)
+            return;
+
+        _open.Remove(inOpen);
+
+        inOpen.Storage = this.gameObject;
+        inOpen.Status = RequestStatus.Ready;
+        inOpen.Requester.GetComponent<Agent>().PickUpResourceFromTarget(inOpen);
+    }
 
     public void AssingRequest(Agent agent)
     {

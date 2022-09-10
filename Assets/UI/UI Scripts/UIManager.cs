@@ -66,8 +66,9 @@ public class UIManager : MonoBehaviour
 
         if (Input.GetButtonDown("Inventory"))
         {
-            ToggleWindow("Inventory");
+            ToggleWindow("Requestboard");
         }
+
 
 
         UnityEngine.Cursor.visible = currentlyOpen != null;

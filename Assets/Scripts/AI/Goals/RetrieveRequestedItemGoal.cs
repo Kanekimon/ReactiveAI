@@ -48,6 +48,8 @@ public class RetrieveRequestedItemGoal : BaseGoal
         request = null;
         Agent.WorldState.AddWorldState("requestResource", false);
         base.OnGoalDeactivated();
+        WorldState.AddWorldState("hasTarget", false);
+        WorldState.AddWorldState("target", null);
     }
 
 }
