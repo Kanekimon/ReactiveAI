@@ -56,6 +56,8 @@ public class ThirdPersonOrbitCamBasic : MonoBehaviour
 
     void Update()
     {
+        if (UIManager.Instance.AnyViewOpen)
+            return;
         // Get mouse movement to orbit the camera.
         // Mouse:
         angleH += Mathf.Clamp(Input.GetAxis("Mouse X"), -1, 1) * horizontalAimingSpeed;
@@ -95,6 +97,28 @@ public class ThirdPersonOrbitCamBasic : MonoBehaviour
         smoothCamOffset = Vector3.Lerp(smoothCamOffset, customOffsetCollision ? Vector3.zero : noCollisionOffset, smooth * Time.deltaTime);
 
         cam.position = player.position + camYRotation * smoothPivotOffset + aimRotation * smoothCamOffset;
+
+        RaycastHit hit;
+        LayerMask mask = LayerMask.GetMask("Interactable");
+
+        if(Physics.Raycast(cam.position, player.forward, out hit, 10f, mask))
+        {
+            if (hit.collider != null)
+            {
+                try
+                {
+                    UIManager.Instance.ShowInteractableText(hit.collider.GetComponent<Interactable>());
+                }
+                catch
+                {
+                    Debug.Log(hit.collider.name);
+                }
+            }
+        }
+        else
+        {
+            UIManager.Instance.ShowInteractableText(null);
+        }
     }
 
     // Set camera offsets to custom values.

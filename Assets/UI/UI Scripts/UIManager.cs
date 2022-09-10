@@ -13,6 +13,8 @@ struct View
 
 public class UIManager : MonoBehaviour
 {
+    public static UIManager Instance { get; private set; }
+
     VisualElement baseRoot;
     VisualElement stamina_bar;
     VisualElement health_bar;
@@ -20,21 +22,35 @@ public class UIManager : MonoBehaviour
     VisualElement thirst_bar;
 
     PlayerConditionSystem player_condition;
-    bool anyUiOpen = false;
 
+    Interactable currentlyInteractingWith;
+
+    VisualElement crossHair;
+    Label inter_Text;
     VisualElement currentlyOpen;
     Dictionary<string, View> views = new Dictionary<string, View>();
 
+    public bool AnyViewOpen => currentlyOpen != null;
+
     private void Awake()
     {
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(this);
+
         EventSystem.SetUITookitEventSystemOverride(null, false, false);
     }
 
     // Start is called before the first frame update
     void Start()
     {
+
         player_condition = GameManager.Instance.Player.ConditionSystem;
         baseRoot = GetComponent<UIDocument>().rootVisualElement;
+
+        crossHair = baseRoot.Q<VisualElement>("crosshair");
+        inter_Text = baseRoot.Q<Label>("interactable-text");
 
         stamina_bar = baseRoot.Q<VisualElement>("stamina_bar").Q<VisualElement>("bar_overlay");
         baseRoot.Q<VisualElement>("stamina_bar").Q<Label>("bar_label").text = "Stamina";
@@ -62,34 +78,90 @@ public class UIManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+        Vector2 mouse = RuntimePanelUtils.ScreenToPanel(crossHair.panel, Input.mousePosition);
+        mouse.y = Screen.height - mouse.y;
+
         UpdateBars();
 
         if (Input.GetButtonDown("Inventory"))
         {
-            ToggleWindow("Requestboard");
+            ToggleWindow("Inventory");
+        }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            CloseOpenView();
         }
 
-
-
         UnityEngine.Cursor.visible = currentlyOpen != null;
+        crossHair.visible = !UnityEngine.Cursor.visible;
+        if (crossHair.visible)
+        {
+            crossHair.style.top = mouse.y;
+            crossHair.style.left = mouse.x;
+        }
+        else
+        {
+            UnityEngine.Cursor.lockState = CursorLockMode.None;
+        }
+
+        if(inter_Text.style.display == DisplayStyle.Flex)
+        {
+            inter_Text.style.top = mouse.y;
+            inter_Text.style.left = mouse.x;
+        }
+    }
+
+    public void ShowInteractableText(Interactable interact)
+    {
+
+        if (interact == null)
+        {
+            inter_Text.text = "";
+            inter_Text.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
+            if(currentlyInteractingWith != null)
+            {
+                currentlyInteractingWith.Visible = false;
+                currentlyInteractingWith = null;
+            }
+        }
+        else
+        {
+            inter_Text.text = "Press [E] to interact";
+            interact.Visible = true;
+            currentlyInteractingWith = interact;
+            inter_Text.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
+        }
+    }
+
+    public void CloseOpenView()
+    {
+        if(currentlyOpen != null)
+        {
+            views.Where(a => a.Value.view.name.Equals(currentlyOpen.name)).FirstOrDefault().Value.script.Close();
+            currentlyOpen.style.display = DisplayStyle.None;
+            currentlyOpen = null;
+        }
     }
 
     public void ToggleWindow(string key)
     {
         VisualElement window = views[key].view;
 
-        if (window.style.display == null || window.style.display == DisplayStyle.None)
+        if(currentlyInteractingWith != null)
         {
-            if (currentlyOpen != null)
-            {
-                views.Where(a => a.Value.view.name.Equals(currentlyOpen.name)).FirstOrDefault().Value.script.Close();
-                currentlyOpen.style.display = DisplayStyle.None;
-            }
+            currentlyInteractingWith.Visible = false;
+            inter_Text.style.display = DisplayStyle.None;
+        }
 
+
+        StyleEnum<DisplayStyle> view_state = window.style.display;
+        if (view_state.ToString() == "Null" || view_state == DisplayStyle.None)
+        {
+            CloseOpenView();
             currentlyOpen = window;
             window.style.display = DisplayStyle.Flex;
             views[key].script.Open();
-            //views[key].view.Focus();
         }
         else
         {
