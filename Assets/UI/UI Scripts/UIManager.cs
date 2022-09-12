@@ -26,9 +26,12 @@ public class UIManager : MonoBehaviour
     Interactable currentlyInteractingWith;
 
     VisualElement crossHair;
+    VisualElement notification_container;
     Label inter_Text;
     VisualElement currentlyOpen;
     Dictionary<string, View> views = new Dictionary<string, View>();
+
+    List<Notification> activeNotifications = new List<Notification>();
 
     public bool AnyViewOpen => currentlyOpen != null;
 
@@ -49,6 +52,7 @@ public class UIManager : MonoBehaviour
         player_condition = GameManager.Instance.Player.ConditionSystem;
         baseRoot = GetComponent<UIDocument>().rootVisualElement;
 
+        notification_container = baseRoot.Q<VisualElement>("Notifications").Q<VisualElement>("Container");
         crossHair = baseRoot.Q<VisualElement>("crosshair");
         inter_Text = baseRoot.Q<Label>("interactable-text");
 
@@ -92,9 +96,15 @@ public class UIManager : MonoBehaviour
         {
             CloseOpenView();
         }
-        if (Input.GetKeyUp(KeyCode.C))
+        if (Input.GetKeyDown(KeyCode.C))
         {
             ToggleWindow("Crafting");
+        }
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            float random = Random.Range(1f, 5f);
+            Debug.Log("Time : " + random);
+            CreateNotification("Test", random);
         }
 
         UnityEngine.Cursor.visible = currentlyOpen != null;
@@ -114,6 +124,30 @@ public class UIManager : MonoBehaviour
             inter_Text.style.top = mouse.y;
             inter_Text.style.left = mouse.x;
         }
+
+        CheckNotifications();
+    }
+
+    public void CheckNotifications()
+    {
+        if(notification_container.childCount > 0)
+        {
+            for(int i = notification_container.childCount - 1; i >= 0; i--)
+            {
+                Notification n = notification_container[i] as Notification;
+                n.Duration -= Time.deltaTime;
+                if (n.Duration <= 0)
+                    notification_container.Remove(n);
+            }
+
+        }
+    }
+
+    public void CreateNotification(string message, float duration)
+    {
+        Notification n = new Notification(message, duration);
+        notification_container.Add(n);
+        activeNotifications.Add(n);
     }
 
     public void ShowInteractableText(Interactable interact)

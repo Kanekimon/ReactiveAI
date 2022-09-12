@@ -14,6 +14,7 @@ public class Crafting_view : UiView
     PlayerSystem player;
     CraftingSystem playerCrafting;
 
+    Recipe currentlySelected;
 
     private void Start()
     {
@@ -26,16 +27,17 @@ public class Crafting_view : UiView
 
     public override void Open()
     {
-        foreach(var recipe in ItemManager.Instance.AllRecipes)
+        foreach (var recipe in ItemManager.Instance.AllRecipes)
         {
             RecipeItem re = new RecipeItem(recipe);
-            re.RegisterCallback<MouseDownEvent>((MouseDownEvent evt) =>
-            {
-                ChangeRecipeView(recipe);
-            }); 
+
+
+            re.RegisterCallback<MouseDownEvent, Recipe>(ChangeRecipeView, recipe);
+
             recipes_container.Add(re);
         }
     }
+
 
     public override void Close()
     {
@@ -44,7 +46,7 @@ public class Crafting_view : UiView
     }
 
 
-    public void ChangeRecipeView(Recipe re)
+    public void ChangeRecipeView(MouseDownEvent e, Recipe re)
     {
         recipes_view_container.Q<VisualElement>("header").Q<Label>("recipe_name").text = $"{re.Result.Name}  (Result amount: ({re.Amount}))";
         recipes_view_container.Q<VisualElement>("body").Clear();
@@ -52,20 +54,39 @@ public class Crafting_view : UiView
         {
             recipes_view_container.Q<VisualElement>("body").Add(new RecipeMaterial(rM.Item, rM.Amount));
         }
- 
+
         recipes_view_container.Q<VisualElement>("footer").Q<Label>("max-possible").text = $"Maximum possbile: ({playerCrafting.GetMaximumCraftable(re)})";
 
-        recipes_view_container.Q<VisualElement>("footer").Q<Button>("craft-button").clicked += (() =>
+
+        Action value = () =>
+                {
+                    string numbterTimes = recipes_view_container.Q<VisualElement>("footer").Q<TextField>("craft-amount").text;
+                    int amount = int.Parse(numbterTimes);
+                    if (amount > playerCrafting.GetMaximumCraftable(currentlySelected))
+                        UIManager.Instance.CreateNotification("Not enough materials", 2f);
+                    else
+                        playerCrafting.CraftXTimes(currentlySelected, amount);
+                };
+
+        recipes_view_container.Q<VisualElement>("footer").Q<Button>("craft-button").clicked -= CraftItemHandler();
+        currentlySelected = re;
+        recipes_view_container.Q<VisualElement>("footer").Q<Button>("craft-button").clicked += CraftItemHandler();
+
+    }
+
+    public Action CraftItemHandler()
+    {
+        return () =>
         {
             string numbterTimes = recipes_view_container.Q<VisualElement>("footer").Q<TextField>("craft-amount").text;
             int amount = int.Parse(numbterTimes);
-            if (amount > playerCrafting.GetMaximumCraftable(re))
-                return;
+            if (amount > playerCrafting.GetMaximumCraftable(currentlySelected))
+                UIManager.Instance.CreateNotification("Not enough materials", 2f);
             else
-                playerCrafting.CraftXTimes(re, amount);
-        });
-
+                playerCrafting.CraftXTimes(currentlySelected, amount);
+        };
     }
+
 
 }
 
