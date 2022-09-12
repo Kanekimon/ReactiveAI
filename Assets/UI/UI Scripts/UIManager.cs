@@ -92,6 +92,10 @@ public class UIManager : MonoBehaviour
         {
             CloseOpenView();
         }
+        if (Input.GetKeyUp(KeyCode.C))
+        {
+            ToggleWindow("Crafting");
+        }
 
         UnityEngine.Cursor.visible = currentlyOpen != null;
         crossHair.visible = !UnityEngine.Cursor.visible;

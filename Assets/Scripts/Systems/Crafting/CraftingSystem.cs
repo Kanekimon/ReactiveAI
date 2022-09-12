@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -36,10 +37,10 @@ public class CraftingSystem : MonoBehaviour
     }
 
 
-    public void CraftItem(Item item)
+    public bool CraftItem(Item item)
     {
         if (!CanCraftItem(item))
-            return;
+            return false;
 
         Recipe recipe = GetRecipeForItem(item);
 
@@ -48,7 +49,16 @@ public class CraftingSystem : MonoBehaviour
             inventorySystem.RemoveItem(mats.Item, mats.Amount);
         }
         inventorySystem.AddItem(recipe.Result, recipe.Amount);
+        return true;
+    }
 
+
+    public void CraftXTimes(Recipe r, int x)
+    {
+        for(int i = 0; i < x; i++)
+        {
+            CraftItem(r.Result);
+        }
     }
 
     internal List<KeyValuePair<Item, int>> GetMissingResources(Item item)
@@ -66,6 +76,20 @@ public class CraftingSystem : MonoBehaviour
         }
         return missingResources;
 
+    }
+
+    internal int GetMaximumCraftable(Recipe re)
+    {
+        List<int> maximumPerMaterial = new List<int>();
+
+        foreach(RecipesMaterial rM in re.Materials)
+        {
+            int hasAmount = inventorySystem.GetItemAmount(rM.Item);
+            int maximumpossible = hasAmount == 0 ? 0 : (hasAmount / rM.Amount);
+            maximumPerMaterial.Add(maximumpossible);
+        }
+
+        return maximumPerMaterial.Min(); 
     }
 }
 

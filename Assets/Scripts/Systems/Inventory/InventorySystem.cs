@@ -217,14 +217,14 @@ public class InventorySystem : MonoBehaviour
             if (items[i].Amount <= amount)
             {
                 amount -= items[i].Amount;
-                _inventory[i] = null;
+                _inventory[_inventory.Where(a => a.Value != null && a.Value.Equals(items[i])).FirstOrDefault().Key] = null;
                 if (amount == 0)
                     return true;
 
             }
             else
             {
-                _inventory[i].Amount -= amount;
+                _inventory[_inventory.Where(a => a.Value != null && a.Value.Equals(items[i])).FirstOrDefault().Key].Amount -= amount;
                 return true;
             }
 
