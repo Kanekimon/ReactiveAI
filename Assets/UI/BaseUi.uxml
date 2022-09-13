@@ -4,6 +4,7 @@
     <ui:Template name="RequestBoard" src="project://database/Assets/UI/RequestBoard.uxml?fileID=9197481963319205126&amp;guid=2ed62f726cb66a341a2a908cb831aca4&amp;type=3#RequestBoard" />
     <ui:Template name="Inventory" src="project://database/Assets/UI/Inventory.uxml?fileID=9197481963319205126&amp;guid=aa1271b06871494458b3b249dcc696a1&amp;type=3#Inventory" />
     <ui:Template name="Crafting" src="project://database/Assets/UI/Crafting.uxml?fileID=9197481963319205126&amp;guid=d70709cee5955154691b981d2f785d7c&amp;type=3#Crafting" />
+    <ui:Template name="Quest" src="project://database/Assets/UI/Quest.uxml?fileID=9197481963319205126&amp;guid=e5e3dd99e9d7e054ea4bd59082785b49&amp;type=3#Quest" />
     <Style src="project://database/Assets/UI/Style/BaseStyle.uss?fileID=7433441132597879392&amp;guid=313549b96d7a5884abed9f0ead6f1c4b&amp;type=3#BaseStyle" />
     <ui:Instance template="Notification" name="Notifications" style="position: absolute; width: 100%; height: 100%;" />
     <ui:VisualElement name="Base" picking-mode="Ignore" style="height: 100%; visibility: visible; overflow: visible; display: flex;">
@@ -37,4 +38,5 @@
     <ui:VisualElement name="crosshair" style="position: absolute; left: 156px; top: 101px; width: 8px; height: 8px; background-color: rgb(255, 255, 255); border-top-left-radius: 6px; border-bottom-left-radius: 6px; border-top-right-radius: 6px; border-bottom-right-radius: 6px;" />
     <ui:Label text="Label" display-tooltip-when-elided="true" name="interactable-text" style="position: absolute; font-size: 50px; -unity-text-align: middle-center;" />
     <ui:Instance template="Crafting" name="Crafting_view" style="position: absolute; width: 100%; height: 100%; display: none;" />
+    <ui:Instance template="Quest" name="Quest_view" style="position: absolute; width: 100%; height: 100%; display: none;" />
 </ui:UXML>

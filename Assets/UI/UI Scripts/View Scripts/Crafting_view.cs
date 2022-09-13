@@ -57,17 +57,6 @@ public class Crafting_view : UiView
 
         recipes_view_container.Q<VisualElement>("footer").Q<Label>("max-possible").text = $"Maximum possbile: ({playerCrafting.GetMaximumCraftable(re)})";
 
-
-        Action value = () =>
-                {
-                    string numbterTimes = recipes_view_container.Q<VisualElement>("footer").Q<TextField>("craft-amount").text;
-                    int amount = int.Parse(numbterTimes);
-                    if (amount > playerCrafting.GetMaximumCraftable(currentlySelected))
-                        UIManager.Instance.CreateNotification("Not enough materials", 2f);
-                    else
-                        playerCrafting.CraftXTimes(currentlySelected, amount);
-                };
-
         recipes_view_container.Q<VisualElement>("footer").Q<Button>("craft-button").clicked -= CraftItemHandler();
         currentlySelected = re;
         recipes_view_container.Q<VisualElement>("footer").Q<Button>("craft-button").clicked += CraftItemHandler();

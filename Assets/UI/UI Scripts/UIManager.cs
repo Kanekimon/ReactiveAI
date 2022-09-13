@@ -100,6 +100,10 @@ public class UIManager : MonoBehaviour
         {
             ToggleWindow("Crafting");
         }
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            ToggleWindow("Quest");
+        }
         if (Input.GetKeyDown(KeyCode.T))
         {
             float random = Random.Range(1f, 5f);

@@ -252,3 +252,28 @@
     font-size: 36px;
     height: 100%;
 }
+
+.quest-item {
+    width: 95%;
+    height: 100%;
+    background-color: rgba(41, 128, 185, 255);
+    border-left-color: rgba(44, 62, 80, 255);
+    border-right-color: rgba(44, 62, 80, 255);
+    border-top-color: rgba(44, 62, 80, 255);
+    border-bottom-color: rgba(44, 62, 80, 255);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    margin-bottom: 2px;
+}
+
+.quest-title {
+    -unity-text-align: middle-center;
+}
+
+.quest-section {
+    height: 50%;
+    margin-bottom: 10%;
+    align-items: center;
+}
