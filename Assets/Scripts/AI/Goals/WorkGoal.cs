@@ -22,7 +22,10 @@ public class WorkGoal : BaseGoal
 
     public override void OnTickGoal()
     {
-        if (!WorldState.GetValue<bool>("startedWork") && !WorldState.GetValue<bool>("hasTool") && WorldState.GetValue<DayTime>("dayTime") == DayTime.Morning)
+        if (Agent.Job.Tools.Count == 0)
+            WorldState.AddWorldState("startedWork", true);
+
+        if (Agent.Job != null && Agent.Job.Tools.Count > 0 && !WorldState.GetValue<bool>("startedWork") && !WorldState.GetValue<bool>("hasTool") && WorldState.GetValue<DayTime>("dayTime") == DayTime.Morning)
             Prio = MaxPrio;
         else
             Prio = MinPrio;

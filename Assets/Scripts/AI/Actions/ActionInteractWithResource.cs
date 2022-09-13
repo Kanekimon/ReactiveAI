@@ -48,14 +48,14 @@ public class ActionInteractWithResource : ActionBase
         gatherCount = 0;
         AmountToGather = WorldState.GetValue<int>("gatherAmount");
         resourceToGather = WorldState.GetValue<Item>("requestedResource");
-        Agent.GetComponent<Animator>().SetBool("isAttacking", true);
+        Agent.GetComponent<Animator>().SetBool(Agent.Job.WorkAnimState, true);
         sameResource = false;
     }
 
     public override void OnDeactived()
     {
         base.OnDeactived();
-        Agent.GetComponent<Animator>().SetBool("isAttacking", false);
+        Agent.GetComponent<Animator>().SetBool(Agent.Job.WorkAnimState, false);
 
     }
 
@@ -87,7 +87,7 @@ public class ActionInteractWithResource : ActionBase
             timer = 0;
             if (_target != null && gatherCount < AmountToGather)
             {
-                gatherCount += _target.GetComponent<ResourceTarget>().Interact(this.Agent).Sum(a => a.Amount);
+                gatherCount += _target.GetComponent<ResourceTarget>().Interact(this.Agent.InventorySystem).Sum(a => a.Amount);
             }
             else if (_target == null && gatherCount < AmountToGather)
             {

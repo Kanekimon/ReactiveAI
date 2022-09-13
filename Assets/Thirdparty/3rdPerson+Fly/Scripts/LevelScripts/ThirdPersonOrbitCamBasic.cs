@@ -101,7 +101,7 @@ public class ThirdPersonOrbitCamBasic : MonoBehaviour
         RaycastHit hit;
         LayerMask mask = LayerMask.GetMask("Interactable");
 
-        if(Physics.Raycast(cam.position, player.forward, out hit, 10f, mask))
+        if(Physics.Raycast(cam.position, cam.forward, out hit, 10f, mask))
         {
             if (hit.collider != null)
             {

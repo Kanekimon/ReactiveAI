@@ -111,6 +111,11 @@ public class InventorySystem : MonoBehaviour
         {
             added += CreateNewSlots(item, amount);
         }
+        if (this.gameObject == GameManager.Instance.Player.gameObject)
+        {
+            UIManager.Instance.UpdateInventory();
+        }
+
         return added;
     }
 
@@ -229,6 +234,11 @@ public class InventorySystem : MonoBehaviour
             }
 
         }
+        if(this.gameObject == GameManager.Instance.Player.gameObject)
+        {
+            UIManager.Instance.UpdateInventory();
+        }
+
         return false;
     }
 

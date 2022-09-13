@@ -14,5 +14,7 @@ public class Job : ScriptableObject
     public List<Item> Tools = new List<Item>();
     public GameObject Actions;
     public GameObject Goals;
+    public string WorkAnimState;
+
 }
 

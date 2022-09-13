@@ -7,13 +7,16 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
-public class Interactable : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+public class Interactable : MonoBehaviour
 {
 
     public bool Visible;
-    public UnityEvent OnInteract;
+    [SerializeField] protected UnityEvent OnInteract;
 
-    private void Update()
+    private void Awake()
+    {
+    }
+    protected virtual void Update()
     {
         if (Visible)
         {
@@ -22,20 +25,6 @@ public class Interactable : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
                 OnInteract.Invoke();
             }
         }
-    }
-
-
-
-
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        Debug.Log("Over");
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        Debug.Log("Exit");
-
     }
 }
 

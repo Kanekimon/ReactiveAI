@@ -83,7 +83,14 @@ public class Crafting_view : UiView
             if (amount > playerCrafting.GetMaximumCraftable(currentlySelected))
                 UIManager.Instance.CreateNotification("Not enough materials", 2f);
             else
+            {
                 playerCrafting.CraftXTimes(currentlySelected, amount);
+                for (int i = 0; i < amount; i++)
+                {
+                    EventManager.Instance.TriggerEvent(new CraftingGameEvent(currentlySelected));
+                }
+
+            }
         };
     }
 

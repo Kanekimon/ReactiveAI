@@ -19,6 +19,8 @@ public class Agent : MonoBehaviour
 
     public GameObject Home;
 
+    Animator _anim;
+
     #region Systems
     AwarenessSystem _awareness;
     ConditionSystem _conditionSystem;
@@ -42,6 +44,7 @@ public class Agent : MonoBehaviour
         _conditionSystem = GetComponent<ConditionSystem>();
         _inventorySystem = GetComponent<InventorySystem>();
         _craftingSystem = GetComponent<CraftingSystem>();
+        _anim = GetComponent<Animator>();   
     }
 
     internal void AddWork(Request r)
@@ -61,6 +64,11 @@ public class Agent : MonoBehaviour
     {
         if (HomeTown != null)
             HomeTown.RegisterAgent(this);
+    }
+
+    private void Update()
+    {
+
     }
 
 
@@ -90,5 +98,6 @@ public class Agent : MonoBehaviour
     {
         ReadyForPickUp.Enqueue(r);
     }
+
 
 }

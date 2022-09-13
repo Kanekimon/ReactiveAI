@@ -20,7 +20,7 @@ public class TownCustomEditor : Editor
 
         if (GUILayout.Button("Hire"))
         {
-            Job job = town.AvailableJobs.Where(a => a.JobType == JobType.Lumberjack).FirstOrDefault();
+            Job job = town.AvailableJobs.Where(a => a.JobType == JobType.Farmer).FirstOrDefault();
             town.HireWorker(town.TestAgent, job);
         }
 

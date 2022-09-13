@@ -36,7 +36,7 @@ public class ResourceTarget : DetectableTarget
     }
 
 
-    public List<InventoryItem> Interact(Agent interacted)
+    public List<InventoryItem> Interact(InventorySystem inventory)
     {
         List<InventoryItem> gatheredItems = new List<InventoryItem>();
 
@@ -51,7 +51,7 @@ public class ResourceTarget : DetectableTarget
 
             Resource res = GatherableMaterials[i];
             gatheredAmount = Mathf.Clamp(Random.Range(res.MinAmount, res.MaxAmount + 1), 1, res.Amount);
-            gatheredAmount = interacted.InventorySystem.AddItem(res.Item, gatheredAmount);
+            gatheredAmount = inventory.AddItem(res.Item, gatheredAmount);
             res.Amount -= gatheredAmount;
             gatheredItems.Add(new InventoryItem() { Item = res.Item, Amount = gatheredAmount });
 

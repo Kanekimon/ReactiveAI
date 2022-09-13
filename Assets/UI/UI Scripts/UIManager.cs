@@ -236,4 +236,12 @@ public class UIManager : MonoBehaviour
             bar.style.backgroundColor = new StyleColor(new Color32(249, 65, 68, 255));
         }
     }
+
+    public void UpdateInventory()
+    {
+        if(currentlyOpen == views["Inventory"].view)
+        {
+            views["Inventory"].script.Update(); 
+        }
+    }
 }
