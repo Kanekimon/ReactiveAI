@@ -68,7 +68,7 @@ public class Inventory_view : UiView
         
     }
 
-    public override void Update()
+    public override void Refresh()
     {
         Open();
     }

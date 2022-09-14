@@ -14,7 +14,7 @@ public class GatherObjective : QuestObjective
 
     public override string GetDescription()
     {
-        return $"Gather {Item.Name}x {RequiredAmount}";
+        return $"Gather {RequiredAmount}x {Item.Name}";
     }
 
     public override void Initialize()

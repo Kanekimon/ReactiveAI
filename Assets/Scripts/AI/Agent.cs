@@ -62,8 +62,6 @@ public class Agent : MonoBehaviour
 
     private void Start()
     {
-        if (HomeTown != null)
-            HomeTown.RegisterAgent(this);
     }
 
     private void Update()

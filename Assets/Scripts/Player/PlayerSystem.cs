@@ -8,7 +8,12 @@ using UnityEngine;
 public class PlayerSystem : MonoBehaviour
 {
     float _timer;
+    [SerializeField]int _reputation;
     Animator _anim;
+
+    public TownSystem CurrentTown;
+
+    public int Reputation => _reputation;
 
     PlayerConditionSystem _conditionSystem;
     InventorySystem _inventorySystem;
@@ -21,6 +26,7 @@ public class PlayerSystem : MonoBehaviour
 
     GameObject _target;
 
+
     private void Awake()
     {
         _conditionSystem = GetComponent<PlayerConditionSystem>();
@@ -29,6 +35,14 @@ public class PlayerSystem : MonoBehaviour
         _anim = GetComponent<Animator>();
         _interactionSystem = GetComponent<PlayerInteractionSystem>();   
     }
+
+
+    public void AddReputation(int amount)
+    {
+        _reputation += amount;
+    }
+
+
 
 }
 

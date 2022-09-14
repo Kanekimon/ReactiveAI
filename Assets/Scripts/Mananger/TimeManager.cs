@@ -29,6 +29,7 @@ public class TimeManager : MonoBehaviour
         Instance = this;
 
         CurrentTime = new DateTime(1, 1, 1);
+        CurrentTime.AddHours(7);
     }
 
 

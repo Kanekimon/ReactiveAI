@@ -47,7 +47,20 @@ public class InventorySlot : VisualElement
         }
 
         Amount.text = amount.ToString();
+    }
 
+    public void SetAsActive(bool isActive)
+    {
+        if (isActive)
+        {
+            RemoveFromClassList("slotContainer");
+            AddToClassList("slotContainer_active");
+        }
+        else
+        {
+            RemoveFromClassList("slotContainer_active");
+            AddToClassList("slotContainer");
+        }
     }
 
 

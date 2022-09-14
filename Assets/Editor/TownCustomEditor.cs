@@ -27,11 +27,6 @@ public class TownCustomEditor : Editor
         if (GUILayout.Button("Spawn"))
         {
             GameObject ran = town.SpawnAgent();
-            Item pickaxe = ItemManager.Instance.GetItemByName("pickaxe");
-            Item wood = ItemManager.Instance.GetItemByName("wood");
-            ran.GetComponent<InventorySystem>().AddItem(pickaxe, 1);
-            ran.GetComponent<InventorySystem>().AddItem(wood, 5);
-            agents.Add(ran);
 
         }
     }

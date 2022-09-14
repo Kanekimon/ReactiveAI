@@ -6,21 +6,34 @@
             <ui:VisualElement name="Container" style="height: 100%; width: 100%; flex-direction: row;">
                 <ui:VisualElement name="quests" style="width: 40%; height: 100%; border-right-color: rgb(189, 195, 199); border-right-width: 1px;">
                     <ui:VisualElement name="active-quests" style="height: auto;">
-                        <ui:Label text="Open Quests" display-tooltip-when-elided="true" name="active-label" style="border-left-color: rgb(116, 128, 139); border-right-color: rgb(116, 128, 139); border-top-color: rgb(116, 128, 139); border-bottom-color: rgb(116, 128, 139); border-bottom-width: 1px; margin-bottom: 10px;" />
+                        <ui:Label text="Open Quests" display-tooltip-when-elided="true" name="active-label" class="text-color" style="border-left-color: rgb(116, 128, 139); border-right-color: rgb(116, 128, 139); border-top-color: rgb(116, 128, 139); border-bottom-color: rgb(116, 128, 139); border-bottom-width: 1px; margin-bottom: 10px;" />
                         <ui:VisualElement name="active-quests-container" class="quest-section" />
                     </ui:VisualElement>
                     <ui:VisualElement name="finished-quests">
-                        <ui:Label text="Finished Quests" display-tooltip-when-elided="true" name="finished-label" style="border-left-color: rgb(116, 128, 139); border-right-color: rgb(116, 128, 139); border-top-color: rgb(116, 128, 139); border-bottom-color: rgb(116, 128, 139); border-bottom-width: 1px;" />
+                        <ui:Label text="Finished Quests" display-tooltip-when-elided="true" name="finished-label" class="text-color" style="border-left-color: rgb(116, 128, 139); border-right-color: rgb(116, 128, 139); border-top-color: rgb(116, 128, 139); border-bottom-color: rgb(116, 128, 139); border-bottom-width: 1px;" />
                         <ui:VisualElement name="finished-quests-container" class="quest-section" style="height: 100%; margin-bottom: 10%; align-items: center;" />
                     </ui:VisualElement>
                 </ui:VisualElement>
                 <ui:VisualElement name="quest-info" style="height: 100%; width: 60%;">
                     <ui:VisualElement name="header" style="width: 95%; height: 10%; margin-left: 2.5%; margin-right: 2.5%; margin-top: 1%; margin-bottom: 1px;">
-                        <ui:Label text="Axe" display-tooltip-when-elided="true" name="quest-name" class="recipe-name" />
+                        <ui:Label text="Axe" display-tooltip-when-elided="true" name="quest-name" class="recipe-name text-color" />
                     </ui:VisualElement>
-                    <ui:VisualElement name="body" style="height: 80%; margin-left: 2.5%; margin-right: 2.5%; margin-top: 1%; margin-bottom: 1px; border-bottom-color: rgb(189, 195, 199); border-bottom-width: 1px;" />
+                    <ui:VisualElement name="body" style="height: 80%; margin-left: 2.5%; margin-right: 2.5%; margin-top: 1%; margin-bottom: 1px; border-bottom-color: rgb(189, 195, 199); border-bottom-width: 1px;">
+                        <ui:VisualElement name="quest-description" style="margin-bottom: 10px;">
+                            <ui:Label text="Description" display-tooltip-when-elided="true" name="description-label" class="header-border text-color" />
+                            <ui:Label text="Label" display-tooltip-when-elided="true" name="description-text" class="text-color" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="quest-reward" style="margin-bottom: 10px;">
+                            <ui:Label text="Reward" display-tooltip-when-elided="true" name="reward-label" class="header-border text-color" />
+                            <ui:Label text="Label" display-tooltip-when-elided="true" name="reward-text" class="text-color" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="quest-objectives">
+                            <ui:Label text="Objectives" display-tooltip-when-elided="true" name="objectives-label" class="header-border" />
+                            <ui:VisualElement name="quest-objectives-container" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
                     <ui:VisualElement name="footer" style="width: 95%; height: 10%; margin-left: 2.5%; margin-right: 2.5%; margin-top: 1%; margin-bottom: 1px; flex-direction: row; align-items: center;">
-                        <ui:Button text="Complete" display-tooltip-when-elided="true" name="complete-button" style="width: 100%; height: 50%; background-color: rgb(127, 140, 141);" />
+                        <ui:Button text="Complete" display-tooltip-when-elided="true" name="complete-button" class="text-color" style="width: 100%; height: 50%; background-color: rgb(127, 140, 141);" />
                     </ui:VisualElement>
                 </ui:VisualElement>
             </ui:VisualElement>

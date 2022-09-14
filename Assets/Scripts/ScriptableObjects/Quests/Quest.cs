@@ -18,7 +18,10 @@ public class Quest : ScriptableObject
 
     public List<QuestObjective> Objectives = new List<QuestObjective>();
 
+    public int Reward;
+
     public int GetId() => id;
+    public bool CanBeCompleted { get; protected set; }
     public bool Completed { get; protected set; }
     
     public QuestCompletedEvent CompletedEvent;
@@ -26,6 +29,7 @@ public class Quest : ScriptableObject
     public void Initialize()
     {
         Completed = false;
+        CanBeCompleted = false;
         CompletedEvent = new QuestCompletedEvent();
         CompletedEvent.AddListener(QuestManager.Instance.FinishQuest);
 
@@ -38,17 +42,20 @@ public class Quest : ScriptableObject
 
     private void CheckObjectives()
     {
-        Completed = Objectives.All(a => a.Completed);
-        if (Completed)
-        {
-            foreach(Quest q in NextQuests)
-            {
-                QuestManager.Instance.StartQuest(q);
-            }
+        CanBeCompleted = Objectives.All(a => a.Completed);
+    }
 
-            CompletedEvent.Invoke(this);
-            CompletedEvent.RemoveAllListeners();
+    public void CompleteQuest()
+    {
+        Completed = true;
+        foreach (Quest q in NextQuests)
+        {
+            QuestManager.Instance.StartQuest(q);
         }
+
+        GameManager.Instance.Player.AddReputation(Reward);
+        CompletedEvent.Invoke(this);
+        CompletedEvent.RemoveAllListeners();
     }
 
 

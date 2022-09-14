@@ -44,18 +44,20 @@ public class RequestSystem : MonoBehaviour
         }
     }
 
-    public void RequestItem(Agent agent, Item item, int amount)
+
+
+    public void RequestItem(GameObject requester, Item item, int amount)
     {
-        Request r = new Request(agent.gameObject, item, amount);
+        Request r = new Request(requester, item, amount);
 
         _open.Add(r);
     }
 
-    public void RequestItems(Agent agent, List<Request> requ)
+    public void RequestItems(GameObject requester, List<Request> requ)
     {
         foreach (Request r in requ)
         {
-            RequestItem(agent, r.RequestedItem, r.RequestedAmount);
+            RequestItem(requester, r.RequestedItem, r.RequestedAmount);
         }
     }
 
@@ -67,7 +69,8 @@ public class RequestSystem : MonoBehaviour
             {
                 req.Storage = storage.gameObject;
                 req.Status = RequestStatus.Ready;
-                req.Requester.GetComponent<Agent>().PickUpResourceFromTarget(req);
+                if(req.Requester.GetComponent<Agent>() != null)
+                    req.Requester.GetComponent<Agent>().PickUpResourceFromTarget(req);
                 return;
             }
         }

@@ -1,0 +1,44 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Style/Inventory.uss?fileID=7433441132597879392&amp;guid=5387d8501d20f3d4992ede0713219080&amp;type=3#Inventory" />
+    <ui:VisualElement name="Container" focusable="false" class="container">
+        <ui:VisualElement name="Town" class="inventory" style="border-left-width: 1px; border-right-width: 1px; border-bottom-width: 1px; height: 80%; max-height: 80%; width: 60%; max-width: 55%;">
+            <ui:Label text="Townhall" display-tooltip-when-elided="true" name="Header" class="header" style="border-left-color: rgb(189, 195, 199); border-right-color: rgb(189, 195, 199); border-top-color: rgb(189, 195, 199); border-bottom-color: rgb(189, 195, 199);" />
+            <ui:VisualElement name="Container" style="height: 100%; width: 100%; flex-direction: row;">
+                <ui:VisualElement name="villager" style="width: 40%; height: 100%; border-right-color: rgb(189, 195, 199); border-right-width: 1px;">
+                    <ui:VisualElement name="villager-container">
+                        <ui:Label text="Villager" display-tooltip-when-elided="true" name="finished-label" class="text-color" style="border-left-color: rgb(116, 128, 139); border-right-color: rgb(116, 128, 139); border-top-color: rgb(116, 128, 139); border-bottom-color: rgb(116, 128, 139); border-bottom-width: 1px; margin-bottom: 10px;" />
+                        <ui:VisualElement name="finished-quests-container" class="quest-section" style="height: 100%; margin-bottom: 10%; align-items: center;">
+                            <ui:VisualElement name="villageritem" class="quest-item" style="width: 95%; height: auto;">
+                                <ui:Label text="Label" display-tooltip-when-elided="true" name="Label" class="quest-title" style="-unity-text-align: middle-center;" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="villager-info" style="height: 100%; width: 60%;">
+                    <ui:VisualElement name="header" style="width: 95%; height: 10%; margin-left: 2.5%; margin-right: 2.5%; margin-top: 1%; margin-bottom: 1px;">
+                        <ui:Label text="Axe" display-tooltip-when-elided="true" name="villager-name" class="recipe-name text-color" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="body" style="height: 80%; margin-left: 2.5%; margin-right: 2.5%; margin-top: 1%; margin-bottom: 1px; border-bottom-color: rgb(189, 195, 199); border-bottom-width: 1px;">
+                        <ui:VisualElement name="villager-age" style="margin-bottom: 10px; flex-direction: row; justify-content: center; align-items: center;">
+                            <ui:Label text="Age:   " display-tooltip-when-elided="true" name="villager-age-label" class="header-border text-color" style="margin-right: 40%;" />
+                            <ui:Label text="Label" display-tooltip-when-elided="true" name="villager-age-text" class="text-color" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="villager-job" style="margin-bottom: 10px; flex-direction: row; justify-content: center; align-items: center;">
+                            <ui:Label text="Job:" display-tooltip-when-elided="true" name="villager-job-label" class="header-border text-color" style="margin-right: 40%;" />
+                            <ui:Label text="Label" display-tooltip-when-elided="true" name="villager-job-text" class="text-color" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="footer" style="width: 95%; height: 10%; margin-left: 2.5%; margin-right: 2.5%; margin-top: 1%; margin-bottom: 1px; flex-direction: row; align-items: center;">
+                        <ui:VisualElement name="villager-hire" style="display: flex; width: 100%; height: 100%; align-items: center; justify-content: space-around; flex-direction: row;">
+                            <ui:DropdownField index="-1" choices="System.Collections.Generic.List`1[System.String]" name="villager-jobtypes" style="width: 35%; flex-direction: row; justify-content: flex-start; align-items: flex-start; flex-wrap: nowrap; overflow: hidden; flex-grow: 0; flex-basis: auto; min-width: auto; min-height: auto; margin-right: 5px;" />
+                            <ui:Button text="Hire" display-tooltip-when-elided="true" name="villager-hire-button" style="width: 50%; margin-left: 0;" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="villager-fire" style="height: 100%; width: 100%; display: none;">
+                            <ui:Button text="Fire" display-tooltip-when-elided="true" name="villager-fire-button" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

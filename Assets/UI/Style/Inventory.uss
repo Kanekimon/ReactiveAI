@@ -58,6 +58,32 @@
     margin-right: 4px;
 }
 
+.slotContainer_active {
+	width: 64px;
+    height: 64px;
+    margin: 5px;
+    border-left-color: rgb(48, 48, 48);
+    border-right-color: rgb(48, 48, 48);
+    border-top-color: rgb(48, 48, 48);
+    border-bottom-color: rgb(48, 48, 48);
+    background-color: rgba(153, 162, 169, 0.49);
+    background-image: url('project://database/Assets/Resources/UI/inventory_slot_background.png?fileID=2800000&guid=ab88c4e174affcb4892d14a4b71322ad&type=3#inventory_slot_background');
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    margin-left: 5px;
+    margin-right: 4px;
+    border-left-width: 3px;
+    border-right-width: 3px;
+    border-top-width: 3px;
+    border-bottom-width: 3px;
+    border-left-color: rgb(186, 192, 196);
+    border-right-color: rgb(186, 192, 196);
+    border-top-color: rgb(186, 192, 196);
+    border-bottom-color: rgb(186, 192, 196);
+}
+
 .slotIcon {
     padding: 15px;
     flex-shrink: 0;
@@ -256,11 +282,11 @@
 .quest-item {
     width: 95%;
     height: 100%;
-    background-color: rgba(41, 128, 185, 255);
-    border-left-color: rgba(44, 62, 80, 255);
-    border-right-color: rgba(44, 62, 80, 255);
-    border-top-color: rgba(44, 62, 80, 255);
-    border-bottom-color: rgba(44, 62, 80, 255);
+    background-color: rgb(41, 128, 185);
+    border-left-color: rgb(44, 62, 80);
+    border-right-color: rgb(44, 62, 80);
+    border-top-color: rgb(44, 62, 80);
+    border-bottom-color: rgb(44, 62, 80);
     border-left-width: 1px;
     border-right-width: 1px;
     border-top-width: 1px;
@@ -277,3 +303,30 @@
     margin-bottom: 10%;
     align-items: center;
 }
+
+.header-border {
+    border-left-color: rgb(116, 128, 139);
+    border-right-color: rgb(116, 128, 139);
+    border-top-color: rgb(116, 128, 139);
+    border-bottom-color: rgb(116, 128, 139);
+    border-bottom-width: 1px;
+    margin-bottom: 5px;
+}
+
+.strikethrough {
+    text-decoration: line-through;
+}
+
+.horizontal-container {
+    flex-direction: row;
+}
+
+.quest-item:hover {
+    background-color: rgb(158, 180, 201);
+}
+
+.text-color {
+    color: rgb(236, 240, 241);
+}
+
+

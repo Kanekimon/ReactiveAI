@@ -245,7 +245,7 @@ public class UIManager : MonoBehaviour
     {
         if(currentlyOpen == views["Inventory"].view)
         {
-            views["Inventory"].script.Update(); 
+            views["Inventory"].script.Refresh(); 
         }
     }
 }

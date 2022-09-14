@@ -17,7 +17,7 @@ public abstract class UiView : MonoBehaviour
 
     public virtual void Open() { }
     public virtual void Close() { }
-    public virtual void Update() { }
+    public virtual void Refresh() { }
 
 }
 

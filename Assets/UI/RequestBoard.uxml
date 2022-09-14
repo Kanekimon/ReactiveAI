@@ -3,7 +3,10 @@
     <ui:VisualElement name="Container" class="container">
         <ui:VisualElement name="Requestboard" class="inventory request-board">
             <ui:Label text="Request Board" display-tooltip-when-elided="true" name="Header" class="header" style="border-left-color: rgb(154, 143, 151); border-right-color: rgb(154, 143, 151); border-top-color: rgb(154, 143, 151); border-bottom-color: rgb(154, 143, 151);" />
-            <ui:VisualElement name="SlotContainer" class="slot-container" style="flex-direction: column;" />
+            <ui:VisualElement name="SlotContainer" class="slot-container" style="flex-direction: column; height: 90%;" />
+            <ui:VisualElement name="footer" style="height: 10%; justify-content: center;">
+                <ui:Button text="Create Request" display-tooltip-when-elided="true" name="create-request" />
+            </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

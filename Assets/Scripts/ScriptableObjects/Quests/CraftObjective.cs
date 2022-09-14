@@ -13,7 +13,7 @@ public class CraftObjective : QuestObjective
 
     public override string GetDescription()
     {
-        return $"Craft {Recipe.Result.Name}x {RequiredAmount}";
+        return $"Craft {RequiredAmount}x {Recipe.Result.Name}";
     }
 
     public override void Initialize()

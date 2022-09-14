@@ -23,6 +23,11 @@ public class InventorySystem : MonoBehaviour
         {
             _inventory[i] = null;
         }
+        if (this.gameObject.name.ToLower().Contains("wood"))
+        {
+            AddItem(ItemManager.Instance.GetItemByName("axe"), 1);
+        }
+
     }
 
     private void Update()

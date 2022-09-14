@@ -53,10 +53,30 @@ public class RequestItem : VisualElement
         Request_Text.text = $"{r.RequestedAmount}x {r.RequestedItem.Name}";
         Add(Request_Text);
 
-        Complete = new Button();
-        Complete.text = "Complete";
-        Complete.clicked += (() => { CompleteButton(); });
-        Add(Complete);
+        if (r.Requester != GameManager.Instance.Player.gameObject)
+        {
+            Complete = new Button();
+            Complete.text = "Complete";
+            Complete.clicked += (() => { CompleteButton(); });
+            Add(Complete);
+        }
+        else
+        {
+            if (r.Status == RequestStatus.Ready)
+            {
+                Complete = new Button();
+                Complete.text = "Retrieve";
+                Complete.clicked += (() => { RetrieveRequestedItem(r); });
+                Add(Complete);
+            }
+            else
+            {
+                Complete = new Button();
+                Complete.text = "Cancle";
+                Complete.clicked += (() => { CancleRequest(r); });
+                Add(Complete);
+            }
+        }
 
         //Add USS style properties to the elements
         //Icon.AddToClassList("slotIcon");
@@ -79,6 +99,22 @@ public class RequestItem : VisualElement
         }
     }
 
+    public void CancleRequest(Request r)
+    {
+
+    }
+
+    public void RetrieveRequestedItem(Request r)
+    {
+        if(r.Storage.GetComponent<InventorySystem>().TransferItemToOtherInventory(Player.InventorySystem, r.RequestedItem, r.RequestedAmount))
+        {
+            r.Status = RequestStatus.Finished;
+        }
+        else
+        {
+            UIManager.Instance.CreateNotification("Not enough space in your inventory!", 1f);
+        }
+    }
 
 
 

@@ -126,11 +126,23 @@ public class MoveBehaviour : GenericBehaviour
         speedSeeker += Input.GetAxis("Mouse ScrollWheel");
         speedSeeker = Mathf.Clamp(speedSeeker, walkSpeed, runSpeed);
         speed *= speedSeeker;
-        if (behaviourManager.IsSprinting() && playerSystem.ConditionSystem.GetValueFromCondition("stamina") > sprintCost)
+        if (playerSystem != null)
         {
-            speed = sprintSpeed;
-            playerSystem.ConditionSystem.DecreaseValue("stamina", sprintCost);
+
+            if (behaviourManager.IsSprinting() && playerSystem.ConditionSystem.GetValueFromCondition("stamina") > sprintCost)
+            {
+                speed = sprintSpeed;
+                playerSystem.ConditionSystem.DecreaseValue("stamina", sprintCost);
+            }
         }
+        else
+        {
+            if(behaviourManager.IsSprinting())
+                speed = sprintSpeed;
+        }
+
+
+
 
         behaviourManager.GetAnim.SetFloat(speedFloat, speed, speedDampTime, Time.deltaTime);
     }

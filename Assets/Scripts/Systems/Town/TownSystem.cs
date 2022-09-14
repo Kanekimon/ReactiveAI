@@ -6,6 +6,7 @@ public class TownSystem : MonoBehaviour
 {
     List<Agent> _population = new List<Agent>();
     
+    public List<Agent> Villager => _population;
 
     public RequestSystem RequestBoard;
     public List<Job> AvailableJobs = new List<Job>();
@@ -17,7 +18,7 @@ public class TownSystem : MonoBehaviour
 
     public GameObject GoblinPrefab;
 
-
+    private int _playerReputation;
 
 
     private void Start()
@@ -50,7 +51,8 @@ public class TownSystem : MonoBehaviour
         AvailableJobs.Add(job);
         job.Workplace = workplace;
     }
-    
+
+
 
     public bool RequestResoruces(Request r)
     {
@@ -98,12 +100,12 @@ public class TownSystem : MonoBehaviour
         agent.GetComponent<GoapPlanner>().InitActions();
     }
 
-    public void FireWorker(Agent agent, Job job)
+    public void FireWorker(Agent agent)
     {
-        agent.GetJob(null);
-        JobManager.Instance.RemoveJobGoalsAndActions(agent, job);
+        JobManager.Instance.RemoveJobGoalsAndActions(agent, agent.Job);
         agent.GetComponent<GoapPlanner>().InitGoals();
         agent.GetComponent<GoapPlanner>().InitActions();
+        agent.GetJob(null);
     }
 
     internal GameObject GetStorage(Item item)
@@ -120,6 +122,7 @@ public class TownSystem : MonoBehaviour
     {
         GameObject ag = Instantiate<GameObject>(GoblinPrefab);
         ag.GetComponent<Agent>().HomeTown = this;
+        ag.GetComponent<Agent>().Home = TestWorkPlace;
         RegisterAgent(ag.GetComponent<Agent>());
         return ag;
     }
