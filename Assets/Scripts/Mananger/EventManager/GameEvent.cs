@@ -30,3 +30,15 @@ public class GatherGameEvent : GameEvent
         Amount = amount;    
     }
 }
+
+public class TeachGameEvent : GameEvent
+{
+    public InteractionType Action;
+    public int Amount;
+
+    public TeachGameEvent(InteractionType action, int amount)
+    {
+        Action = action;
+        Amount = amount;
+    }
+}

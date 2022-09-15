@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
@@ -65,6 +66,10 @@ public class GoapPlanner : MonoBehaviour
 
     }
 
+    internal void FollowPlayer(bool state)
+    {
+        WorldState.AddWorldState("followPlayer", state);
+    }
 
     private void Start()
     {
@@ -73,6 +78,11 @@ public class GoapPlanner : MonoBehaviour
 
 
     private void Update()
+    {
+        Think();
+    }
+
+    public void Think()
     {
         if (CurrentGoal != null && CurrentGoal.IsPaused)
             CurrentGoal = null;
@@ -134,6 +144,7 @@ public class GoapPlanner : MonoBehaviour
 
 
     }
+
 
     BaseGoal TickGoals()
     {
@@ -202,6 +213,19 @@ public class GoapPlanner : MonoBehaviour
             WorldState.AddWorldState("requests", reqs);
         }
 
+    }
+
+    public void InteractWithPlayer()
+    {
+        WorldState.AddWorldState("playerWantsInteraction", true);
+        Agent.GetComponent<NavigationAgent>().StopMoving();
+        Think();
+    }
+
+    public void StopInteracting()
+    {
+        WorldState.AddWorldState("playerWantsInteraction", false);
+        Think();
     }
 }
 

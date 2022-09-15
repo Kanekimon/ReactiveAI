@@ -10,17 +10,21 @@ public enum InteractionType
     none,
     gather,
     chop,
-    mine
+    mine,
+    communicate
 }
 
 public class PlayerInteractionSystem : MonoBehaviour
 {
-    GameObject _target;
+    [SerializeField] GameObject _target;
     Animator _anim;
     InteractionType _currentInteractionType;
     PlayerSystem _player;
     float _timer;
+    public bool IsInteractingWithAI;
+    GameObject follower;
 
+    public bool HasFollower => follower != null;
 
     private void Awake()
     {
@@ -28,14 +32,44 @@ public class PlayerInteractionSystem : MonoBehaviour
         _player = GetComponent<PlayerSystem>();
     }
 
-    public void Gather(InteractionType iType, GameObject target)
+
+    public void Interact(InteractionType iType, GameObject target)
     {
+        if(_target != null && _target != target && _target.GetComponent<Agent>() != null)
+        {
+            StopAgentInteraction();
+        }
+
         _target = target;
+
+
         if (_currentInteractionType != InteractionType.none)
             _anim.SetBool(_currentInteractionType.ToString(), false);
 
         _currentInteractionType = iType;
+
+        if (iType == InteractionType.communicate && _target.GetComponent<InventorySystem>() != null)
+        {
+            UIManager.Instance.ToggleWindow("Interaction", GetComponent<InventorySystem>(), _target.GetComponent<InventorySystem>());
+            IsInteractingWithAI = _currentInteractionType == InteractionType.communicate && _target != null;
+            _target.GetComponent<GoapPlanner>().InteractWithPlayer();
+            return;
+        }
+
         _anim.SetBool(_currentInteractionType.ToString(), true);
+
+    }
+
+    internal void SetFollowingAgent(bool shouldFollow)
+    {
+        _target.GetComponent<GoapPlanner>().FollowPlayer(shouldFollow);
+        follower = shouldFollow ? _target : null;
+    }
+
+    public void StopAgentInteraction()
+    {
+        IsInteractingWithAI = false;
+        _target.GetComponent<GoapPlanner>().StopInteracting();
     }
 
     private void Update()
@@ -45,25 +79,42 @@ public class PlayerInteractionSystem : MonoBehaviour
             _target = null;
         }
 
+
         if (_currentInteractionType != InteractionType.none)
         {
-            if (_target == null) {
-                _anim.SetBool(_currentInteractionType.ToString(), false);
-                _currentInteractionType = InteractionType.none;
-            }
-            else
+            if (_currentInteractionType != InteractionType.communicate)
             {
-                if (_timer >= _anim.GetCurrentAnimatorStateInfo(0).length)
+                if (_target == null)
                 {
-                    List<InventoryItem> gathered = _target.GetComponent<ResourceTarget>().Interact(_player.InventorySystem);
-                    foreach(InventoryItem invItem in gathered)
+                    if (QuestManager.Instance.HasQuestWithInteractionType(_currentInteractionType))
                     {
-                        EventManager.Instance.TriggerEvent(new GatherGameEvent(invItem.Item, invItem.Amount));
+                        EventManager.Instance.TriggerEvent(new TeachGameEvent(_currentInteractionType, 1));
                     }
-                    _timer = 0;
+
+                    _anim.SetBool(_currentInteractionType.ToString(), false);
+                    _currentInteractionType = InteractionType.none;
+
                 }
+                else
+                {
+                    if (_timer >= _anim.GetCurrentAnimatorStateInfo(0).length)
+                    {
+                        List<InventoryItem> gathered = _target.GetComponent<ResourceTarget>().Interact(_player.InventorySystem);
+                        foreach (InventoryItem invItem in gathered)
+                        {
+                            if (QuestManager.Instance.HasQuestWithItem(invItem.Item))
+                            {
+                                EventManager.Instance.TriggerEvent(new GatherGameEvent(invItem.Item, invItem.Amount));
+                            }
+                        }
+
+                        _timer = 0;
+                    }
+                }
+                _timer += Time.deltaTime;
+
+
             }
-            _timer += Time.deltaTime;
         }
     }
 }

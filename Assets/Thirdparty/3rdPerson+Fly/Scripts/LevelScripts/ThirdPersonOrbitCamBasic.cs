@@ -99,7 +99,7 @@ public class ThirdPersonOrbitCamBasic : MonoBehaviour
         cam.position = player.position + camYRotation * smoothPivotOffset + aimRotation * smoothCamOffset;
 
         RaycastHit hit;
-        LayerMask mask = LayerMask.GetMask("Interactable");
+        LayerMask mask = LayerMask.GetMask(new string[] { "Interactable", "Agent" });
 
 
         if (Physics.Raycast(cam.position, cam.forward, out hit, 10f, mask))

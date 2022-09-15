@@ -31,7 +31,7 @@ public class CustomQuestEditor : Editor
         _questGoalListProperty = serializedObject.FindProperty(nameof(Quest.Objectives));
 
         var lookUp = typeof(QuestObjective);
-        _questGoalType = new List<string>() { "GatherObjective", "BuildObjective", "CraftObjective" };
+        _questGoalType = new List<string>() { "GatherObjective", "BuildObjective", "CraftObjective", "TeachObjective" };
     }
 
     public override void OnInspectorGUI()

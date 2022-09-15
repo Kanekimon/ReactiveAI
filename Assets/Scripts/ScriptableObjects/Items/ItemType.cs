@@ -5,5 +5,6 @@
     Armor,
     Resource,
     Tool,
-    Buildable
+    Buildable,
+    Consumable
 }

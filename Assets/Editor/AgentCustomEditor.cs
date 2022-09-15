@@ -14,7 +14,6 @@ public class AgentCustomEditor : Editor
 
     public override void OnInspectorGUI()
     {
-        base.OnInspectorGUI();
         Agent agent = (Agent)target;
         StateMemory WorldState = agent.WorldState;
         showWorldStates = EditorGUILayout.Foldout(showWorldStates, status);

@@ -10,6 +10,7 @@ public class InventorySlot : VisualElement
     public Label Amount;
     public Item Item;
 
+
     bool isDragging;
     private Vector2 targetStartPosition;
     private Vector3 pointerStartPosition;
@@ -67,7 +68,8 @@ public class InventorySlot : VisualElement
     public void HoldItem(Item item)
     {
         Icon.image = item.Icon.texture;
-        RegisterCallback<MouseDownEvent>(ClickedItem);
+        Item = item;
+        RegisterCallback<MouseDownEvent>(ClickEvent);
         RegisterCallback<PointerDownEvent>(StartDrag);
         RegisterCallback<PointerMoveEvent>(DragEvent);
         RegisterCallback<PointerUpEvent>(PointerUpHandler);
@@ -78,14 +80,18 @@ public class InventorySlot : VisualElement
         if (Amount != null)
             Remove(Amount);
         Amount = null;
-        UnregisterCallback<MouseDownEvent>(ClickedItem);
+        UnregisterCallback<MouseDownEvent>(ClickEvent);
 
     }
 
-    public void ClickedItem(MouseDownEvent e)
+    private void ClickEvent(MouseDownEvent evt)
     {
-        Debug.Log("Clicked");
+        if (evt.clickCount == 2)
+        {
+            GameManager.Instance.Player.UseItem(Item);
+        }
     }
+
 
     public void DragEvent(PointerMoveEvent evt)
     {

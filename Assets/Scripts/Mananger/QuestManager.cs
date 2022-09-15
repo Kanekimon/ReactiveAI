@@ -34,6 +34,7 @@ public class QuestManager : MonoBehaviour
         }
     }
 
+
     public void FinishQuest(Quest close)
     {
         if(Active.Any(a => a == close))
@@ -43,8 +44,36 @@ public class QuestManager : MonoBehaviour
         }
     }
 
+    public bool HasQuestWithInteractionType(InteractionType inter)
+    {
+        foreach(Quest q in Active)
+        {
+            foreach(QuestObjective objective in q.Objectives)
+            {
+                if(objective is TeachObjective)
+                {
+                    if ((objective as TeachObjective).InteractionType == inter)
+                        return true;
+                }
+            }   
+        }
+        return false;
+    }
 
-
-
+    internal bool HasQuestWithItem(Item i)
+    {
+        foreach (Quest q in Active)
+        {
+            foreach (QuestObjective objective in q.Objectives)
+            {
+                if (objective is GatherObjective)
+                {
+                    if ((objective as GatherObjective).Item.Id == i.Id)
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
 }
 

@@ -70,13 +70,7 @@ public class UIManager : MonoBehaviour
 
         UnityEngine.Cursor.visible = false;
 
-        baseRoot.Query<VisualElement>().Where(a => a.name.ToLower().Contains("view")).ForEach(a => views.Add(a.name.Replace("_view", ""), new View() { view = a, script = (UiView) GetComponent(a.name)}));
-
-        foreach(KeyValuePair<string, View> view in views)
-        {
-            Debug.Log($"View {view.Key}: {view.Value}");
-        }
-
+        baseRoot.Query<VisualElement>().Where(a => a.name.ToLower().Contains("view")).ForEach(a => views.Add(a.name.Replace("_view", ""), new View() { view = a, script = (UiView)GetComponent(a.name) }));
     }
 
     // Update is called once per frame
@@ -123,7 +117,7 @@ public class UIManager : MonoBehaviour
             UnityEngine.Cursor.lockState = CursorLockMode.None;
         }
 
-        if(inter_Text.style.display == DisplayStyle.Flex)
+        if (inter_Text.style.display == DisplayStyle.Flex)
         {
             inter_Text.style.top = mouse.y;
             inter_Text.style.left = mouse.x;
@@ -134,9 +128,9 @@ public class UIManager : MonoBehaviour
 
     public void CheckNotifications()
     {
-        if(notification_container.childCount > 0)
+        if (notification_container.childCount > 0)
         {
-            for(int i = notification_container.childCount - 1; i >= 0; i--)
+            for (int i = notification_container.childCount - 1; i >= 0; i--)
             {
                 Notification n = notification_container[i] as Notification;
                 n.Duration -= Time.deltaTime;
@@ -161,7 +155,7 @@ public class UIManager : MonoBehaviour
         {
             inter_Text.text = "";
             inter_Text.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
-            if(currentlyInteractingWith != null)
+            if (currentlyInteractingWith != null)
             {
                 currentlyInteractingWith.Visible = false;
                 currentlyInteractingWith = null;
@@ -169,6 +163,9 @@ public class UIManager : MonoBehaviour
         }
         else
         {
+            if (currentlyInteractingWith != null && interact != currentlyInteractingWith)
+                currentlyInteractingWith.Visible = false;
+
             inter_Text.text = "Press [E] to interact";
             interact.Visible = true;
             currentlyInteractingWith = interact;
@@ -178,19 +175,24 @@ public class UIManager : MonoBehaviour
 
     public void CloseOpenView()
     {
-        if(currentlyOpen != null)
+        if (currentlyOpen != null)
         {
             views.Where(a => a.Value.view.name.Equals(currentlyOpen.name)).FirstOrDefault().Value.script.Close();
             currentlyOpen.style.display = DisplayStyle.None;
             currentlyOpen = null;
+
+            if (GameManager.Instance.Player.GetComponent<PlayerInteractionSystem>().IsInteractingWithAI)
+            {
+                GameManager.Instance.Player.GetComponent<PlayerInteractionSystem>().StopAgentInteraction();
+            }
         }
     }
 
-    public void ToggleWindow(string key)
+    public void ToggleWindow(string key, InventorySystem left = null, InventorySystem right = null)
     {
         VisualElement window = views[key].view;
 
-        if(currentlyInteractingWith != null)
+        if (currentlyInteractingWith != null)
         {
             currentlyInteractingWith.Visible = false;
             inter_Text.style.display = DisplayStyle.None;
@@ -203,7 +205,10 @@ public class UIManager : MonoBehaviour
             CloseOpenView();
             currentlyOpen = window;
             window.style.display = DisplayStyle.Flex;
-            views[key].script.Open();
+            if (left != null && right != null)
+                views[key].script.Open(left, right);
+            else
+                views[key].script.Open();
         }
         else
         {
@@ -212,6 +217,8 @@ public class UIManager : MonoBehaviour
             views[key].script.Close();
         }
     }
+
+
 
 
     void UpdateBars()
@@ -226,11 +233,11 @@ public class UIManager : MonoBehaviour
     void SetBarColor(VisualElement bar, Condition c)
     {
         bar.style.width = Length.Percent(Mathf.FloorToInt((c.Value / c.MaximumValue) * 100));
-        if (c.Value > c.MaximumValue/2)
+        if (c.Value > c.MaximumValue / 2)
         {
-            bar.style.backgroundColor = new StyleColor(new Color32(144, 190, 109,255));
+            bar.style.backgroundColor = new StyleColor(new Color32(144, 190, 109, 255));
         }
-        else if(c.Value <= c.MaximumValue / 2 && c.Value > c.MaximumValue / 4)
+        else if (c.Value <= c.MaximumValue / 2 && c.Value > c.MaximumValue / 4)
         {
             bar.style.backgroundColor = new StyleColor(new Color32(249, 199, 79, 255));
 
@@ -243,9 +250,9 @@ public class UIManager : MonoBehaviour
 
     public void UpdateInventory()
     {
-        if(currentlyOpen == views["Inventory"].view)
+        if (currentlyOpen == views["Inventory"].view)
         {
-            views["Inventory"].script.Refresh(); 
+            views["Inventory"].script.Refresh();
         }
     }
 }

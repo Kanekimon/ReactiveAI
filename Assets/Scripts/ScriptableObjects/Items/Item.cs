@@ -13,5 +13,6 @@ public class Item : ScriptableObject
     public List<ResourceType> ResourceType = new List<ResourceType>();
     public Sprite Icon;
     public float Weigth;
+    public List<ItemProperty> Properties = new List<ItemProperty>();
 }
 

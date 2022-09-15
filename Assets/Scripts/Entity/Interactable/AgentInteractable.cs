@@ -5,19 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-
-
-public class ResourceNode : Interactable
+public class AgentInteractable : Interactable
 {
     PlayerSystem player;
-    public InteractionType InteractionType;
+    public InteractionType InteractionType = InteractionType.communicate;
 
 
     private void Start()
     {
         player = GameManager.Instance.Player;
         OnInteract = new UnityEngine.Events.UnityEvent();
-        OnInteract.AddListener(()=> player.InteractionSystem.Interact(InteractionType, this.gameObject));
+        OnInteract.AddListener(() => player.InteractionSystem.Interact(InteractionType, this.gameObject));
     }
 }
 

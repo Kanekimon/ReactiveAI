@@ -8,11 +8,11 @@ using UnityEngine;
 public class PlayerSystem : MonoBehaviour
 {
     float _timer;
-    [SerializeField]int _reputation;
+    [SerializeField] int _reputation;
     Animator _anim;
 
     public TownSystem CurrentTown;
-
+    public GameObject ToolContainer;
     public int Reputation => _reputation;
 
     PlayerConditionSystem _conditionSystem;
@@ -25,6 +25,8 @@ public class PlayerSystem : MonoBehaviour
     public PlayerInteractionSystem InteractionSystem => _interactionSystem;
 
     GameObject _target;
+    GameObject currentlyEquippedObject;
+    Item currentlyEquippedItem;
 
 
     private void Awake()
@@ -33,7 +35,7 @@ public class PlayerSystem : MonoBehaviour
         _inventorySystem = GetComponent<InventorySystem>();
         _craftingSystem = GetComponent<CraftingSystem>();
         _anim = GetComponent<Animator>();
-        _interactionSystem = GetComponent<PlayerInteractionSystem>();   
+        _interactionSystem = GetComponent<PlayerInteractionSystem>();
     }
 
 
@@ -42,6 +44,62 @@ public class PlayerSystem : MonoBehaviour
         _reputation += amount;
     }
 
+    public void UseItem(Item i)
+    {
+        if (i.ItemTypes.Contains(ItemType.Consumable))
+        {
+            Consume(i);
+        }
+        else if (i.ItemTypes.Contains(ItemType.Tool))
+        {
+            EquipItem(i);
+        }
+    }
+
+
+    public void Consume(Item i)
+    {
+        if (i.ItemTypes.Contains(ItemType.Consumable))
+        {
+            foreach (ItemProperty iP in i.Properties.Where(a => a.Type == ItemPropertyType.consume))
+            {
+                if (_conditionSystem.GetValueFromCondition(iP.Name) + 1 >= _conditionSystem.GetCondition(iP.Name).MaximumValue)
+                {
+                    UIManager.Instance.CreateNotification($"{iP.Name} is already satisified",2f);
+                    return;
+                }
+                _conditionSystem.DecreaseValue(iP.Name, -iP.Value);
+            }
+        }
+        InventorySystem.RemoveItem(i, 1);
+    }
+
+    public void EquipItem(Item i)
+    {
+        if(currentlyEquippedObject == null)
+        {
+            currentlyEquippedObject = Instantiate(i.Prefab, ToolContainer.transform);
+        }
+        else
+        {
+            if (currentlyEquippedItem != i)
+            {
+                UnequipItem(currentlyEquippedItem);
+                currentlyEquippedItem = i;
+                currentlyEquippedObject = Instantiate(i.Prefab, ToolContainer.transform);
+            }
+            else
+                UnequipItem(currentlyEquippedItem);
+
+        }
+    }
+
+    public void UnequipItem(Item i)
+    {
+        DestroyImmediate(currentlyEquippedObject);
+        currentlyEquippedItem = null;
+        currentlyEquippedObject = null;
+    }
 
 
 }
