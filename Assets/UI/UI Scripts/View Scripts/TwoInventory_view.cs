@@ -96,7 +96,7 @@ public class TwoInventory_view : UiView
 
         foreach (InventoryItem iI in leftInv.GetAllItems())
         {
-            InventorySlot inventorySlot = new InventorySlot(iI.Item);
+            InventorySlot inventorySlot = new InventorySlot(iI.Item, -1);
             inventorySlot.AddAmount(iI.Amount);
             inventorySlot.RegisterCallback<MouseDownEvent, InventorySlot>(SelectItemLeftHandler, inventorySlot);
             left_item_container.Add(inventorySlot);
@@ -106,7 +106,7 @@ public class TwoInventory_view : UiView
 
         foreach (InventoryItem iI in rightInv.GetAllItems())
         {
-            InventorySlot inventorySlot = new InventorySlot(iI.Item);
+            InventorySlot inventorySlot = new InventorySlot(iI.Item, -1);
             inventorySlot.AddAmount(iI.Amount);
             inventorySlot.RegisterCallback<MouseDownEvent, InventorySlot>(SelectItemRightHandler, inventorySlot);
             right_item_container.Add(inventorySlot);

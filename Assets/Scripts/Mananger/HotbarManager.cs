@@ -20,7 +20,7 @@ public class HotbarManager : MonoBehaviour
         Hotbar = Root.Q<VisualElement>("Hotbar");
         for(int i = 0; i < HotbarSlots; i++)
         {
-            InventorySlot slot = new InventorySlot();
+            InventorySlot slot = new InventorySlot(i);
             hotbarMap.Add(i, slot);
         }
     }

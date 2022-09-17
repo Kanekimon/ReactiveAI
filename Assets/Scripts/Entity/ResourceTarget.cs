@@ -9,6 +9,7 @@ public enum ResourceType
     tree,
     bush,
     mushroom,
+    loot,
     none
 }
 

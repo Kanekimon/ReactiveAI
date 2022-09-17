@@ -52,7 +52,7 @@ public class RequestItem_popup : UiView
         requestAmount.value = "0";
         foreach (Item i in ItemManager.Instance.AllItems)
         {
-            InventorySlot iS = new InventorySlot(i);
+            InventorySlot iS = new InventorySlot(i,-1);
 
             iS.RegisterCallback<MouseDownEvent, InventorySlot>(SelectItemHandler, iS);
             itemContainer.Add(iS);

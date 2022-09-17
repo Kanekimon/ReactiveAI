@@ -27,7 +27,7 @@ public class PlayerSystem : MonoBehaviour
     GameObject _target;
     GameObject currentlyEquippedObject;
     Item currentlyEquippedItem;
-
+    public GameObject Crate;
 
     private void Awake()
     {
@@ -65,7 +65,7 @@ public class PlayerSystem : MonoBehaviour
             {
                 if (_conditionSystem.GetValueFromCondition(iP.Name) + 1 >= _conditionSystem.GetCondition(iP.Name).MaximumValue)
                 {
-                    UIManager.Instance.CreateNotification($"{iP.Name} is already satisified",2f);
+                    UIManager.Instance.CreateNotification($"{iP.Name} is already satisified", 2f);
                     return;
                 }
                 _conditionSystem.DecreaseValue(iP.Name, -iP.Value);
@@ -76,7 +76,7 @@ public class PlayerSystem : MonoBehaviour
 
     public void EquipItem(Item i)
     {
-        if(currentlyEquippedObject == null)
+        if (currentlyEquippedObject == null)
         {
             currentlyEquippedObject = Instantiate(i.Prefab, ToolContainer.transform);
         }
@@ -101,6 +101,27 @@ public class PlayerSystem : MonoBehaviour
         currentlyEquippedObject = null;
     }
 
+    internal void DropItem(Item item, int itemAmount)
+    {
+        InventorySystem.RemoveItem(item, itemAmount);
 
+        GameObject instance = item.Prefab == null ? Crate : item.Prefab;
+        instance = Instantiate(item.Prefab) as GameObject;
+        instance.transform.position = this.transform.position + this.transform.forward;
+        ResourceTarget rT = instance.GetComponent<ResourceTarget>();
+        Resource r = new Resource()
+        {
+            Item = item,
+            Amount = itemAmount,
+            MinAmount = itemAmount,
+            MaxAmount = itemAmount,
+            Propability = 1
+        };
+
+        rT.Primary = r;
+        rT.ResourceType = ResourceType.loot;
+        rT.GatherableMaterials.Add(r);
+
+    }
 }
 

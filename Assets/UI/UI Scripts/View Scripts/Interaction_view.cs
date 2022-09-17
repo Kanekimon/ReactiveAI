@@ -15,7 +15,8 @@ public class Interaction_view : UiView
     }
 
     PlayerInteractionSystem interSystem;
-    Inventories invs; 
+    Inventories invs;
+
 
     private void Start()
     {

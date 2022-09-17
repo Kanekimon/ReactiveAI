@@ -124,6 +124,19 @@ public class InventorySystem : MonoBehaviour
         return added;
     }
 
+    internal void SwapSlots(int currentSlot, int wantedSlot)
+    {
+        InventoryItem current = _inventory[currentSlot];
+        InventoryItem wanted = _inventory[wantedSlot];
+
+        if(wanted != null && wanted.Item != null)
+            _inventory[currentSlot] = wanted;
+        else
+            _inventory[currentSlot] = null;
+
+        _inventory[wantedSlot] = current;
+    }
+
     /// <summary>
     /// Addes item to new slots
     /// </summary>

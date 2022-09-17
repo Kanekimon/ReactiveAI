@@ -10,7 +10,7 @@ public abstract class UiView : MonoBehaviour
 {
      [SerializeField] public VisualElement Root;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         Root = GetComponent<UIDocument>().rootVisualElement;
     }

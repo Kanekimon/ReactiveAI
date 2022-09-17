@@ -9,13 +9,25 @@ public class InventorySlot : VisualElement
     public Image Icon;
     public Label Amount;
     public Item Item;
+    public int SlotIndex;
 
-
+    public int ItemAmount = -1;
     bool isDragging;
     private Vector2 targetStartPosition;
     private Vector3 pointerStartPosition;
+    
 
     public InventorySlot()
+    {
+        Init();
+    }
+    public InventorySlot(int slotIndex)
+    {
+        SlotIndex = slotIndex;
+        Init();
+    }
+
+    void Init()
     {
         //Create a new Image element and add it to the root
         Icon = new Image();
@@ -25,8 +37,10 @@ public class InventorySlot : VisualElement
         AddToClassList("slotContainer");
     }
 
-    public InventorySlot(Item item)
+
+    public InventorySlot(Item item, int slotIndex)
     {
+        slotIndex = SlotIndex;
         Item = item;
         //Create a new Image element and add it to the root
         Icon = new Image();
@@ -48,6 +62,7 @@ public class InventorySlot : VisualElement
         }
 
         Amount.text = amount.ToString();
+        ItemAmount = amount;
     }
 
     public void SetAsActive(bool isActive)
@@ -65,14 +80,15 @@ public class InventorySlot : VisualElement
     }
 
 
-    public void HoldItem(Item item)
+    public void HoldItem(Item item, int amount)
     {
         Icon.image = item.Icon.texture;
         Item = item;
-        RegisterCallback<MouseDownEvent>(ClickEvent);
-        RegisterCallback<PointerDownEvent>(StartDrag);
-        RegisterCallback<PointerMoveEvent>(DragEvent);
-        RegisterCallback<PointerUpEvent>(PointerUpHandler);
+        AddAmount(amount);
+        //RegisterCallback<MouseDownEvent>(ClickEvent);
+        //RegisterCallback<PointerDownEvent>(StartDrag);
+        //RegisterCallback<PointerMoveEvent>(DragEvent);
+        //RegisterCallback<PointerUpEvent>(PointerUpHandler);
     }
     public void DropItem()
     {
@@ -80,6 +96,7 @@ public class InventorySlot : VisualElement
         if (Amount != null)
             Remove(Amount);
         Amount = null;
+        ItemAmount = -1;
         UnregisterCallback<MouseDownEvent>(ClickEvent);
 
     }

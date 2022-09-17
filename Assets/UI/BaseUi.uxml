@@ -66,4 +66,5 @@
         <InventorySlot />
         <InventorySlot />
     </ui:VisualElement>
+    <ui:VisualElement name="GhostIcon" style="position: absolute; width: 64px; height: 64px; visibility: hidden;" />
 </ui:UXML>
