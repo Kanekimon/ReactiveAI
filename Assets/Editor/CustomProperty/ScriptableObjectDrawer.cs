@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using UnityEditor;
 using UnityEngine;
-using UnityEditor;
 
 [CustomPropertyDrawer(typeof(ScriptableObject), true)]
 public class ScriptableObjectDrawer : PropertyDrawer

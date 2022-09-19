@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -10,6 +9,7 @@ public class Inventory_view : UiView
     PlayerSystem player;
     InventorySystem inventorySystem;
     VisualElement inventory;
+    VisualElement context_menu;
     private static bool m_IsDragging;
     private static InventorySlot m_OriginalSlot;
 
@@ -17,6 +17,7 @@ public class Inventory_view : UiView
     static VisualElement ghostIcon;
     InventorySlot originalSlot;
     bool isDragging;
+
 
     protected override void Awake()
     {
@@ -29,6 +30,7 @@ public class Inventory_view : UiView
         player = gM.Player;
         inventorySystem = player.InventorySystem;
         inventory = Root.Q<VisualElement>("Inventory");
+        context_menu = Root.Q<VisualElement>("Context-menu");
 
         ghostIcon = Root.Q<VisualElement>("GhostIcon");
         ghostIcon.RegisterCallback<PointerUpEvent>(OnMouseUp);
@@ -48,6 +50,16 @@ public class Inventory_view : UiView
 
         }
     }
+    private void Update()
+    {
+        if (context_menu.style.display == DisplayStyle.Flex)
+        {
+            if (Root.focusController.focusedElement != context_menu)
+            {
+                ToggleContextMenu(false);
+            }
+        }
+    }
 
 
     public override void Open()
@@ -58,7 +70,7 @@ public class Inventory_view : UiView
         //    slotContainer.Add(new InventorySlot());
         //}
 
-        for(int i = 0; i < inventorySystem.MaximumSlots; i++)
+        for (int i = 0; i < inventorySystem.MaximumSlots; i++)
         {
             InventoryItem inv_item = inventorySystem.GetItemAtSlot(i);
             if (inv_item != null)
@@ -75,18 +87,67 @@ public class Inventory_view : UiView
 
     public void StartDrag(MouseDownEvent evt, System.Tuple<Vector2, InventorySlot> originalData)
     {
-        //Set tracking variables
-        isDragging = true;
-        originalSlot = originalData.Item2;
+        if (evt.clickCount == 2)
+        {
+            GameManager.Instance.Player.UseItem(originalData.Item2.Item);
+            return;
+        }
 
-        //Set the new position
-        ghostIcon.style.top = evt.mousePosition.y - ghostIcon.layout.height / 2;
-        ghostIcon.style.left = evt.mousePosition.x - ghostIcon.layout.width / 2;
-        //Set the image
-        ghostIcon.style.backgroundImage = new StyleBackground(originalSlot.Item.Icon);
-        //Flip the visibility on
-        ghostIcon.style.visibility = Visibility.Visible;
+        if (evt.button == 0)
+        {
+
+            //Set tracking variables
+            isDragging = true;
+            originalSlot = originalData.Item2;
+
+            //Set the new position
+            ghostIcon.style.top = evt.mousePosition.y - ghostIcon.layout.height / 2;
+            ghostIcon.style.left = evt.mousePosition.x - ghostIcon.layout.width / 2;
+            //Set the image
+            ghostIcon.style.backgroundImage = new StyleBackground(originalSlot.Item.Icon);
+            //Flip the visibility on
+            ghostIcon.style.visibility = Visibility.Visible;
+        }
+        else if (evt.button == 1 || evt.button == 2)
+        {
+            ToggleContextMenu(true, evt.mousePosition, originalData.Item2);
+        }
     }
+
+
+    void ToggleContextMenu(bool activate, Vector2 pos = default(Vector2), InventorySlot slot = null)
+    {
+        if (activate)
+        {
+            context_menu.style.display = DisplayStyle.Flex;
+            context_menu.style.top = pos.y - context_menu.layout.height / 2;
+            context_menu.style.left = pos.x - context_menu.layout.width / 2;
+            context_menu.Focus();
+            context_menu.Q<VisualElement>("context-use").RegisterCallback<MouseDownEvent, InventorySlot>(UseItemHandler, slot);
+            context_menu.Q<VisualElement>("context-drop").RegisterCallback<MouseDownEvent, InventorySlot>(DropItemHandler, slot);
+        }
+        else
+        {
+            context_menu.style.display = DisplayStyle.None;
+            context_menu.Q<VisualElement>("context-use").UnregisterCallback<MouseDownEvent, InventorySlot>(UseItemHandler);
+            context_menu.Q<VisualElement>("context-drop").UnregisterCallback<MouseDownEvent, InventorySlot>(DropItemHandler);
+        }
+    }
+
+    private void UseItemHandler(MouseDownEvent evt, InventorySlot slot)
+    {
+        player.UseItem(slot.Item);
+        ToggleContextMenu(false);
+        Refresh();
+    }
+
+    private void DropItemHandler(MouseDownEvent evt, InventorySlot slot)
+    {
+        player.DropItem(slot.Item, slot.ItemAmount);
+        ToggleContextMenu(false);
+        Refresh();
+    }
+
 
     private void OnMouseMove(PointerMoveEvent evt)
     {
@@ -115,7 +176,7 @@ public class Inventory_view : UiView
             KeyValuePair<int, InventorySlot> closestSlot = slots.OrderBy(x => Vector2.Distance
                (x.Value.worldBound.position, ghostIcon.worldBound.position)).First();
 
-            if(closestSlot.Value.Item != null)
+            if (closestSlot.Value.Item != null)
             {
                 inventorySystem.SwapSlots(originalSlot.SlotIndex, closestSlot.Value.SlotIndex);
 
@@ -141,7 +202,11 @@ public class Inventory_view : UiView
             }
             else
             {
-                player.DropItem(originalSlot.Item, originalSlot.ItemAmount);
+                if (!HotbarManager.Instance.IsOverlapping(ghostIcon, originalSlot))
+                {
+                    player.DropItem(originalSlot.Item, originalSlot.ItemAmount);
+                }
+
             }
         }
         //Didn't find any (dragged off the window)
@@ -158,10 +223,9 @@ public class Inventory_view : UiView
     }
 
 
-
     public override void Close()
     {
-        
+
     }
 
     public override void Refresh()

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -41,7 +37,7 @@ public class CustomQuestEditor : Editor
         child.NextVisible(true);
 
         EditorGUILayout.LabelField("Quest info", EditorStyles.boldLabel);
-        while(child.depth > depth)
+        while (child.depth > depth)
         {
             EditorGUILayout.PropertyField(child, true);
             child.NextVisible(false);
@@ -52,7 +48,7 @@ public class CustomQuestEditor : Editor
 
         EditorGUILayout.LabelField("Quest reward", EditorStyles.boldLabel);
 
-        while(child.depth > depth)
+        while (child.depth > depth)
         {
             EditorGUILayout.PropertyField(child, true);
             child.NextVisible(false);
@@ -60,7 +56,7 @@ public class CustomQuestEditor : Editor
 
         int choice = EditorGUILayout.Popup("Add new Quest Goal", -1, _questGoalType.ToArray());
 
-        if(choice != -1)
+        if (choice != -1)
         {
             var newInstance = ScriptableObject.CreateInstance(_questGoalType[choice]);
             AssetDatabase.AddObjectToAsset(newInstance, target);
@@ -91,15 +87,15 @@ public class CustomQuestEditor : Editor
 
             EditorGUILayout.EndHorizontal();
         }
-            if(toDelete != -1)
-            {
-                var item = _questGoalListProperty.GetArrayElementAtIndex(toDelete).objectReferenceValue;
-                DestroyImmediate(item, true);
+        if (toDelete != -1)
+        {
+            var item = _questGoalListProperty.GetArrayElementAtIndex(toDelete).objectReferenceValue;
+            DestroyImmediate(item, true);
 
-                _questGoalListProperty.DeleteArrayElementAtIndex(toDelete);
-            }
+            _questGoalListProperty.DeleteArrayElementAtIndex(toDelete);
+        }
 
-            serializedObject.ApplyModifiedProperties();
+        serializedObject.ApplyModifiedProperties();
 
         base.OnInspectorGUI();
     }

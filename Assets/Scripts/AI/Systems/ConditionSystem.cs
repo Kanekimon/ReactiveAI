@@ -15,6 +15,8 @@ public class Condition
     public float MinimumValue;
     public float MaximumValue;
     public bool IsFatal;
+    public bool TickingDown;
+
 
 
     public void Tick()
@@ -52,7 +54,7 @@ public class ConditionSystem : MonoBehaviour
             Name = "Healthy",
             Value = 100,
             DecreaseRate = 0.1f,
-            Ticked = true,
+            Ticked = false,
             TriggerValue = 20f,
             MinimumValue = 0f,
             MaximumValue = 100f
@@ -61,7 +63,7 @@ public class ConditionSystem : MonoBehaviour
 
         Condition exhausted = new Condition()
         {
-            Name = "Exhausted",
+            Name = "Exhaustion",
             Value = 100,
             DecreaseRate = 0.1f,
             Ticked = true,
@@ -100,6 +102,7 @@ public class ConditionSystem : MonoBehaviour
         float tillMinimum = float.MaxValue;
         Condition urgent = null;
 
+
         for (int i = 0; i < Conditions.Count; i++)
         {
             Condition c = Conditions[i];
@@ -123,7 +126,7 @@ public class ConditionSystem : MonoBehaviour
         }
 
 
-        if(((urgent == null && _activeCondition != null) || (_activeCondition == urgent)) && _activeCondition.Value > (_activeCondition.TriggerValue*2f))
+        if (((urgent == null && _activeCondition != null) || (_activeCondition == urgent)) && _activeCondition.Value > (_activeCondition.TriggerValue * 2f))
         {
             if (Agent.gameObject.name.Equals("Lumberjack"))
                 Debug.Log("Test");
@@ -132,9 +135,11 @@ public class ConditionSystem : MonoBehaviour
             return;
         }
 
-        if(tillMinimum < 0)
+        if (tillMinimum < 0)
             _activeCondition = urgent;
     }
+
+
 
     public Condition GetActiveCondition()
     {

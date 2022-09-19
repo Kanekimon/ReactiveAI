@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 public class SleepAction : ActionBase
 {
@@ -21,7 +17,7 @@ public class SleepAction : ActionBase
     public override void OnTick()
     {
         base.OnTick();
-        if(WorldState.GetValue<DayTime>("DayTime") == DayTime.Morning)
+        if (WorldState.GetValue<DayTime>("DayTime") == DayTime.Morning)
         {
             OnDeactived();
         }

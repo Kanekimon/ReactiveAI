@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -65,7 +63,7 @@ public class Townhall_view : UiView
         villagerAge.text = "10";
         villagerJob.text = villager.Job == null ? "None" : villager.Job.JobType.ToString();
 
-        if(villager.Job == null)
+        if (villager.Job == null)
         {
             fire.style.display = DisplayStyle.None;
             hire.style.display = DisplayStyle.Flex;
@@ -81,7 +79,7 @@ public class Townhall_view : UiView
     {
         return () =>
         {
-            JobType job = (JobType) Enum.Parse(typeof(JobType), jobTypes.choices[jobTypes.index]);
+            JobType job = (JobType)Enum.Parse(typeof(JobType), jobTypes.choices[jobTypes.index]);
             Town.HireWorker(selected, Town.AvailableJobs.Where(a => a.JobType == job).FirstOrDefault());
         };
     }

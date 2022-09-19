@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.EventSystems;
 
 public class Interactable : MonoBehaviour
 {
 
     public bool Visible;
     [SerializeField] protected UnityEvent OnInteract;
+    [SerializeField] protected ToolType ToolNeeded;
+
 
     private void Awake()
     {
@@ -20,8 +16,20 @@ public class Interactable : MonoBehaviour
     {
         if (Visible)
         {
+
+
             if (Input.GetKeyDown(KeyCode.E))
             {
+                if (ToolNeeded != ToolType.none)
+                {
+                    ToolType equippedType = GameManager.Instance.Player.GetEquippedToolType();
+                    if (equippedType != ToolNeeded)
+                    {
+                        UIManager.Instance.CreateNotification("You don't have the correct tool equipped!", 2f);
+                        return;
+                    }
+                }
+
                 OnInteract.Invoke();
             }
         }

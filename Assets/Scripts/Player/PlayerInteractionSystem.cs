@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public enum InteractionType
@@ -35,7 +31,7 @@ public class PlayerInteractionSystem : MonoBehaviour
 
     public void Interact(InteractionType iType, GameObject target)
     {
-        if(_target != null && _target != target && _target.GetComponent<Agent>() != null)
+        if (_target != null && _target != target && _target.GetComponent<Agent>() != null)
         {
             StopAgentInteraction();
         }

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Assets/Item")]
+[CreateAssetMenu(menuName = "Items/Item")]
 public class Item : ScriptableObject
 {
     public int Id;

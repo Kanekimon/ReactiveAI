@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -84,7 +83,7 @@ public class UIManager : MonoBehaviour
 
         if (Input.GetButtonDown("Inventory"))
         {
-            ToggleWindow("Inventory");
+            ToggleWindow("Townhall");
         }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
@@ -187,6 +186,12 @@ public class UIManager : MonoBehaviour
             }
         }
     }
+
+    public void ToggleWindow(string key)
+    {
+        ToggleWindow(key, null, null);
+    }
+
 
     public void ToggleWindow(string key, InventorySystem left = null, InventorySystem right = null)
     {

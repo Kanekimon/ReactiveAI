@@ -103,7 +103,7 @@ public class PlaceObjectAction : ActionBase
         int layerMask = ~LayerMask.GetMask("Terrain");
         Vector3 halfSize = size / 2;
         Collider[] overlap = Physics.OverlapBox(pos, halfSize);
-        if(overlap!= null && overlap.Length > 0)
+        if (overlap != null && overlap.Length > 0)
         {
             Debug.Log("Test");
         }

@@ -2,7 +2,7 @@
 using System.Linq;
 using UnityEngine;
 
-public class ActionInteractWithResource : ActionBase
+public class InteractWithResourceAction : ActionBase
 {
     [SerializeField] int AmountToGather;
     private GameObject _target;
@@ -15,7 +15,6 @@ public class ActionInteractWithResource : ActionBase
 
     protected override void Start()
     {
-        
         preconditions.Add(new KeyValuePair<string, object>("isAtPosition", true));
         preconditions.Add(new KeyValuePair<string, object>("hasTool", true));
         effects.Add(new KeyValuePair<string, object>("interactWithResource", true));
@@ -31,7 +30,7 @@ public class ActionInteractWithResource : ActionBase
         if (!WorldState.GetValue<bool>("hasTool"))
             return false;
 
-        if(requested != null && !requested.HasRecipe && requested.IsResource)
+        if (requested != null && !requested.HasRecipe && requested.IsResource)
         {
             return true;
         }
@@ -61,25 +60,26 @@ public class ActionInteractWithResource : ActionBase
 
     public override void OnTick()
     {
-        
-        GameObject tmp = WorldState.GetValue<GameObject>("target");
+
+        _target = WorldState.GetValue<GameObject>("target");
+
 
         if (_target == null)
-        {
-            if (!sameResource)
-            {
-                _target = tmp;
-                sameResource = true;
-            }
-            else
-            {
-                this._needsReplanning = true;
-                OnDeactived();
-                return;
-            }
-        }
-
-
+            OnDeactived();
+        //if (_target == null)
+        //{
+        //    if (!sameResource)
+        //    {
+        //        _target = tmp;
+        //        sameResource = true;
+        //    }
+        //    else
+        //    {
+        //        this._needsReplanning = true;
+        //        OnDeactived();
+        //        return;
+        //    }
+        //}
 
         if (timer >= delay || _target == null)
         {
@@ -88,18 +88,20 @@ public class ActionInteractWithResource : ActionBase
             if (_target != null && gatherCount < AmountToGather)
             {
                 gatherCount += _target.GetComponent<ResourceTarget>().Interact(this.Agent.InventorySystem).Sum(a => a.Amount);
+                Agent.ConditionSystem.ChangeValue("Exhaustion", -5f);
             }
-            else if (_target == null && gatherCount < AmountToGather)
-            {
-                this._needsReplanning = true;
-            }
+            //else if (_target == null && gatherCount < AmountToGather)
+            //{
+            //    this._needsReplanning = true;
+            //}
             else
             {
                 OnDeactived();
             }
-           
+
 
         }
+        
         timer += Time.deltaTime;
     }
 }

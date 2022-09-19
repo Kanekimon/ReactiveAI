@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 
 
-public class ActionGatherFood : ActionBase
+public class GatherFoodAction : ActionBase
 {
 
     protected override void Start()

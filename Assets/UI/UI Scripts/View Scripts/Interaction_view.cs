@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine.UIElements;
+﻿using UnityEngine.UIElements;
 
 public class Interaction_view : UiView
 {
-    
+
     struct Inventories
     {
         public InventorySystem left;
@@ -75,7 +70,7 @@ public class Interaction_view : UiView
     {
         GameManager.Instance.Player.GetComponent<PlayerInteractionSystem>().SetFollowingAgent(shouldFollow);
         UIManager.Instance.CloseOpenView();
-        
+
     }
 
 }

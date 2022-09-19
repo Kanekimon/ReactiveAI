@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine.UIElements;
+﻿using UnityEngine.UIElements;
 
 public class RequestItem_popup : UiView
 {
@@ -26,9 +21,9 @@ public class RequestItem_popup : UiView
 
     private void RequestItemHandler()
     {
-        if(selected == null)
+        if (selected == null)
         {
-            UIManager.Instance.CreateNotification("Select an item to request",1f);
+            UIManager.Instance.CreateNotification("Select an item to request", 1f);
             return;
         }
         if (string.IsNullOrEmpty(requestAmount.text))
@@ -43,7 +38,7 @@ public class RequestItem_popup : UiView
         parent.Refresh();
     }
 
-    
+
 
     public override void Open()
     {
@@ -52,12 +47,12 @@ public class RequestItem_popup : UiView
         requestAmount.value = "0";
         foreach (Item i in ItemManager.Instance.AllItems)
         {
-            InventorySlot iS = new InventorySlot(i,-1);
+            InventorySlot iS = new InventorySlot(i, -1);
 
             iS.RegisterCallback<MouseDownEvent, InventorySlot>(SelectItemHandler, iS);
             itemContainer.Add(iS);
         }
-   
+
     }
 
     public void Open(Requestboard_view pparent)
@@ -76,8 +71,8 @@ public class RequestItem_popup : UiView
             selected = null;
         }
         else
-        {   
-            if(selected != null)
+        {
+            if (selected != null)
                 selected.SetAsActive(false);
             selected = iS;
             selected.SetAsActive(true);

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -55,7 +54,7 @@ public class CraftingSystem : MonoBehaviour
 
     public void CraftXTimes(Recipe r, int x)
     {
-        for(int i = 0; i < x; i++)
+        for (int i = 0; i < x; i++)
         {
             CraftItem(r.Result);
         }
@@ -82,14 +81,14 @@ public class CraftingSystem : MonoBehaviour
     {
         List<int> maximumPerMaterial = new List<int>();
 
-        foreach(RecipesMaterial rM in re.Materials)
+        foreach (RecipesMaterial rM in re.Materials)
         {
             int hasAmount = inventorySystem.GetItemAmount(rM.Item);
             int maximumpossible = hasAmount == 0 ? 0 : (hasAmount / rM.Amount);
             maximumPerMaterial.Add(maximumpossible);
         }
 
-        return maximumPerMaterial.Min(); 
+        return maximumPerMaterial.Min();
     }
 }
 

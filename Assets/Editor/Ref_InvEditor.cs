@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -38,7 +37,7 @@ public class Ref_InvEditor : Editor
         remove_amount = int.Parse(EditorGUILayout.TextField(remove_amount.ToString()));
         if (GUILayout.Button("Remove Item"))
         {
-            inventorySystem.RemoveItem(ItemManager.Instance.GetItemByName("wood"),remove_amount);
+            inventorySystem.RemoveItem(ItemManager.Instance.GetItemByName("wood"), remove_amount);
         }
         //foreach (KeyValuePair<Item, InventoryItem> item in inventorySystem._inventory)
         //{

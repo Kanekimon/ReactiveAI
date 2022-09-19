@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 [CustomEditor(typeof(RequestSystem))]
@@ -17,7 +12,7 @@ public class RequestSystemCustomEditor : Editor
 
 
         EditorGUILayout.BeginFoldoutHeaderGroup(true, "Open");
-        foreach(Request req in r.Open)
+        foreach (Request req in r.Open)
         {
             AddReqeust(req);
         }

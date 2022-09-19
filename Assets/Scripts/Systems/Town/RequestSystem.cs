@@ -69,7 +69,7 @@ public class RequestSystem : MonoBehaviour
             {
                 req.Storage = storage.gameObject;
                 req.Status = RequestStatus.Ready;
-                if(req.Requester.GetComponent<Agent>() != null)
+                if (req.Requester.GetComponent<Agent>() != null)
                     req.Requester.GetComponent<Agent>().PickUpResourceFromTarget(req);
                 return;
             }

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 
 public class FollowPlayerGoal : BaseGoal
@@ -15,7 +11,7 @@ public class FollowPlayerGoal : BaseGoal
 
     public override void OnGoalActivated()
     {
-        WorldState.AddWorldState("target", GameManager.Instance.Player.gameObject); 
+        WorldState.AddWorldState("target", GameManager.Instance.Player.gameObject);
         WorldState.AddWorldState("hasTarget", true);
         base.OnGoalActivated();
     }

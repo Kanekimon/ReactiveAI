@@ -21,7 +21,7 @@ internal class StorageInteractionAction : ActionBase
     {
         base.OnTick();
         request = WorldState.GetValue<Request>("request");
-        if(request.Storage.GetComponent<InventorySystem>().TransferItemToOtherInventory(Agent.InventorySystem, request.RequestedItem, request.RequestedAmount))
+        if (request.Storage.GetComponent<InventorySystem>().TransferItemToOtherInventory(Agent.InventorySystem, request.RequestedItem, request.RequestedAmount))
         {
             request.Status = RequestStatus.Finished;
             Agent.ReadyForPickUp.Dequeue();

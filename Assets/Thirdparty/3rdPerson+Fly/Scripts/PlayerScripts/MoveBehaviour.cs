@@ -18,7 +18,12 @@ public class MoveBehaviour : GenericBehaviour
     private bool jump;                              // Boolean to determine whether or not the player started a jump.
     private bool isColliding;                       // Boolean to determine if the player has collided with an obstacle.
 
+    private float penaltyTimer = 0f;
+    private float penaltyDelay = 2f;
+
     public PlayerSystem playerSystem;
+
+
 
     // Start is always called after any Awake functions.
     void Start()
@@ -30,7 +35,7 @@ public class MoveBehaviour : GenericBehaviour
         groundedBool = Animator.StringToHash("Grounded");
         behaviourManager.GetAnim.SetBool(groundedBool, true);
 
-        
+
         // Subscribe and register this behaviour as the default behaviour.
         behaviourManager.SubscribeBehaviour(this);
         behaviourManager.RegisterDefaultBehaviour(this.behaviourCode);
@@ -129,15 +134,29 @@ public class MoveBehaviour : GenericBehaviour
         if (playerSystem != null)
         {
 
-            if (behaviourManager.IsSprinting() && playerSystem.ConditionSystem.GetValueFromCondition("stamina") > sprintCost)
+            if (behaviourManager.IsSprinting() && playerSystem.ConditionSystem.GetValueFromCondition("stamina") > sprintCost && penaltyTimer == -1f)
             {
+                penaltyTimer = -1f;
                 speed = sprintSpeed;
                 playerSystem.ConditionSystem.DecreaseValue("stamina", sprintCost);
             }
+            else if (behaviourManager.IsSprinting() && behaviourManager.IsSprinting() && playerSystem.ConditionSystem.GetValueFromCondition("stamina") < sprintCost)
+            {
+                penaltyTimer = 0f;
+            }
+
+            if (penaltyTimer >= 0f)
+            {
+                if (penaltyTimer >= penaltyDelay)
+                    penaltyTimer = -1f;
+                else
+                    penaltyTimer += Time.deltaTime;
+            }
+
         }
         else
         {
-            if(behaviourManager.IsSprinting())
+            if (behaviourManager.IsSprinting())
                 speed = sprintSpeed;
         }
 

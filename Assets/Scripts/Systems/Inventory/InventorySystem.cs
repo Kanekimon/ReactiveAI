@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 public class InventorySystem : MonoBehaviour
@@ -95,7 +92,7 @@ public class InventorySystem : MonoBehaviour
                     amount = Mathf.Clamp(Mathf.FloorToInt((MaximumWeight - CurrentWeight) / ((float)item.Weigth)), 0, amount);
                     if (invStackSize + amount <= MaximumStackSize)
                     {
-                        
+
                         _inventory[slotIndex].Amount += amount;
                         added += amount;
                     }
@@ -129,7 +126,7 @@ public class InventorySystem : MonoBehaviour
         InventoryItem current = _inventory[currentSlot];
         InventoryItem wanted = _inventory[wantedSlot];
 
-        if(wanted != null && wanted.Item != null)
+        if (wanted != null && wanted.Item != null)
             _inventory[currentSlot] = wanted;
         else
             _inventory[currentSlot] = null;
@@ -252,7 +249,7 @@ public class InventorySystem : MonoBehaviour
             }
 
         }
-        if(this.gameObject == GameManager.Instance.Player.gameObject)
+        if (this.gameObject == GameManager.Instance.Player.gameObject)
         {
             UIManager.Instance.UpdateInventory();
         }
@@ -270,13 +267,13 @@ public class InventorySystem : MonoBehaviour
     /// <param name="amount">amount to transfer</param>
     public bool TransferItemToOtherInventory(InventorySystem otherInventory, Item toDeliver, int amount)
     {
-        if(HasItemWithAmount(toDeliver, amount))
+        if (HasItemWithAmount(toDeliver, amount))
         {
 
-            if(otherInventory.CanAddItem(toDeliver, amount) && RemoveItem(toDeliver, amount))
+            if (otherInventory.CanAddItem(toDeliver, amount) && RemoveItem(toDeliver, amount))
             {
                 int added = otherInventory.AddItem(toDeliver, amount);
-                if(added != amount)
+                if (added != amount)
                 {
                     AddItem(toDeliver, amount - added);
                 }
@@ -300,7 +297,7 @@ public class InventorySystem : MonoBehaviour
         if (itemWithSpaceLeft.Count == 0 && _inventory.Where(a => a.Value != null).Count() + neededSlots > MaximumSlots)
             return false;
 
-        foreach(int i in itemWithSpaceLeft)
+        foreach (int i in itemWithSpaceLeft)
         {
             amount -= (64 - _inventory[i].Amount);
         }
@@ -325,9 +322,9 @@ public class InventorySystem : MonoBehaviour
 
         int amount = 0;
 
-        foreach(InventoryItem inv_item in _inventory.Values.Where(a => a != null && a.Item.Id == item.Id)) 
-        { 
-            amount += inv_item.Amount;  
+        foreach (InventoryItem inv_item in _inventory.Values.Where(a => a != null && a.Item.Id == item.Id))
+        {
+            amount += inv_item.Amount;
         }
 
         return amount;

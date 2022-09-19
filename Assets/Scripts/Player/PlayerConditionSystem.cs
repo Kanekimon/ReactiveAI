@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
-public class PlayerConditionSystem : MonoBehaviour 
+public class PlayerConditionSystem : MonoBehaviour
 {
 
     [SerializeField]
@@ -66,7 +63,7 @@ public class PlayerConditionSystem : MonoBehaviour
 
     private void Update()
     {
-        foreach(Condition c in Conditions)
+        foreach (Condition c in Conditions)
         {
             if (c.Ticked)
                 c.Tick();
@@ -83,7 +80,7 @@ public class PlayerConditionSystem : MonoBehaviour
 
     public float GetValueFromCondition(string conName)
     {
-        if(Conditions.Any(a => a.Name.ToLower().Equals(conName.ToLower())))
+        if (Conditions.Any(a => a.Name.ToLower().Equals(conName.ToLower())))
         {
             return Conditions.Where(a => a.Name.ToLower().Equals(conName.ToLower())).FirstOrDefault().Value;
         }

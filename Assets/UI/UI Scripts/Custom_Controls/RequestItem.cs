@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
-using UnityEngine.Scripting;
+﻿using UnityEngine.Scripting;
 using UnityEngine.UIElements;
 
 public class RequestItem : VisualElement
@@ -89,10 +83,10 @@ public class RequestItem : VisualElement
 
     public void CompleteButton()
     {
-        if(Player.InventorySystem.HasItemWithAmount(request.RequestedItem, request.RequestedAmount))
+        if (Player.InventorySystem.HasItemWithAmount(request.RequestedItem, request.RequestedAmount))
         {
             if (Player.InventorySystem.TransferItemToOtherInventory(request.Requester.GetComponent<Agent>().HomeTown.RequestBoard.GetComponent<InventorySystem>(), request.RequestedItem, request.RequestedAmount))
-            { 
+            {
                 request.Requester.GetComponent<Agent>().HomeTown.RequestBoard.FinishedRequest(request);
             }
 
@@ -106,7 +100,7 @@ public class RequestItem : VisualElement
 
     public void RetrieveRequestedItem(Request r)
     {
-        if(r.Storage.GetComponent<InventorySystem>().TransferItemToOtherInventory(Player.InventorySystem, r.RequestedItem, r.RequestedAmount))
+        if (r.Storage.GetComponent<InventorySystem>().TransferItemToOtherInventory(Player.InventorySystem, r.RequestedItem, r.RequestedAmount))
         {
             r.Status = RequestStatus.Finished;
         }

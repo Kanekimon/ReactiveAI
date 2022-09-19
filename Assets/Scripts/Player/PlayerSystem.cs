@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using UnityEngine;
 
 public class PlayerSystem : MonoBehaviour
@@ -21,6 +17,16 @@ public class PlayerSystem : MonoBehaviour
     PlayerInteractionSystem _interactionSystem;
     public PlayerConditionSystem ConditionSystem => _conditionSystem;
     public InventorySystem InventorySystem => _inventorySystem;
+
+    internal ToolType GetEquippedToolType()
+    {
+        if (currentlyEquippedItem is ToolItem)
+        {
+            return ((ToolItem)currentlyEquippedItem).ToolType;
+        }
+        return ToolType.none;
+    }
+
     public CraftingSystem CraftingSystem => _craftingSystem;
     public PlayerInteractionSystem InteractionSystem => _interactionSystem;
 
@@ -106,7 +112,7 @@ public class PlayerSystem : MonoBehaviour
         InventorySystem.RemoveItem(item, itemAmount);
 
         GameObject instance = item.Prefab == null ? Crate : item.Prefab;
-        instance = Instantiate(item.Prefab) as GameObject;
+        instance = Instantiate(instance) as GameObject;
         instance.transform.position = this.transform.position + this.transform.forward;
         ResourceTarget rT = instance.GetComponent<ResourceTarget>();
         Resource r = new Resource()

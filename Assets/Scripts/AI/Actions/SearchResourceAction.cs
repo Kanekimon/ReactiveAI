@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class ActionSearchResource : ActionBase
+public class SearchResourceAction : ActionBase
 {
     Item _item;
 

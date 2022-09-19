@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-public class ActionIdle : ActionBase
+public class IdleAction : ActionBase
 {
 
     protected override void Awake()

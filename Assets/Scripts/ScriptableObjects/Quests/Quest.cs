@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -23,7 +19,7 @@ public class Quest : ScriptableObject
     public int GetId() => id;
     public bool CanBeCompleted { get; protected set; }
     public bool Completed { get; protected set; }
-    
+
     public QuestCompletedEvent CompletedEvent;
 
     public void Initialize()
@@ -33,7 +29,7 @@ public class Quest : ScriptableObject
         CompletedEvent = new QuestCompletedEvent();
         CompletedEvent.AddListener(QuestManager.Instance.FinishQuest);
 
-        foreach(var goal in Objectives)
+        foreach (var goal in Objectives)
         {
             goal.Initialize();
             goal.GoalCompleted.AddListener(delegate { CheckObjectives(); });
@@ -66,7 +62,7 @@ public class Quest : ScriptableObject
 
 
 [SerializeField]
-[CreateAssetMenu(menuName ="Quest/Objective")]
+[CreateAssetMenu(menuName = "Quest/Objective")]
 public abstract class QuestObjective : ScriptableObject
 {
     protected int Id;
@@ -93,7 +89,7 @@ public abstract class QuestObjective : ScriptableObject
     protected void Evaluate()
     {
         Debug.Log($"Amount: {CurrentAmount}/{RequiredAmount} ");
-        if(CurrentAmount >= RequiredAmount)
+        if (CurrentAmount >= RequiredAmount)
         {
             Complete();
         }

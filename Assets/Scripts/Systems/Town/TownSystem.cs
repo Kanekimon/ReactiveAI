@@ -5,7 +5,7 @@ using UnityEngine;
 public class TownSystem : MonoBehaviour
 {
     List<Agent> _population = new List<Agent>();
-    
+
     public List<Agent> Villager => _population;
 
     public RequestSystem RequestBoard;
@@ -23,12 +23,16 @@ public class TownSystem : MonoBehaviour
 
     private void Start()
     {
-        foreach(Job j in JobManager.Instance.AllJobs)
+        foreach (Job j in JobManager.Instance.AllJobs)
         {
             Job copy = Instantiate(j);
             copy.name = j.name;
             AddNewJob(copy, TestWorkPlace);
-        }    
+        }
+        GameObject agent = SpawnAgent();
+        HireWorker(agent.GetComponent<Agent>(), AvailableJobs.Where(a => a.JobType == JobType.Lumberjack).FirstOrDefault());
+        TimeManager.Instance.AddHours(7);
+        GameManager.Instance.Player.InventorySystem.AddItem(ItemManager.Instance.GetItemByName("axe"), 1);
     }
 
 

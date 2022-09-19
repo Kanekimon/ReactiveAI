@@ -14,7 +14,7 @@ public enum DayTime
 public class TimeManager : MonoBehaviour
 {
     public static TimeManager Instance;
-    
+
 
 
     DateTime CurrentTime;

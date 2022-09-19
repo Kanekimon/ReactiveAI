@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-public class ActionMoveToResource : ActionBase
+public class MoveToResourceAction : ActionBase
 {
     GameObject _target;
 

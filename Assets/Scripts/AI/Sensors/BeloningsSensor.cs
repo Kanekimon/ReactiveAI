@@ -53,9 +53,9 @@ public class BeloningsSensor : MonoBehaviour
         }
         else
             WorldState.AddWorldState("hasItem", false);
-    
-    
-        if(Agent.Job != null)
+
+
+        if (Agent.Job != null)
         {
             WorldState.AddWorldState("hasTool", Agent.Job.Tools.Any(a => InventorySystem.HasItem(a)));
         }

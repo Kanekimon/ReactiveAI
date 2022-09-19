@@ -44,7 +44,7 @@ public class ResourceTarget : DetectableTarget
         int gatheredAmount = 0;
         for (int i = GatherableMaterials.Count - 1; i >= 0; i--)
         {
-            if(GatherableMaterials[i].Propability < 1f)
+            if (GatherableMaterials[i].Propability < 1f)
             {
                 if (Random.Range(0f, 1f) > GatherableMaterials[i].Propability)
                     continue;

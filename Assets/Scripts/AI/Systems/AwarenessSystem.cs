@@ -115,16 +115,19 @@ public class AwarenessSystem : MonoBehaviour
         if (WorldState.GetValue<GameObject>("target") != null)
         {
             GameObject currentTarget = WorldState.GetValue<GameObject>("target");
+            WorldState.AddWorldState("hasTarget", true);
             WorldState.AddWorldState("isAtTarget", (Vector3.Distance(currentTarget.transform.position, this.transform.position) <= Agent.InteractionRange));
         }
         else
         {
             WorldState.AddWorldState("isAtTarget", false);
+            WorldState.AddWorldState("hasTarget", false);
+             
         }
 
-        if(Agent.Home != null)
+        if (Agent.Home != null)
         {
-            if(IsCloseToObject(Agent.Home))
+            if (IsCloseToObject(Agent.Home))
                 WorldState.AddWorldState("isHome", true);
             else
                 WorldState.AddWorldState("isHome", false);

@@ -35,11 +35,8 @@ public class AStar
     {
 
         Queue<ActionBase> queue = new Queue<ActionBase>();
-
         int counter = 100;
 
-        if (goal is CollectJobResourceGoal)
-            Debug.Log("test");
 
         Node currentNode = new Node() { GCost = 0, HCost = goal.Preconditions.Count, openPreconditions = new List<KeyValuePair<string, object>>(goal.Preconditions) };
         List<Node> open = new List<Node>();

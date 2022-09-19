@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEngine;
+﻿using UnityEngine;
 
 [SerializeField]
 [CreateAssetMenu(menuName = "Quest/GatherObjective")]
@@ -26,7 +21,7 @@ public class GatherObjective : QuestObjective
     private void OnGather(GatherGameEvent eventInfo)
     {
         Debug.Log($"Gathered {eventInfo.Amount}x {eventInfo.Item}");
-        if(eventInfo.Item == Item)
+        if (eventInfo.Item == Item)
         {
             CurrentAmount += eventInfo.Amount;
             Evaluate();

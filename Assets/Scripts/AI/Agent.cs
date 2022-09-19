@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 
@@ -44,7 +43,7 @@ public class Agent : MonoBehaviour
         _conditionSystem = GetComponent<ConditionSystem>();
         _inventorySystem = GetComponent<InventorySystem>();
         _craftingSystem = GetComponent<CraftingSystem>();
-        _anim = GetComponent<Animator>();   
+        _anim = GetComponent<Animator>();
     }
 
     internal void AddWork(Request r)

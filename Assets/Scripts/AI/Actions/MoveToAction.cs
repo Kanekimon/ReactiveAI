@@ -16,7 +16,10 @@ internal class MoveToAction : ActionBase
     {
         base.OnActivated(linked);
         _target = WorldState.GetValue<GameObject>("target");
-        NavAgent.MoveTo(NavAgent.PickClosestPositionInRange(_target, Agent.InteractionRange));
+        if (_target == null)
+            NeedsReplanning();
+        else
+            NavAgent.MoveTo(NavAgent.PickClosestPositionInRange(_target, Agent.InteractionRange));
     }
 
     public override void OnTick()

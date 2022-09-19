@@ -22,7 +22,7 @@ public class AgentCustomEditor : Editor
         key = EditorGUILayout.TextField(key);
         value = EditorGUILayout.TextField(value);
         EditorGUILayout.EndHorizontal();
-        if(GUILayout.Button("Add Worldstate"))
+        if (GUILayout.Button("Add Worldstate"))
         {
             WorldState.AddWorldState(key, value);
         }

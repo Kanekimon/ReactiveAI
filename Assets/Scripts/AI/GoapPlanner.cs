@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using UnityEngine;
@@ -28,19 +27,6 @@ public class GoapPlanner : MonoBehaviour
 
     }
 
-    public void WriteAllWorldStatesToFile()
-    {
-        string states = "";
-        foreach (KeyValuePair<string, object> state in WorldState.GetWorldState)
-        {
-            states += $"{state.Key}" + "\n";
-        }
-
-        string file = Path.Combine(@"D:\Unity\Dump", "states.txt");
-        using (StreamWriter stW = new StreamWriter(file)) { stW.Write(states); }
-    }
-
-
     public void InitActions()
     {
         ActionContainer = transform.Find("Actions").gameObject;
@@ -59,7 +45,7 @@ public class GoapPlanner : MonoBehaviour
         GoalContainer = transform.Find("Goals").gameObject;
         AllGoals = new List<BaseGoal>();
 
-        foreach(Transform child in GoalContainer.transform)
+        foreach (Transform child in GoalContainer.transform)
         {
             AllGoals.AddRange(child.gameObject.GetComponents<BaseGoal>().ToList());
         }
@@ -71,84 +57,91 @@ public class GoapPlanner : MonoBehaviour
         WorldState.AddWorldState("followPlayer", state);
     }
 
-    private void Start()
-    {
-        WriteAllWorldStatesToFile();
-    }
-
 
     private void Update()
     {
         Think();
     }
 
-    public void Think()
+    void Think()
     {
-        if (CurrentGoal != null && CurrentGoal.IsPaused)
-            CurrentGoal = null;
+        BaseGoal HighestGoal = TickGoalNew();
 
-        BaseGoal HighestPrioGoal = TickGoals();
-
-        if (HighestPrioGoal != null && HighestPrioGoal != CurrentGoal)
+        if ((CurrentGoal == null && HighestGoal != null) || (CurrentGoal != null && CurrentGoal != HighestGoal))
         {
-            if (CurrentGoal != null)
-                DeactiveOldGoal();
-
-            if (HighestPrioGoal is CollectJobResourceGoal)
-                Debug.Log("Test");
-
-            CurrentGoal = HighestPrioGoal;
-            CurrentGoal.OnGoalActivated();
-            Plan();
+            ActivateNewGoal(HighestGoal);
         }
 
-        if (CurrentActionSequence == null)
-        {
-            if (CurrentGoal != null)
-                DeactiveOldGoal();
-            CurrentGoal = null;
-            return;
-        }
+        TickActionSequence();
+    }
 
-        if (CurrentActionSequence.Count > 0 && (CurrentAction == null || CurrentAction != CurrentActionSequence.Peek()))
+    void TickActionSequence()
+    {
+        if (CurrentActionSequence != null)
+        {
+            if (CurrentActionSequence.Count == 0 && CurrentAction == null)
+            {
+                Debug.Log("No more actions and CurrentAction is null");
+                ResetCurrentPlan();
+                return;
+            }
+            HandleAction();
+        }
+    }
+
+    void HandleAction()
+    {
+        if (CurrentAction == null && CurrentActionSequence.Count > 0)
         {
             CurrentAction = CurrentActionSequence.Peek();
             CurrentAction.OnActivated(CurrentGoal);
         }
-
-
-        if (CurrentAction != null)
+        else if (CurrentAction != null)
         {
             if (CurrentAction.HasFinished())
             {
                 CurrentActionSequence.Dequeue();
-                if (CurrentActionSequence.Count > 0)
-                    CurrentActionSequence.Peek().OnActivated(CurrentGoal);
-                else
-                    CurrentAction = null;
+                CurrentAction = null;
+            }
+            else if (CurrentAction.NeedsReplanning())
+            {
+                ResetCurrentPlan();
             }
             else
             {
                 CurrentAction.OnTick();
-                if (CurrentAction.NeedsReplanning())
-                    Plan();
             }
         }
-
-        if (CurrentAction == null)
-        {
-            DeactiveOldGoal();
-            Plan();
-        }
-
-
-
     }
 
 
-    BaseGoal TickGoals()
+    void ResetCurrentPlan()
+    {
+        CurrentAction = null;
+        CurrentActionSequence = null;
+        CurrentGoal = null;
+    }
+
+    void ActivateNewGoal(BaseGoal newGoal)
+    {
+        if (CurrentGoal != null)
+            CurrentGoal.OnGoalDeactivated();
+        if (CurrentAction != null)
+        {
+            CurrentAction.OnDeactived();
+            CurrentAction = null;
+        }
+
+        CurrentGoal = newGoal;
+        CurrentGoal.OnGoalActivated();
+        Plan();
+    }
+
+
+    BaseGoal TickGoalNew()
     {
         BaseGoal bestGoal = null;
+        int highest = -1;
         foreach (BaseGoal goal in AllGoals)
         {
             goal.OnTickGoal();
@@ -156,26 +149,21 @@ public class GoapPlanner : MonoBehaviour
             if (!goal.CanRun() || goal.IsPaused)
                 continue;
 
-            if (bestGoal is RequestResourceGoal && Agent.Job != null && Agent.Job.JobType == JobType.Crafter)
-                Debug.Log("Test");
-
-
-            if ((CurrentGoal == null || goal.CalculatePriority() > CurrentGoal.CalculatePriority()) && (bestGoal != null && bestGoal.CalculatePriority() < goal.CalculatePriority() || bestGoal == null))
+            if(bestGoal == null)
+            {
                 bestGoal = goal;
+                highest = bestGoal.CalculatePriority();
+            }
+
+            int tmpPrio = goal.CalculatePriority();
+            if(bestGoal != null && highest < tmpPrio)
+            {
+                bestGoal = goal;
+                highest = tmpPrio;
+            }
         }
 
         return bestGoal;
-    }
-
-    void DeactiveOldGoal()
-    {
-        CurrentGoal.OnGoalDeactivated();
-        if (CurrentActionSequence != null && CurrentActionSequence.Count > 0)
-        {
-            CurrentActionSequence.Peek().OnDeactived();
-            CurrentActionSequence.Clear();
-        }
-
     }
 
     void Plan()
@@ -183,6 +171,11 @@ public class GoapPlanner : MonoBehaviour
         CurrentActionSequence = AStar.PlanActionSequence(CurrentGoal, AllActions, WorldState);
         if (CurrentActionSequence != null && CurrentActionSequence.Count > 0)
             GoapHelper.DebugPlan(this.Agent, CurrentGoal, CurrentActionSequence.ToList());
+        if(CurrentActionSequence == null)
+        {
+            CurrentGoal.PauseGoal();
+            ResetCurrentPlan();
+        }
     }
 
     public void AddRequestToWorkOn(Request r)

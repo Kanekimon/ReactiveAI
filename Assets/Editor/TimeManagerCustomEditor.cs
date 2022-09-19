@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEngine;
 
 [CustomEditor(typeof(TimeManager))]
@@ -22,7 +17,7 @@ public class TimeManagerCustomEditor : Editor
 
         hoursfield = EditorGUILayout.TextField("Hours", hoursfield);
 
-        if(GUILayout.Button("Add hours"))
+        if (GUILayout.Button("Add hours"))
         {
             int hours = int.Parse(hoursfield);
             time.AddHours(hours);

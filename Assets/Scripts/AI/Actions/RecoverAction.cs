@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class RecoverAction : ActionBase
@@ -14,7 +10,7 @@ public class RecoverAction : ActionBase
     protected override void Start()
     {
         CSystem = Agent.ConditionSystem;
-        effects.Add(new KeyValuePair<string, object>("isExhausted", false));
+        effects.Add(new KeyValuePair<string, object>("isExhaustion", false));
         preconditions.Add(new KeyValuePair<string, object>("isHome", true));
         base.Start();
     }
@@ -23,10 +19,10 @@ public class RecoverAction : ActionBase
     public override void OnTick()
     {
         base.OnTick();
-        if(timer > delay)
+        if (timer > delay)
         {
             timer = 0;
-            CSystem.ChangeValue("Exhausted", 1f);
+            CSystem.ChangeValue("Exhaustion", 2f);
         }
         timer += Time.deltaTime;
         if (CSystem.GetActiveCondition() == null)

@@ -32,7 +32,7 @@ public class CollectJobResourceGoal : BaseGoal
 
     public override void OnTickGoal()
     {
-        if (WorldState.GetValue<bool>("startedWork") && !WorldState.GetValue<bool>("requestResource") && WorldState.GetValue<bool>("isDayTime") && !WorldState.GetValue<bool>("inventoryFull"))
+        if (WorldState.GetValue<bool>("isWorking") && !WorldState.GetValue<bool>("requestResource") && WorldState.GetValue<bool>("isDayTime") && !WorldState.GetValue<bool>("inventoryFull") && WorldState.GetValue<bool>("hasTarget"))
             Prio = MaxPrio;
         else
             Prio = MinPrio;

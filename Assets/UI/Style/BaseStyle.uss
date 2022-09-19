@@ -25,10 +25,10 @@
 .interaction-menu-item {
     width: 48%;
     height: 100%;
-    border-left-color: rgba(189, 195, 199, 255);
-    border-right-color: rgba(189, 195, 199, 255);
-    border-top-color: rgba(189, 195, 199, 255);
-    border-bottom-color: rgba(189, 195, 199, 255);
+    border-left-color: rgb(189, 195, 199);
+    border-right-color: rgb(189, 195, 199);
+    border-top-color: rgb(189, 195, 199);
+    border-bottom-color: rgb(189, 195, 199);
     border-left-width: 1px;
     border-right-width: 1px;
     border-top-width: 1px;
@@ -37,7 +37,51 @@
     border-bottom-left-radius: 5px;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
-    background-color: rgba(44, 62, 80, 255);
+    background-color: rgb(44, 62, 80);
     align-items: center;
     justify-content: center;
+}
+
+.context-menu-entry {
+    height: 50%;
+    border-left-color: rgb(189, 195, 199);
+    border-right-color: rgb(189, 195, 199);
+    border-top-color: rgb(189, 195, 199);
+    border-bottom-color: rgb(189, 195, 199);
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    background-color: rgb(52, 73, 94);
+    -unity-text-align: middle-center;
+}
+
+.context-menu-entry:hover {
+    background-color: rgba(41, 128, 185, 255);
+}
+
+.context-menu {
+    position: absolute;
+    width: 10%;
+    height: 15%;
+    top: 133px;
+    left: 331px;
+    border-left-color: rgb(189, 195, 199);
+    border-right-color: rgb(189, 195, 199);
+    border-top-color: rgb(189, 195, 199);
+    border-bottom-color: rgb(189, 195, 199);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+    background-color: rgb(44, 62, 80);
+    display: none;
 }

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 public class QuestManager : MonoBehaviour
@@ -26,7 +23,7 @@ public class QuestManager : MonoBehaviour
 
     public void StartQuest(Quest activate)
     {
-        if(Quests.Any(a => a == activate))
+        if (Quests.Any(a => a == activate))
         {
             activate.Initialize();
             Active.Add(activate);
@@ -37,7 +34,7 @@ public class QuestManager : MonoBehaviour
 
     public void FinishQuest(Quest close)
     {
-        if(Active.Any(a => a == close))
+        if (Active.Any(a => a == close))
         {
             Finished.Add(close);
             Active.Remove(close);
@@ -46,16 +43,16 @@ public class QuestManager : MonoBehaviour
 
     public bool HasQuestWithInteractionType(InteractionType inter)
     {
-        foreach(Quest q in Active)
+        foreach (Quest q in Active)
         {
-            foreach(QuestObjective objective in q.Objectives)
+            foreach (QuestObjective objective in q.Objectives)
             {
-                if(objective is TeachObjective)
+                if (objective is TeachObjective)
                 {
                     if ((objective as TeachObjective).InteractionType == inter)
                         return true;
                 }
-            }   
+            }
         }
         return false;
     }

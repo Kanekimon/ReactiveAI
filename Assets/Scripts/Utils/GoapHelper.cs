@@ -17,7 +17,7 @@ public static class GoapHelper
         }
 
 
-        Debug.Log($"{agent.name}: {plan_sequence}");
+        //Debug.Log($"{agent.name}: {plan_sequence}");
     }
 
 }

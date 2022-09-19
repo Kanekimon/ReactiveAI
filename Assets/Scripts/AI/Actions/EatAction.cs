@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ActionEat : ActionBase
+public class EatAction : ActionBase
 {
     [SerializeField] float SearchRange = 10f;
 
