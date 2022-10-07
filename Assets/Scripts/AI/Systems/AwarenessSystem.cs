@@ -94,6 +94,7 @@ public class AwarenessSystem : MonoBehaviour
     private void Start()
     {
         CoVisionAngle = Mathf.Cos(VisionAngle * Mathf.Deg2Rad);
+        Debug.Log($"Angle : {VisionAngle}   CoVisionAngle: {CoVisionAngle}");
         Agent = GetComponent<Agent>();
         WorldState = Agent.WorldState;
         WorldState.AddWorldState("hasTarget", false);

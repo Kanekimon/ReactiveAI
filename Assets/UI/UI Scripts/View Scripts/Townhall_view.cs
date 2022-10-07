@@ -88,7 +88,6 @@ public class Townhall_view : UiView
     {
         return () =>
         {
-            JobType job = (JobType)Enum.Parse(typeof(JobType), jobTypes.choices[jobTypes.index]);
             Town.FireWorker(selected);
         };
     }

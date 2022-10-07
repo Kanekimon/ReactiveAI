@@ -22,6 +22,7 @@ public class GoHomeAction : ActionBase
         base.OnTick();
         if (NavAgent.AtDestination)
         {
+            NavAgent.StopMoving();
             OnDeactived();
         }
     }

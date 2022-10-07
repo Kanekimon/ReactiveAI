@@ -18,7 +18,8 @@ public class QuestManager : MonoBehaviour
             Instance = this;
         else
             Destroy(this);
-        StartQuest(Quests.First());
+        if (Quests.Count > 0)
+            StartQuest(Quests.First());
     }
 
     public void StartQuest(Quest activate)

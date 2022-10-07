@@ -12,7 +12,11 @@ public class GameManager : MonoBehaviour
             Instance = this;
         else
             Destroy(this);
+
+        this.Player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerSystem>();
     }
+
+
 
 
 }

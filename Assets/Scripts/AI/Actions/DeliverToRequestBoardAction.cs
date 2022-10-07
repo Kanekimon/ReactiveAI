@@ -39,6 +39,7 @@ public class DeliverToRequestBoardAction : ActionBase
                     Agent.WorkingOn = null;
                     WorldState.AddWorldState("activeRequest", Agent.WorkingOn);
                 }
+                NavAgent.StopMoving();
                 OnDeactived();
             }
         }

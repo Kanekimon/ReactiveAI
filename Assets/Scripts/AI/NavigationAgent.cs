@@ -11,7 +11,13 @@ public enum EOffMeshLinkStatus
 [RequireComponent(typeof(NavMeshAgent))]
 public class NavigationAgent : MonoBehaviour
 {
+    public float IdleTimer;
+    float idleTime;
+    Vector3 lastUpdatePosition;
+    bool idle;
+
     NavMeshAgent NavMeshAgent;
+    NavMeshObstacle NavMeshObstacle;
     Agent Agent;
     StateMemory WorldState;
     [SerializeField] float NearestPointSearchRange = 5f;
@@ -24,26 +30,51 @@ public class NavigationAgent : MonoBehaviour
     private void Start()
     {
         NavMeshAgent = GetComponent<NavMeshAgent>();
+        NavMeshObstacle = GetComponent<NavMeshObstacle>();
         Agent = GetComponent<Agent>();
         WorldState = Agent.WorldState;
+
+        NavMeshAgent.avoidancePriority = Random.Range(0, 100);
     }
 
     void Update()
     {
-        Agent.GetComponent<Animator>().SetFloat("WalkSpeed", NavMeshAgent.velocity.magnitude);
-
-        if (!NavMeshAgent.pathPending && !NavMeshAgent.isOnOffMeshLink && DestinationSet && (NavMeshAgent.remainingDistance <= NavMeshAgent.stoppingDistance))
+        if (lastUpdatePosition == this.transform.position)
         {
-            DestinationSet = false;
-            ReachedDestination = true;
+            idleTime += Time.deltaTime;
+            if (idle)
+                idleTime = 0;
+
+            if (idleTime >= IdleTimer)
+            {
+                SetIdle(true);
+            }
+        }
+        else
+        {
+            SetIdle(false);
+            idleTime = 0;
+            lastUpdatePosition = this.transform.position;
         }
 
-        if (NavMeshAgent.isOnOffMeshLink)
+
+
+        if (NavMeshAgent.enabled == true)
         {
-            if (OffMeshLinkStatus == EOffMeshLinkStatus.NotStarted)
-                StartCoroutine(FollowOffmeshLink());
+            Agent.GetComponent<Animator>().SetFloat("WalkSpeed", NavMeshAgent.velocity.magnitude);
+            if (!NavMeshAgent.pathPending && !NavMeshAgent.isOnOffMeshLink && DestinationSet && (NavMeshAgent.remainingDistance <= NavMeshAgent.stoppingDistance))
+            {
+                DestinationSet = false;
+                ReachedDestination = true;
+            }
+
+            if (NavMeshAgent.isOnOffMeshLink)
+            {
+                if (OffMeshLinkStatus == EOffMeshLinkStatus.NotStarted)
+                    StartCoroutine(FollowOffmeshLink());
+            }
+            WorldState.ChangeValue("currentPosition", transform.position);
         }
-        WorldState.ChangeValue("currentPosition", transform.position);
 
     }
 
@@ -146,6 +177,8 @@ public class NavigationAgent : MonoBehaviour
 
     public void MoveTo(Vector3 destination)
     {
+        SetIdle(false);
+
 
         CancelCurrentCommand();
         RotateTowards(destination);
@@ -176,6 +209,25 @@ public class NavigationAgent : MonoBehaviour
         Vector3 direction = (target - transform.position).normalized;
         Quaternion lookRotation = Quaternion.LookRotation(direction);
         transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * RotationSpeed);
+    }
+
+    void SetIdle(bool pidle)
+    {
+        if (idle == pidle)
+            return;
+
+        idle = pidle;
+        if (idle)
+        {
+            NavMeshAgent.enabled = false;
+            NavMeshObstacle.enabled = true;
+        }
+        else
+        {
+            NavMeshObstacle.enabled = false;
+            NavMeshAgent.enabled = true;
+        }
+
     }
 
 

@@ -28,6 +28,7 @@ public class SearchResourceAction : ActionBase
 
         if (Agent.AwarenessSystem.SeesResourceTarget(WorldState.GetValue<List<ResourceType>>("possibleResources")))
         {
+            NavAgent.StopMoving();
             OnDeactived();
         }
 

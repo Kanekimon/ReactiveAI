@@ -24,6 +24,7 @@ public class MoveToResourceAction : ActionBase
         base.OnTick();
         if (NavAgent.AtDestination)
         {
+            NavAgent.StopMoving();
             OnDeactived();
         }
     }

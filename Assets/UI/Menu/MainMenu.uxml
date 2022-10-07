@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/Style/Menu.uss?fileID=7433441132597879392&amp;guid=b4874e30913eb5b4cb6255fe600d2704&amp;type=3#Menu" />
+    <ui:IMGUIContainer style="background-image: resource(&apos;Images/Menu/background&apos;); -unity-background-image-tint-color: rgb(255, 255, 255); height: 100%; width: 100%; color: rgba(255, 255, 255, 0); -unity-background-scale-mode: scale-and-crop; -unity-slice-left: 0; -unity-slice-top: 0; -unity-slice-right: 0; -unity-slice-bottom: 0; position: absolute;" />
+    <ui:VisualElement name="container" style="width: 100%; height: 100%; align-items: center; justify-content: center;">
+        <ui:VisualElement name="button-container" style="width: 20%; height: 45%; -unity-background-image-tint-color: rgb(108, 108, 108); background-color: rgba(189, 195, 199, 0.62); border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px; border-left-color: rgb(44, 62, 80); border-right-color: rgb(44, 62, 80); border-top-color: rgb(44, 62, 80); border-bottom-color: rgb(44, 62, 80); border-top-left-radius: 20px; border-bottom-left-radius: 20px; border-top-right-radius: 20px; border-bottom-right-radius: 20px; align-items: center; justify-content: center;">
+            <ui:Button text="Start Game" display-tooltip-when-elided="true" name="start-game" style="width: 80%; background-color: rgba(236, 240, 241, 0.49); color: rgb(0, 0, 0);" />
+            <ui:Button text="Exit" display-tooltip-when-elided="true" name="exit-game" class="menu_button" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -43,6 +43,7 @@ public class GetItemsFromWorkAction : ActionBase
                 LinkedGoal.PauseGoal();
                 NeedsReplanning();
             }
+            NavAgent.StopMoving();
         }
     }
 

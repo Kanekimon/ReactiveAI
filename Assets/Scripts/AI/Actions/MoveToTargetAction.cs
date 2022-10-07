@@ -22,6 +22,7 @@ public class MoveToTargetAction : ActionBase
         base.OnTick();
         if (NavAgent.AtDestination)
         {
+            NavAgent.StopMoving();
             OnDeactived();
         }
     }

@@ -83,11 +83,19 @@ public class UIManager : MonoBehaviour
 
         if (Input.GetButtonDown("Inventory"))
         {
-            ToggleWindow("Townhall");
+            ToggleWindow("Inventory");
         }
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            CloseOpenView();
+            if (!AnyViewOpen) 
+            {
+                ToggleWindow("Exit");
+            }
+            else
+            {
+                CloseOpenView();
+            }
+
         }
         if (Input.GetKeyDown(KeyCode.C))
         {

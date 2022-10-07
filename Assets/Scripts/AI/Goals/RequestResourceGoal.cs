@@ -52,7 +52,7 @@ public class RequestResourceGoal : BaseGoal
 
             if (Requests.Count > 0)
             {
-                Prio = MaxPrio;//waiting ? (MinPrio + MaxPrio)/2 : MaxPrio;
+                Prio = MaxPrio;
             }
             else
             {

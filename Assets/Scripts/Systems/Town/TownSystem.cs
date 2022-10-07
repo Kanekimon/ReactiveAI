@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class TownSystem : MonoBehaviour
 {
@@ -10,11 +11,12 @@ public class TownSystem : MonoBehaviour
 
     public RequestSystem RequestBoard;
     public List<Job> AvailableJobs = new List<Job>();
-    public List<Storage> Storages = new List<Storage>();
 
     public GameObject TestWorkPlace;
     public Agent TestAgent;
 
+    public List<GameObject> Homes = new List<GameObject>();
+    public List<GameObject> Workplaces = new List<GameObject>();
 
     public GameObject GoblinPrefab;
 
@@ -23,16 +25,15 @@ public class TownSystem : MonoBehaviour
 
     private void Start()
     {
-        foreach (Job j in JobManager.Instance.AllJobs)
-        {
-            Job copy = Instantiate(j);
-            copy.name = j.name;
-            AddNewJob(copy, TestWorkPlace);
-        }
-        GameObject agent = SpawnAgent();
-        HireWorker(agent.GetComponent<Agent>(), AvailableJobs.Where(a => a.JobType == JobType.Lumberjack).FirstOrDefault());
-        TimeManager.Instance.AddHours(7);
-        GameManager.Instance.Player.InventorySystem.AddItem(ItemManager.Instance.GetItemByName("axe"), 1);
+        Homes = GameObject.FindGameObjectsWithTag("AgentHouse").ToList();
+        Workplaces = GameObject.FindGameObjectsWithTag("Workplace").ToList();
+
+        //foreach (Job j in JobManager.Instance.AllJobs)
+        //{
+        //    Job copy = Instantiate(j);
+        //    copy.name = j.name;
+        //    AddNewJob(copy, TestWorkPlace);
+        //}
     }
 
 
@@ -61,6 +62,10 @@ public class TownSystem : MonoBehaviour
     public bool RequestResoruces(Request r)
     {
         Job job = AvailableJobs.Where(a => a.JobType == this.GetComponent<ResponsibilityChecker>().GetResponsibleJob(r.RequestedItem)).FirstOrDefault();
+
+        if (job == null)
+            return false;
+
         JobType requiredWorker = job.JobType;
         List<Agent> workers = _population.Where(a => a.Job != null && a.Job.JobType == requiredWorker && !a.IsOccupied).ToList() ?? null;
 
@@ -112,10 +117,6 @@ public class TownSystem : MonoBehaviour
         agent.GetJob(null);
     }
 
-    internal GameObject GetStorage(Item item)
-    {
-        return Storages.Where(a => a.CanStoreItem(item)).FirstOrDefault()?.gameObject ?? null;
-    }
 
     public void FinishedRequest(Agent agent, Item itemDelivered, GameObject storage)
     {
@@ -125,8 +126,9 @@ public class TownSystem : MonoBehaviour
     public GameObject SpawnAgent()
     {
         GameObject ag = Instantiate<GameObject>(GoblinPrefab);
+        ag.GetComponent<NavMeshAgent>().Warp(NavMeshHelper.GetPosititionOnNavMeshInRange(this.transform.position, 10f));
         ag.GetComponent<Agent>().HomeTown = this;
-        ag.GetComponent<Agent>().Home = TestWorkPlace;
+        ag.GetComponent<Agent>().Home = Homes[Random.Range(0, Homes.Count)];
         RegisterAgent(ag.GetComponent<Agent>());
         return ag;
     }

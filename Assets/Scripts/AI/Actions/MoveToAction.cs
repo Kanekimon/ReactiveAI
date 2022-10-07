@@ -27,6 +27,7 @@ internal class MoveToAction : ActionBase
         base.OnTick();
         if (NavAgent.AtDestination)
         {
+            NavAgent.StopMoving();
             OnDeactived();
         }
     }
